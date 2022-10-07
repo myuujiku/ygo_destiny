@@ -1,14 +1,18 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::{gio, glib};
+use glib::subclass::InitializingObject;
 use gtk::CompositeTemplate;
+use gtk::{gio, glib};
 
 mod imp {
     use super::*;
 
     #[derive(CompositeTemplate, Default)]
     #[template(resource = "/com/myujiku/ygod/ui/window.ui")]
-    pub struct Window {}
+    pub struct Window {
+        #[template_child]
+        pub leaflet: TemplateChild<adw::Leaflet>,
+    }
 
     #[glib::object_subclass]
     impl ObjectSubclass for Window {
@@ -18,9 +22,10 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+            klass.bind_template_instance_callbacks();
         }
 
-        fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+        fn instance_init(obj: &InitializingObject<Self>) {
             obj.init_template();
         }
     }
@@ -39,8 +44,23 @@ glib::wrapper! {
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
+#[gtk::template_callbacks]
 impl Window {
     pub fn new(app: &adw::Application) -> Self {
-        glib::Object::new(&[("application", app)]).expect("Failed to create instance of Window.")
+        let window: Window = glib::Object::new(&[("application", app)])
+            .expect("Failed to create instance of Window.");
+
+        window.imp().leaflet.set_visible_child_name("pageidk");
+
+        window
+    }
+
+    fn leaflet(&self) -> &gtk::TemplateChild<adw::Leaflet> {
+        &self.imp().leaflet
+    }
+
+    #[template_callback]
+    fn leaflet_back_clicked(window: Window) {
+        window.leaflet().navigate(adw::NavigationDirection::Back);
     }
 }
