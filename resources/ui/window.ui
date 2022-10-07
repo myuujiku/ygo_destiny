@@ -7,44 +7,42 @@
             <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <!--Header bar-->
-                <child><object class="AdwHeaderBar">
-                    <property name="centering-policy">strict</property>
-                    <property name="title-widget">
-                        <object class="AdwViewSwitcherTitle" id="title">
-                            <property name="title">YGO Destiny</property>
-                            <property name="stack">stack</property>
-                        </object>
-                    </property>
-                </object></child>
-                <!--Window content-->
-                <child><object class="AdwViewStack" id="stack">
-                    <property name="vexpand">true</property>
-                    <child><object class="AdwViewStackPage">
-                        <property name="icon-name">folder-symbolic</property>
-                        <property name="name">test</property>
-                        <property name="title">Test</property>
-                        <property name="child">
-                            <object class="AdwStatusPage">
-                                <property name="icon-name">weather-few-clouds</property>
-                                <property name="title">test :3</property>
-                                <property name="description">yeet</property>
+                <child>
+                    <object class="AdwHeaderBar">
+                        <child type="start">
+                            <object class="GtkButton">
+                                <property name="icon-name">go-previous-symbolic</property>
+                                <property name="tooltip-text">Back</property>
+                                <property name="visible">true</property>
+                                <signal name="clicked" handler="leaflet_back_clicked" swapped="yes"/>
                             </object>
-                        </property>
-                    </object></child>
-                    <child><object class="AdwViewStackPage">
-                        <property name="name">test2</property>
-                        <property name="title">Test2</property>
-                        <property name="child">
-                            <object class="AdwStatusPage"><property name="title">test owo</property></object>
-                        </property>
-                    </object></child>
-                </object></child>
-                <child><object class="AdwViewSwitcherBar">
-                    <property name="stack">stack</property>
-                    <binding name="reveal">
-                        <lookup name="title-visible">title</lookup>
-                    </binding>
-                </object></child>
+                        </child>
+                    </object>
+                </child>
+                <!--Window content-->
+                <child>
+                    <object class="AdwLeaflet" id="leaflet">
+                        <property name="can-navigate-back">true</property>
+                        <property name="can-unfold">false</property>
+                        <property name="transition-type">slide</property>
+                        <child>
+                            <object class="AdwLeafletPage">
+                                <property name="name">main_page</property>
+                                <property name="child">
+                                    <object class="YGOMainMenu"></object>
+                                </property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwLeafletPage">
+                                <property name="name">pageidk</property>
+                                <property name="child">
+                                    <object class="AdwStatusPage"><property name="title">Test</property></object>
+                                </property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
             </object>
         </property>
     </template>
