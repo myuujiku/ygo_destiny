@@ -7,7 +7,7 @@ const APP_ID: &str = "com.myujiku.ygod";
 
 fn main() {
     // Resources
-    gio::resources_register_include!("ygod.gresource").expect("Failed to register resources.");
+    gio::resources_register_include!("compiled.gresource").expect("Failed to register resources.");
 
     // Application init
     let app = adw::Application::builder().application_id(APP_ID).build();

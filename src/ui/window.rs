@@ -60,7 +60,7 @@ impl Window {
     }
 
     #[template_callback]
-    fn leaflet_back_clicked(window: Window) {
+    async fn leaflet_back_clicked(window: Window) {
         window.leaflet().navigate(adw::NavigationDirection::Back);
     }
 }
