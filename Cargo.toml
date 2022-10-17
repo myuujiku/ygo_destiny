@@ -14,6 +14,9 @@ version = "0.2.0-alpha.3"
 package = "gtk4"
 version = "0.4.8"
 
+[dependencies.ygod_lib]
+path = "ygod_lib"
+
 [build-dependencies.gtk]
 package = "gtk4"
 version = "0.4.8"
