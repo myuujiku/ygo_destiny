@@ -8,15 +8,14 @@ members = ["ygod_lib"]
 
 [dependencies.adw]
 package = "libadwaita"
-version = "0.2.0-alpha.3"
+version = "0.2"
 
 [dependencies.gtk]
 package = "gtk4"
-version = "0.4.8"
+version = "0.5"
 
 [dependencies.ygod_lib]
 path = "ygod_lib"
 
-[build-dependencies.gtk]
-package = "gtk4"
-version = "0.4.8"
+[build-dependencies]
+glib-build-tools = "0.16"

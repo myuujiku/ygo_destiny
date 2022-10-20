@@ -10,7 +10,7 @@ fn main() {
     gio::resources_register_include!("compiled.gresource").expect("Failed to register resources.");
 
     // Application init
-    let app = adw::Application::builder().application_id(APP_ID).build();
+    let app = adw::Application::new(Some(APP_ID), Default::default());
 
     app.connect_activate(build_ui);
 

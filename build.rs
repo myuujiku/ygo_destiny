@@ -1,7 +1,7 @@
-use gtk::gio;
+use glib_build_tools::compile_resources;
 
 fn main() {
-    gio::compile_resources(
+    compile_resources(
         "resources",
         "resources/gresources.xml",
         "compiled.gresource",

@@ -39,6 +39,6 @@ glib::wrapper! {
 
 impl MainMenu {
     pub fn new() -> Self {
-        glib::Object::new(&[]).expect("Failed to create MainMenu.")
+        glib::Object::new(&[])
     }
 }

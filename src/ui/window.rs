@@ -1,8 +1,7 @@
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
-use gtk::CompositeTemplate;
-use gtk::{gio, glib};
+use gtk::{CompositeTemplate, gio, glib};
 
 mod imp {
     use super::*;
@@ -30,7 +29,12 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for Window {}
+    impl ObjectImpl for Window {
+        fn dispose(&self) {
+            self.leaflet.unparent();
+        }
+    }
+
     impl WidgetImpl for Window {}
     impl WindowImpl for Window {}
     impl ApplicationWindowImpl for Window {}
@@ -46,9 +50,8 @@ glib::wrapper! {
 
 #[gtk::template_callbacks]
 impl Window {
-    pub fn new(app: &adw::Application) -> Self {
-        let window: Window = glib::Object::new(&[("application", app)])
-            .expect("Failed to create instance of Window.");
+    pub fn new<P: glib::IsA<adw::Application>>(app: &P) -> Self {
+        let window: Window = glib::Object::new(&[("application", app)]);
 
         window.imp().leaflet.set_visible_child_name("pageidk");
 
