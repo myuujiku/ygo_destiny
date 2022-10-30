@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python ./resources/py2xml/project.py && cargo run
+python ./utils/py2xml/project.py && cargo run

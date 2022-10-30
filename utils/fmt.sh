@@ -1,3 +1,3 @@
 #!/bin/sh
 
-rustfmt $(find src -name "*.rs") --edition 2021
+rustfmt $(find src -name "*.rs") build.rs --edition 2021

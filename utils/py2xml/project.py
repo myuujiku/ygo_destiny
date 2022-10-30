@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
 
-directory: str = Path(__file__).absolute().parent.parent / "templates"
+directory: str = Path(__file__).absolute().parent.parent.parent / "resources/templates"
 header: str = """<?xml version="1.0" encoding="UTF-8"?>"""
 
 if __name__ == "__main__":
