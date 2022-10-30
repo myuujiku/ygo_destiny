@@ -1,37 +1,43 @@
 mod eval;
 
 use std::collections::HashMap;
+use std::path::PathBuf;
 
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
-use super::cardinfo::CardSetType;
-use super::get_response;
+use crate::logic::utils::http::CardSetMapType;
+use crate::logic::utils::paths::PATHS;
+
 use eval::eval_tags;
 
-type SetType = HashMap<String, SetYGOD>;
+pub type CardsetsMetaType = HashMap<String, Set>;
 
-pub const URL: &str = "https://db.ygoprodeck.com/api/v7/cardsets.php";
+pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardsets.php";
 
-#[derive(Deserialize, Serialize)]
-pub struct Set {
+pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardsets.bin"));
+
+#[derive(Serialize, Deserialize)]
+pub struct YGOPDSet {
     pub set_name: String,
     pub set_code: String,
     pub tcg_date: Option<String>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct SetYGOD {
+#[derive(Serialize, Deserialize)]
+pub struct Set {
     pub cards: Option<Vec<u32>>,
     pub code: String,
     pub date: Option<String>,
     pub tags: Vec<String>,
 }
 
-pub fn parse(cardsets: &str, card_set_map: CardSetType) -> SetType {
-    let mut cardsets_map: SetType = HashMap::new();
+pub fn parse(cardsets: &str, card_set_map: CardSetMapType) -> CardsetsMetaType {
+    let mut cardsets_map: CardsetsMetaType = HashMap::new();
 
-    for cardset in serde_json::from_str::<Vec<Set>>(cardsets).unwrap() {
+    for cardset in serde_json::from_str::<Vec<YGOPDSet>>(cardsets).unwrap() {
         let cards = {
+            // Get cards at set_name
             let cards_tmp = card_set_map.get(&cardset.set_name);
 
             if cards_tmp.is_some() {
@@ -43,7 +49,7 @@ pub fn parse(cardsets: &str, card_set_map: CardSetType) -> SetType {
 
         cardsets_map.insert(
             cardset.set_name.clone(),
-            SetYGOD {
+            Set {
                 cards: cards,
                 code: cardset.set_code,
                 date: cardset.tcg_date,

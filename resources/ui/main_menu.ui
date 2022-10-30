@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-    <template class="YGOMainMenu" parent="AdwBin">
-        <child><object class="AdwStatusPage">
-            <property name="title">YGO Destiny</property>
-        </object></child>
-    </template>
-</interface>

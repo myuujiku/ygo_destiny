@@ -1,22 +1,29 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
-type CardInfoType = HashMap<u32, CardYGOD>;
-pub type CardSetType = HashMap<String, Vec<u32>>;
+use crate::logic::utils::http::CardSetMapType;
+use crate::logic::utils::paths::PATHS;
 
-pub const URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
+pub type CardinfoMetaType = HashMap<u32, Card>;
 
-#[derive(Deserialize, Serialize)]
-pub struct CardSet {
+pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
+
+pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardinfo.bin"));
+
+// Representation of one card set of a card from the YGOPRODeck API
+#[derive(Serialize, Deserialize, Debug)]
+pub struct YGOPDCardSet {
     pub set_name: String,
     pub set_code: String,
     pub set_rarity: String,
 }
 
-// Representation of the individual cards' data we need from the YGOPRODeck API
-#[derive(Deserialize, Serialize)]
-pub struct Card {
+// Representation of one card from the YGOPRODeck API
+#[derive(Serialize, Deserialize, Debug)]
+pub struct YGOPDCard {
     pub id: u32,
     pub name: String,
     pub r#type: String,
@@ -29,17 +36,18 @@ pub struct Card {
     pub archetype: Option<String>,
     pub scale: Option<u8>,
     pub linkval: Option<u8>,
-    pub card_sets: Option<Vec<CardSet>>,
+    pub card_sets: Option<Vec<YGOPDCardSet>>,
 }
 
 // Representation of the data from the YGOPRODeck API
-#[derive(Deserialize, Serialize)]
-pub struct Data {
-    pub data: Vec<Card>,
+#[derive(Serialize, Deserialize, Debug)]
+pub struct YGOPDData {
+    pub data: Vec<YGOPDCard>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct CardYGOD {
+// Representation of the data we need
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Card {
     pub id: u32,
     pub name: String,
     pub card_type: String,
@@ -54,13 +62,14 @@ pub struct CardYGOD {
     pub link_rating: Option<u8>,
 }
 
-pub fn parse(cardinfo: &str, card_set_map: &mut CardSetType) -> CardInfoType {
-    let mut cardinfo_map: CardInfoType = HashMap::new();
+pub fn parse(cardinfo: &str, card_set_map: &mut CardSetMapType) -> CardinfoMetaType {
+    let mut cardinfo_map: CardinfoMetaType = HashMap::new();
 
-    for card in serde_json::from_str::<Data>(cardinfo).unwrap().data {
+    // Iterate of cards in data
+    for card in serde_json::from_str::<YGOPDData>(cardinfo).unwrap().data {
         cardinfo_map.insert(
             card.id,
-            CardYGOD {
+            Card {
                 id: card.id,
                 name: card.name,
                 card_type: card.r#type,
@@ -76,11 +85,12 @@ pub fn parse(cardinfo: &str, card_set_map: &mut CardSetType) -> CardInfoType {
             },
         );
 
-        // Insert card's card sets into card_set_map
+        // Extract card_sets and put them into card_set_map
         if card.card_sets.is_some() {
             for card_set in card.card_sets.unwrap() {
                 let val = card_set_map.get_mut(card_set.set_name.as_str());
 
+                // Check if there already is a Vec at val
                 if val.is_some() {
                     val.unwrap().push(card.id);
                 } else {

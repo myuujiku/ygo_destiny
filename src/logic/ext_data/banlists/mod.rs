@@ -1,28 +1,42 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
-type BanlistType = HashMap<u32, u8>;
-type BanlistListType = HashMap<String, BanlistType>;
+use crate::logic::utils::paths::PATHS;
 
-pub const URL: &str = "https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf";
+pub type BanlistElementType = HashMap<u32, u8>;
+pub type BanlistsMetaType = HashMap<String, BanlistElementType>;
 
-pub fn parse(banlists: &str) -> BanlistListType {
-    let re = Regex::new(r"!.*\n(?:[\d]* [\d].*\n)+").unwrap();
+pub const EXT_URL: &str = "https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf";
 
+pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("banlists.bin"));
+
+pub fn parse(banlists: &str) -> BanlistsMetaType {
+    // Define regex for seperating the banlists in the TCGCombiList (all official TCG banlists)
+    let re_banlist_section = Regex::new(r"!.*\n(?:[\d]* [\d].*\n)+").unwrap();
+
+    // Define regex for detecting the banlist date
     let re_date =
         Regex::new(r"(?P<d>\d{2}).(?P<m>\d{2}).(?P<y>\d{4})|(?P<Y>\d{4}).(?P<M>\d{2})").unwrap();
 
-    // Every banlist in the format {date: {card: limit, ...}}
-    let mut banlist_map: BanlistListType = HashMap::new();
+    // Define container for banlists in the format: <date, <card: limit, ...>>
+    let mut banlist_map: BanlistsMetaType = HashMap::new();
 
-    // Parse banlist file
-    for banlist in re.find_iter(banlists) {
-        let mut map: BanlistType = HashMap::new();
+    // Parse the given banlist file
+    for banlist in re_banlist_section.find_iter(banlists) {
+        let mut map: BanlistElementType = HashMap::new();
+
+        // Split the banlist by newlines
         let split: Vec<&str> = banlist.as_str().split("\n").collect();
 
+        // Iterate over the banlist's cards, so everything in the split Vec but the first element, which is the date
         for card in &split[1..] {
+            // Split the card by whitespaces
             let card_split: Vec<&str> = card.split(" ").collect();
+
+            // Insert the card's banlist data into the banlist_map if at least 2 elements, an id and a limit value, are given
             if card_split.len() >= 2 {
                 map.insert(
                     card_split[0].parse::<u32>().unwrap(),
@@ -31,7 +45,7 @@ pub fn parse(banlists: &str) -> BanlistListType {
             }
         }
 
-        // Get date
+        // Get the banlist date
         let date_captures = re_date.captures(split[0]).unwrap();
         let date = match (
             date_captures.name("d").is_some(),
@@ -56,5 +70,5 @@ pub fn parse(banlists: &str) -> BanlistListType {
         banlist_map.insert(date, map);
     }
 
-    banlist_map
+    return banlist_map;
 }

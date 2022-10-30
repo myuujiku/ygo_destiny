@@ -1,6 +1,6 @@
 use once_cell::sync::OnceCell;
 
-use super::*;
+use crate::logic::utils::http::get_response;
 
 static CORE_BOOSTERS: OnceCell<Vec<String>> = OnceCell::new();
 
@@ -87,7 +87,10 @@ pub fn eval_tags(name: String) -> Vec<String> {
     let mut tagset = TaggedSet::new(name);
 
     // Core Booster
-    if CORE_BOOSTERS.get_or_init(|| {get_core_boosters()}).contains(&tagset.name) {
+    if CORE_BOOSTERS
+        .get_or_init(|| get_core_boosters())
+        .contains(&tagset.name)
+    {
         tagset.add_tag("Core Booster");
         tagset.add_tag("Booster Pack");
     }

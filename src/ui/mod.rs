@@ -1,2 +1,2 @@
-pub mod main_menu;
-pub mod window;
+pub mod pages;
+pub mod widgets;
