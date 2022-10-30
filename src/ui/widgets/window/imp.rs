@@ -23,7 +23,7 @@ use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
 #[derive(CompositeTemplate, Default)]
-#[template(resource = "/com/myujiku/YGODestiny/templates/window.ui")]
+#[template(resource = "/com/myujiku/ygo_destiny/templates/window.ui")]
 pub struct Window {
     #[template_child]
     pub leaflet: TemplateChild<adw::Leaflet>,
