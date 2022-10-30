@@ -15,4 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod update_page;
+mod imp;
+
+use adw::subclass::prelude::*;
+use gtk::glib;
+
+glib::wrapper! {
+    pub struct UpdatePage(ObjectSubclass<imp::UpdatePage>)
+        @extends gtk::Widget,
+        @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl UpdatePage {
+    pub fn new() -> Self {
+        glib::Object::new(&[])
+    }
+}

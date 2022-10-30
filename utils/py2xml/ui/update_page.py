@@ -27,11 +27,12 @@ from gtk_xml import (
 from xml import XmlString, XmlTag
 
 class_name = "YGOUpdatePage"
-parent_class = "AdwLeafletPage"
+parent_class = "AdwBin"
 
 progress_bar = GtkChildObject(
     "GtkProgressBar",
-    (
+    id="progress_bar",
+    content=(
         GtkProperty("show-text", GtkTrue),
         GtkProperty("fraction", XmlString("0.25")),
     ),
