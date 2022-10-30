@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/myujiku/ygod/">
-    <file compressed="true" preprocess="xml-stripblanks">ui/main_menu.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/window.ui</file>
-  </gresource>
+    <gresource prefix="/com/myujiku/ygo_destiny">
+        <file compressed="true" preprocess="xml-stripblanks">templates/window.ui</file>
+    </gresource>
 </gresources>
