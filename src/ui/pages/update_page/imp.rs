@@ -25,6 +25,8 @@ use gtk::{glib, CompositeTemplate};
 pub struct UpdatePage {
     #[template_child]
     pub progress_bar: TemplateChild<gtk::ProgressBar>,
+    #[template_child]
+    pub label: TemplateChild<gtk::Label>,
 }
 
 #[glib::object_subclass]
@@ -45,6 +47,7 @@ impl ObjectSubclass for UpdatePage {
 impl ObjectImpl for UpdatePage {
     fn dispose(&self) {
         self.progress_bar.unparent();
+        self.label.unparent();
     }
 }
 

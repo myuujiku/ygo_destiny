@@ -30,4 +30,8 @@ impl UpdatePage {
     pub fn new() -> Self {
         glib::Object::new(&[])
     }
+
+    pub fn get_progress_bar(&self) -> &gtk::TemplateChild<gtk::ProgressBar> {
+        return &self.imp().progress_bar;
+    }
 }
