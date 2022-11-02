@@ -32,9 +32,7 @@ parent_class = "AdwBin"
 progress_bar = GtkChildObject(
     "GtkProgressBar",
     id="progress_bar",
-    content=(
-        GtkProperty("show-text", GtkTrue),
-    ),
+    content=(GtkProperty("show-text", GtkTrue),),
 )
 
 
