@@ -27,8 +27,8 @@ from gtk_xml import (
 from xml import XmlString, XmlTag
 
 template_files = (
-    "templates/update_page.ui",
-    "templates/window.ui",
+    "update_page.ui",
+    "window.ui",
 )
 
 
@@ -41,7 +41,7 @@ def template(path: str) -> XmlTag:
 
 
 resources = (
-    gresource("/com/myujiku/ygo_destiny", tuple(template(p) for p in template_files)),
+    gresource("/com/myujiku/ygo_destiny", tuple(template(f"templates/{file}") for file in template_files)),
 )
 
 xml_content = XmlTag("gresources", *resources)
