@@ -108,24 +108,39 @@ pub fn get_response(url: &str) -> ResponseType {
 }
 
 pub fn load_local_data() {
+    // Read files to a vec
+    let files = vec![
+        fs::read(&*banlists::EXT_PATH),
+        fs::read(&*cardinfo::EXT_PATH),
+        fs::read(&*cardsets::EXT_PATH),
+    ];
+
+    // Check if any errors occured
+    if files.iter().any(|f| f.is_err()) {
+        // Files don't seem to be complete, so do an update
+        update();
+
+        // Save the update version so that the data is not redownloaded immediately
+        fs::write(&*vercheck::EXT_PATH, update_version().unwrap()).unwrap();
+
+        return;
+    }
+
+    // Decode file contents
     let banlists = decode(
-        fs::read(&*banlists::EXT_PATH).unwrap().as_ref(),
+        files[0].as_ref().unwrap().as_ref(),
         BINCODE_CONFIG,
-    )
-    .unwrap()
-    .0;
+    ).unwrap().0;
+
     let cardinfo = decode(
-        fs::read(&*cardinfo::EXT_PATH).unwrap().as_ref(),
+        files[1].as_ref().unwrap().as_ref(),
         BINCODE_CONFIG,
-    )
-    .unwrap()
-    .0;
+    ).unwrap().0;
+
     let cardsets = decode(
-        fs::read(&*cardsets::EXT_PATH).unwrap().as_ref(),
+        files[2].as_ref().unwrap().as_ref(),
         BINCODE_CONFIG,
-    )
-    .unwrap()
-    .0;
+    ).unwrap().0;
 
     update_cache(banlists, cardinfo, cardsets);
 }
