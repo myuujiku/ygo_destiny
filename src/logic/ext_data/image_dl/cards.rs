@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::fs;
 
+use gtk::glib::Sender;
+
 use crate::logic::utils::cache::CACHE;
 use crate::logic::utils::paths::PATHS;
 
@@ -50,7 +52,7 @@ fn get_url(image_type: ImageType) -> String {
     format!("{}{}", BASE_URL, get_type_suffix(&image_type))
 }
 
-pub fn download_missing_cards(image_type: ImageType) {
+pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String)>) {
     let paths = fs::read_dir(PATHS.img_dir().join(get_type_folder(&image_type))).unwrap();
 
     let existing_images: Vec<u32> = paths
@@ -93,6 +95,9 @@ pub fn download_missing_cards(image_type: ImageType) {
             .unwrap();
         }
 
-        println!("{}/{} {}%", i+1, cards_to_download, ((i+1) as f64 / cards_to_download as f64 * 100.0) as usize);
+        sender.send((
+            (i + 1) as f64 / cards_to_download as f64,
+            format!("Cards downloaded: {}/{}", i + 1, cards_to_download),
+        )).expect("Could not send through channel");
     }
 }

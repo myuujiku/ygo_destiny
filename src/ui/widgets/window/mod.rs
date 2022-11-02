@@ -18,13 +18,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 mod imp;
 
 use std::fs;
+use std::thread;
 use std::sync::Mutex;
 
 use adw::subclass::prelude::*;
+use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
+use crate::logic::ext_data::image_dl;
 use crate::logic::ext_data::vercheck;
 use crate::logic::utils::http;
+use crate::ui::pages::update_page::UpdatePage;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -41,16 +45,9 @@ impl Window {
         return window;
     }
 
-    fn get_leaflet(&self) -> &gtk::TemplateChild<adw::Leaflet> {
-        return &self.imp().leaflet;
-    }
-
-    fn get_toast_overlay(&self) -> &gtk::TemplateChild<adw::ToastOverlay> {
-        return &self.imp().toast_overlay;
-    }
-
-    fn get_update_version(&self) -> &Mutex<String> {
-        return &self.imp().update_version;
+    // TODO: Remove this from here and add it to the update page
+    pub fn obj(&self) -> glib::BorrowedObject<Self> {
+        self.imp().obj()
     }
 
     pub fn show_update_notification(&self) {
@@ -70,15 +67,57 @@ impl Window {
     }
 
     pub fn update(&self) {
-        let update_status = http::update();
+        let leaflet = self.get_leaflet();
+        let update_page = UpdatePage::new();
 
-        match update_status {
-            http::UpdateStatus::Complete => fs::write(
-                &*vercheck::EXT_PATH,
-                &*self.get_update_version().lock().unwrap(),
-            )
-            .unwrap(),
-            x => println!("{:#?}", x),
-        }
+        leaflet.append(&update_page);
+        leaflet.navigate(adw::NavigationDirection::Forward);
+
+        let update_version = self.get_update_version().lock().unwrap().clone();
+
+        // Do the update in a different thread
+        let (sender, receiver) = MainContext::channel(PRIORITY_DEFAULT);
+
+        thread::spawn(move || {
+            let update_status = http::update();
+
+            match update_status {
+                http::UpdateStatus::Complete => {
+                    fs::write(
+                        &*vercheck::EXT_PATH,
+                        update_version,
+                    )
+                    .unwrap();
+                    image_dl::cards::download_missing_cards(image_dl::cards::ImageType::Big, sender);
+                },
+                x => println!("{:#?}", x),
+            }
+            //leaflet.remove(&leaflet.visible_child().unwrap());
+        });
+
+
+        receiver.attach(
+            None,
+            glib::clone!(@weak update_page => @default-return Continue(false),
+                move |args: (f64, String)| {
+                    let (frac, text) = args;
+                    update_page.imp().progress_bar.set_fraction(frac);
+                    update_page.imp().label.set_label(&text);
+                    Continue(true)
+                }
+            ),
+        );
+    }
+
+    fn get_leaflet(&self) -> &gtk::TemplateChild<adw::Leaflet> {
+        return &self.imp().leaflet;
+    }
+
+    fn get_toast_overlay(&self) -> &gtk::TemplateChild<adw::ToastOverlay> {
+        return &self.imp().toast_overlay;
+    }
+
+    fn get_update_version(&self) -> &Mutex<String> {
+        return &self.imp().update_version;
     }
 }
