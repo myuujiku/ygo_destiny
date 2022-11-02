@@ -50,8 +50,5 @@ fn build_ui(app: &adw::Application) {
 
     window.show_update_notification();
 
-    use ygo_destiny::logic::ext_data::image_dl::cards;
-    cards::download_missing_cards(cards::ImageType::Big);
-
     window.present();
 }
