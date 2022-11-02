@@ -34,7 +34,6 @@ progress_bar = GtkChildObject(
     id="progress_bar",
     content=(
         GtkProperty("show-text", GtkTrue),
-        GtkProperty("fraction", XmlString("0.25")),
     ),
 )
 
@@ -55,8 +54,9 @@ container = GtkProperty(
                     progress_bar,
                     GtkChildObject(
                         "GtkLabel",
-                        (
-                            GtkProperty("label", XmlString("this is a progress bar")),
+                        id="label",
+                        content=(
+                            GtkProperty("label", XmlString("Updating database...")),
                             # GtkProperty("halign", XmlString("start")),
                         ),
                     ),
