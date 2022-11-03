@@ -42,6 +42,11 @@ impl Paths {
     pub fn img_dir(&self) -> PathBuf {
         return self.data_dir().join("img");
     }
+
+    // Dummy. TODO: Get image folder from settings or drop support for small images
+    pub fn get_img_dir(&self) -> PathBuf {
+        return self.img_dir().join(self.img_big_folder);
+    }
 }
 
 // Lazy init default paths/directories
