@@ -16,5 +16,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 pub mod cache;
+pub mod card_gen;
 pub mod http;
 pub mod paths;
