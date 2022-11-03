@@ -109,7 +109,9 @@ pub fn parse(cardinfo: &str, card_set_map: &mut CardSetMapType) -> CardinfoMetaT
 
                 // Check if there already is a Vec at val
                 if val.is_some() {
-                    val.unwrap().push(card.id);
+                    if !val.as_ref().unwrap().contains(&card.id) {
+                        val.unwrap().push(card.id);
+                    }
                 } else {
                     card_set_map.insert(card_set.set_name, vec![card.id]);
                 }
