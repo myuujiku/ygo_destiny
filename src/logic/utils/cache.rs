@@ -27,6 +27,18 @@ pub struct Cache {
     pub cardsets: cardsets::CardsetsMetaType,
 }
 
+impl Cache {
+    pub fn get_cards_from_sets(&self, sets: Vec<String>) -> Vec<u32> {
+        let mut cards = Vec::new();
+
+        for set in sets {
+            cards.extend(self.cardsets[&set].cards.as_ref().unwrap());
+        }
+
+        return cards;
+    }
+}
+
 pub static CACHE: Lazy<Mutex<Cache>> = Lazy::new(|| {
     let cache = Cache {
         banlists: banlists::BanlistsMetaType::new(),
