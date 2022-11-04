@@ -28,3 +28,28 @@ cargo build --release
 for performance optimisations.
 
 The resulting executable is located in `target/debug/ygo_destiny` or `target/release/ygo_destiny` for release builds.
+
+## To Do
+
+Things that still need to be done in no particular order.
+
+### Project structure
+
+- [ ] Unit tests
+- [ ] Logging
+- [ ] Documentation
+- [ ] .desktop entry
+- [ ] Installation (makefile?)
+- [ ] Persistent application settings
+
+### Features
+- [ ] Card draft
+- [ ] Card info viewer + target lock
+- [ ] Collections
+- [ ] Settings page
+- [ ] Banlists
+- [ ] Layered banlists
+- [ ] Collection editor
+- [ ] Deck editor
+- [ ] Progression mode
+- [ ] Pack shop system
