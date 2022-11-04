@@ -51,7 +51,7 @@ impl Paths {
 
 // Lazy init default paths/directories
 pub static PATHS: Lazy<Paths> = Lazy::new(|| {
-    let p = Paths {
+    let paths = Paths {
         project_dirs: ProjectDirs::from("com", "myujiku", "ygo_destiny").unwrap(),
         ext_folder: "ext",
         img_big_folder: "big",
@@ -61,14 +61,14 @@ pub static PATHS: Lazy<Paths> = Lazy::new(|| {
     };
 
     // Ensure "$DATA_DIR/ext"
-    fs::create_dir_all(p.data_dir().join(p.ext_folder)).unwrap();
+    fs::create_dir_all(paths.data_dir().join(paths.ext_folder)).unwrap();
 
     // Ensure image directories
-    let img_dir = p.img_dir();
-    fs::create_dir_all(img_dir.join(p.img_big_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(p.img_small_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(p.img_cropped_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(p.img_products_folder)).unwrap();
+    let img_dir = paths.img_dir();
+    fs::create_dir_all(img_dir.join(paths.img_big_folder)).unwrap();
+    fs::create_dir_all(img_dir.join(paths.img_small_folder)).unwrap();
+    fs::create_dir_all(img_dir.join(paths.img_cropped_folder)).unwrap();
+    fs::create_dir_all(img_dir.join(paths.img_products_folder)).unwrap();
 
-    p
+    paths
 });
