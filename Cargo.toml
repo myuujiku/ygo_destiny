@@ -14,6 +14,7 @@ version = "0.5"
 
 [dependencies]
 bincode = { version = "2.0.0-rc.2", features = ["serde"] }
+chrono = "0.4"
 directories = "4.0"
 once_cell = "1.15.0"
 rand = "0.8.5"
