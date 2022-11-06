@@ -41,7 +41,7 @@ def template(path: str) -> XmlTag:
 
 
 resources = (
-    gresource("/com/myujiku/ygo_destiny", tuple(template(f"templates/{file}") for file in template_files)),
+    gresource(project.app_path, tuple(template(f"templates/{file}") for file in template_files)),
 )
 
 xml_content = XmlTag("gresources", *resources)

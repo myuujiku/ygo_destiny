@@ -17,6 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
 
+app_id = "com.myujiku.ygo_destiny"
+app_path = "/com/myujiku/ygo_destiny/"
+
 directory: str = Path(__file__).absolute().parent.parent / "resources/templates"
 header: str = """<?xml version="1.0" encoding="UTF-8"?>"""
 
