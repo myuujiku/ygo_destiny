@@ -2,4 +2,4 @@
 Cargo.lock
 **/__pycache__
 /resources/templates/*.ui
-/resources/gresources.xml
+/resources/*.xml

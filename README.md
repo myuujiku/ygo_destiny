@@ -35,12 +35,12 @@ Things that still need to be done in no particular order.
 
 ### Project structure
 
+- [x] Persistent application settings
 - [ ] Unit tests
 - [ ] Logging
 - [ ] Documentation
 - [ ] .desktop entry
 - [ ] Installation (makefile?)
-- [ ] Persistent application settings
 
 ### Features
 - [ ] Card draft

@@ -24,30 +24,42 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlString, XmlTag
+from xml import XmlElement, XmlString, XmlTag
 
-template_files = (
-    "update_page.ui",
-    "window.ui",
-)
-
-
-def gresource(prefix: str, content) -> XmlTag:
-    return XmlTag("gresource", options={"prefix": prefix}, content=content)
+schema_opts = {
+    "id": project.app_id,
+    "path": project.app_path,
+}
 
 
-def template(path: str) -> XmlTag:
-    return XmlTag("file", options={"compressed": "true"}, content=XmlString(path))
+def Key(name: str, t: str, content: tuple[XmlElement]) -> XmlTag:
+    opts = {
+        "name": name,
+        "type": t,
+    }
+
+    return XmlTag("key", options=opts, content=content)
 
 
-resources = (
-    gresource(
-        project.app_path,
-        tuple(template(f"templates/{file}") for file in template_files),
+content = (
+    Key(
+        "use-big-images",
+        "b",
+        (
+            XmlTag("default", GtkTrue),
+            XmlTag(
+                "summary",
+                XmlString(
+                    "Whether or not to download bigger card images instead of the smaller ones"
+                ),
+            ),
+        ),
     ),
 )
 
-xml_content = XmlTag("gresources", *resources)
+schema = XmlTag("schema", options=schema_opts, content=content)
+
+xml_content = XmlTag("schemalist", schema)
 
 
 xml.save_to_file(
