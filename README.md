@@ -9,13 +9,13 @@ Make sure you have everything on this list installed:
 - libadwaita
 - everything listed [here](https://gtk-rs.org/gtk4-rs/git/book/installation.html)
 
-Before compiling the project, run `utils/py2xml/project.py`.
+Before compiling the project, run `py2xml/project.py`.
 
 ```
-python3 ./utils/py2xml/project.py
+python3 ./py2xml/project.py
 ```
 
-This only has to be done once if nothing in `utils/py2xml/` is changed.
+This only has to be done once if nothing in `py2xml/` is changed.
 
 To build the binary use
 ```
