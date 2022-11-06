@@ -17,3 +17,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 pub mod logic;
 pub mod ui;
+
+const APP_ID: &str = "com.myujiku.ygo_destiny";

@@ -18,10 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use adw::prelude::*;
 use gtk::{gio, glib};
 
+use ygo_destiny::APP_ID;
 use ygo_destiny::logic::utils::http;
 use ygo_destiny::ui::widgets::window::Window;
-
-const APP_ID: &str = "com.myujiku.ygo_destiny";
 
 fn main() {
     // Preload external data
