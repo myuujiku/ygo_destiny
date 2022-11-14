@@ -22,7 +22,7 @@ use gtk::glib::Sender;
 use crate::logic::utils::cache::CACHE;
 use crate::logic::utils::paths::PATHS;
 
-static BASE_URL: &str = "https://storage.googleapis.com/ygoprodeck.com/";
+static BASE_URL: &str = "https://images.ygoprodeck.com/images/";
 
 pub enum ImageType {
     Big,
@@ -32,9 +32,9 @@ pub enum ImageType {
 
 fn get_type_suffix(image_type: &ImageType) -> String {
     match image_type {
-        ImageType::Big => "pics/",
-        ImageType::Small => "pics_small/",
-        ImageType::Cropped => "pics_artgame/",
+        ImageType::Big => "cards/",
+        ImageType::Small => "cards_small/",
+        ImageType::Cropped => "cards_cropped/",
     }
     .to_string()
 }
