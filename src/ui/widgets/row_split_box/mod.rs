@@ -17,8 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod imp;
 
-use std::cell::RefCell;
-
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
@@ -41,9 +39,7 @@ impl RowSplitBox {
     }
 
     pub fn insert(&self, widget: gtk::Image) {
-        // TODO: try moving this functionality into imp
-        &widget.set_parent(self);
-        self.imp().children.lock().unwrap().push(RefCell::new(widget));
-        //self.imp().children.lock().unwrap().last().unwrap().borrow().set_parent(self);
+        widget.set_parent(self);
+        self.imp().children.lock().unwrap().push(widget);
     }
 }

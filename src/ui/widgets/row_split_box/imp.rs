@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::cell::RefCell;
 use std::sync::Mutex;
 
 use adw::prelude::*;
@@ -24,7 +23,7 @@ use gtk::{gdk, glib};
 
 #[derive(Default)]
 pub struct RowSplitBox {
-    pub children: Mutex<Vec<RefCell<gtk::Image>>>,
+    pub children: Mutex<Vec<gtk::Image>>,
     pub cell_width: Mutex<i32>,
     pub cell_height: Mutex<i32>,
     pub h_spacing: Mutex<i32>,
@@ -45,7 +44,7 @@ impl ObjectImpl for RowSplitBox {
 
     fn dispose(&self) {
         for child in self.children.lock().unwrap().iter() {
-            child.borrow().unparent();
+            child.unparent();
         }
     }
 }
@@ -78,7 +77,7 @@ impl WidgetImpl for RowSplitBox {
                     cell_height,
                 );
 
-                self.children.lock().unwrap()[(row * column_count + element) as usize].borrow().size_allocate(&alloc, -1);
+                self.children.lock().unwrap()[(row * column_count + element) as usize].size_allocate(&alloc, -1);
             }
         }
 
@@ -92,7 +91,7 @@ impl WidgetImpl for RowSplitBox {
                 cell_height,
             );
 
-            self.children.lock().unwrap()[(full_rows * column_count + element) as usize].borrow().size_allocate(&alloc, -1);
+            self.children.lock().unwrap()[(full_rows * column_count + element) as usize].size_allocate(&alloc, -1);
         }
     }
 }
