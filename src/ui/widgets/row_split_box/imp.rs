@@ -85,7 +85,6 @@ impl WidgetImpl for RowSplitBox {
         for element in 0..last_row_elements {
             let alloc = gdk::Rectangle::new(
                 offset + element * padded_width,
-                //(column_count - last_row_elements) * (padded_width) + element * padded_width,
                 padded_height * full_rows,
                 cell_width,
                 cell_height,
