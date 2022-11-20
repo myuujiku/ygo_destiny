@@ -15,19 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::sync::Mutex;
+use std::cell::RefCell;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{gdk, glib};
+use once_cell::sync::OnceCell;
 
 #[derive(Default)]
 pub struct RowSplitBox {
-    pub children: Mutex<Vec<gtk::Image>>,
-    pub cell_width: Mutex<i32>,
-    pub cell_height: Mutex<i32>,
-    pub h_spacing: Mutex<i32>,
-    pub v_spacing: Mutex<i32>,
+    pub children: RefCell<Vec<gtk::Image>>,
+    pub cell_width: OnceCell<i32>,
+    pub cell_height: OnceCell<i32>,
+    pub h_spacing: OnceCell<i32>,
+    pub v_spacing: OnceCell<i32>,
 }
 
 #[glib::object_subclass]
@@ -43,7 +44,7 @@ impl ObjectImpl for RowSplitBox {
     }
 
     fn dispose(&self) {
-        for child in self.children.lock().unwrap().iter() {
+        for child in self.children.borrow_mut().iter() {
             child.unparent();
         }
     }
@@ -51,12 +52,12 @@ impl ObjectImpl for RowSplitBox {
 
 impl WidgetImpl for RowSplitBox {
     fn size_allocate(&self, allocated_width: i32, _allocated_height: i32, _allocated_baseline: i32) {
-        let child_count = self.children.lock().unwrap().len() as i32;
+        let cell_width: i32 = *self.cell_width.get().unwrap();
+        let cell_height: i32 = *self.cell_height.get().unwrap();
+        let h_spacing: i32 = *self.h_spacing.get().unwrap();
+        let v_spacing: i32 = *self.v_spacing.get().unwrap();
 
-        let cell_width = *self.cell_width.lock().unwrap();
-        let cell_height = *self.cell_height.lock().unwrap();
-        let h_spacing = *self.h_spacing.lock().unwrap();
-        let v_spacing = *self.v_spacing.lock().unwrap();
+        let child_count = self.children.borrow().len() as i32;
 
         let padded_width = cell_width + h_spacing;
         let padded_height = cell_height + v_spacing;
@@ -77,7 +78,7 @@ impl WidgetImpl for RowSplitBox {
                     cell_height,
                 );
 
-                self.children.lock().unwrap()[(row * column_count + element) as usize].size_allocate(&alloc, -1);
+                self.children.borrow_mut()[(row * column_count + element) as usize].size_allocate(&alloc, -1);
             }
         }
 
@@ -90,7 +91,9 @@ impl WidgetImpl for RowSplitBox {
                 cell_height,
             );
 
-            self.children.lock().unwrap()[(full_rows * column_count + element) as usize].size_allocate(&alloc, -1);
+            self.children.borrow_mut()[(full_rows * column_count + element) as usize].size_allocate(&alloc, -1);
         }
+
+        self.obj().set_size_request(0, padded_height * full_rows);
     }
 }

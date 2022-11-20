@@ -28,18 +28,18 @@ glib::wrapper! {
 
 impl RowSplitBox {
     pub fn new(cell_width: i32, cell_height: i32, h_spacing: i32, v_spacing: i32) -> Self{
-        let b: Self = glib::Object::builder().build();
+        let o: Self = glib::Object::builder().build();
 
-        *b.imp().cell_width.lock().unwrap() = cell_width;
-        *b.imp().cell_height.lock().unwrap() = cell_height;
-        *b.imp().h_spacing.lock().unwrap() = h_spacing;
-        *b.imp().v_spacing.lock().unwrap() = v_spacing;
+        o.imp().cell_width.set(cell_width).unwrap();
+        o.imp().cell_height.set(cell_height).unwrap();
+        o.imp().h_spacing.set(h_spacing).unwrap();
+        o.imp().v_spacing.set(v_spacing).unwrap();
 
-        return b;
+        return o;
     }
 
     pub fn insert(&self, widget: gtk::Image) {
         widget.set_parent(self);
-        self.imp().children.lock().unwrap().push(widget);
+        self.imp().children.borrow_mut().push(widget);
     }
 }
