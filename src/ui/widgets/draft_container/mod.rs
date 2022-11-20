@@ -15,6 +15,28 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod draft_container;
-pub mod row_split_box;
-pub mod window;
+mod imp;
+
+use adw::prelude::*;
+use adw::subclass::prelude::*;
+use gtk::glib;
+
+glib::wrapper! {
+    pub struct DraftContainer(ObjectSubclass<imp::DraftContainer>)
+        @implements gtk::Widget, gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+impl DraftContainer {
+    pub fn new(number_of_boxes: usize, max_selected: usize) -> Self {
+        let o: Self = glib::Object::builder().build();
+
+        o.imp().number_of_boxes.set(number_of_boxes).unwrap();
+        o.imp().max_selected.set(max_selected).unwrap();
+
+        return o;
+    }
+
+    pub fn clear_boxes(&self) {
+        self.imp().clear_boxes();
+    }
+}
