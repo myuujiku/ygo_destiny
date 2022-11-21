@@ -76,6 +76,18 @@ impl ObjectImpl for DraftContainer {
 impl WidgetImpl for DraftContainer {}
 
 impl DraftContainer {
+    pub fn get_selected_cards(&self) -> Vec<u32> {
+        let mut selected_cards = Vec::new();
+
+        let boxes = self.boxes.borrow();
+
+        for n in self.selected_boxes.borrow().iter() {
+            selected_cards.append(&mut boxes[*n].borrow().ids.to_vec());
+        }
+
+        return selected_cards;
+    }
+
     pub fn populate_boxes(&self, card_ids: &Vec<Vec<u32>>) {
         // Clear
         loop {
@@ -109,9 +121,10 @@ impl DraftContainer {
 
             draft_box.button.set_child(Some(&row_split_box));
 
+            draft_box.ids.append(&mut card_ids[i].to_vec());
+
             for id in &card_ids[i] {
                 row_split_box.insert(load_card(*id));
-                draft_box.ids.push(*id);
             }
 
             let selected_boxes = self.selected_boxes.as_ptr();
