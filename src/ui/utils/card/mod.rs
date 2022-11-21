@@ -15,6 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod pages;
-pub mod utils;
-pub mod widgets;
+use adw::prelude::*;
+use gtk::Image;
+
+use crate::logic::utils::paths::PATHS;
+
+pub fn load_card(id: u32) -> Image {
+    let filename = PATHS.get_img_dir().join(format!("{}.jpg", id));
+    let img = Image::from_file(filename);
+
+    return img;
+}
