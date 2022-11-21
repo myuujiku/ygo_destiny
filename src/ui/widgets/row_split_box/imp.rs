@@ -94,6 +94,9 @@ impl WidgetImpl for RowSplitBox {
             self.children.borrow_mut()[(full_rows * column_count + element) as usize].size_allocate(&alloc, -1);
         }
 
-        self.obj().set_size_request(0, padded_height * full_rows);
+        let target_height = cell_height + padded_height * (full_rows - 1)
+            + if last_row_elements > 0 {padded_height} else {0};
+
+        self.obj().set_size_request(0, target_height);
     }
 }
