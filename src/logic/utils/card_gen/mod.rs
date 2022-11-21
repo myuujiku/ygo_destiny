@@ -74,6 +74,10 @@ impl CardGenerator {
 
         return generated;
     }
+
+    pub fn batch_generate(&mut self, batches: usize, cards_per_batch: usize) -> Vec<Vec<u32>> {
+        (0..batches).map(|_| self.generate(cards_per_batch)).collect()
+    }
 }
 
 #[cfg(test)]
