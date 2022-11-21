@@ -22,12 +22,13 @@ use adw::subclass::prelude::*;
 use gtk::{gdk, glib};
 use once_cell::sync::OnceCell;
 
+use crate::ui::utils::card::load_card;
 use crate::ui::widgets::row_split_box::RowSplitBox;
 
 #[derive(Default)]
 pub struct DraftBox {
     pub button: gtk::Button,
-    pub ids: Vec<usize>,
+    pub ids: Vec<u32>,
 }
 
 impl DraftBox {
@@ -65,6 +66,7 @@ impl ObjectImpl for DraftContainer {
         let layout = self.layout.borrow_mut();
         layout.set_orientation(gtk::Orientation::Vertical);
         layout.set_parent(&*self.obj());
+        layout.add_css_class("linked");
     }
 
     fn dispose(&self) {
@@ -74,7 +76,8 @@ impl ObjectImpl for DraftContainer {
 impl WidgetImpl for DraftContainer {}
 
 impl DraftContainer {
-    pub fn clear_boxes(&self) {
+    pub fn populate_boxes(&self, card_ids: &Vec<Vec<u32>>) {
+        // Clear
         loop {
             let draft_box = self.boxes.borrow_mut().pop();
 
@@ -85,14 +88,31 @@ impl DraftContainer {
             }
         }
 
+        let number_of_boxes = *self.number_of_boxes.get().unwrap();
+
+        if card_ids.len() != number_of_boxes {
+            panic!("{}", format!("trying to assign {} boxes to a DraftContainer that holds {} boxes.", card_ids.len(), number_of_boxes));
+        };
+
         // Repopulate
-        for i in 0..*self.number_of_boxes.get().unwrap() {
-            let draft_box = DraftBox::new();
+        for i in 0..number_of_boxes {
+            let mut draft_box = DraftBox::new();
             draft_box.button.set_label("test");
-            draft_box.button.add_css_class("pill");
             draft_box.button.add_css_class("flat");
+            draft_box.button.set_layout_manager(Some(&gtk::BinLayout::new()));
 
             self.layout.borrow_mut().append(&draft_box.button);
+
+            let row_split_box = RowSplitBox::new(240, 240, 0, 30);
+            row_split_box.set_vexpand(true);
+            row_split_box.set_valign(gtk::Align::Center);
+
+            draft_box.button.set_child(Some(&row_split_box));
+
+            for id in &card_ids[i] {
+                row_split_box.insert(load_card(*id));
+                draft_box.ids.push(*id);
+            }
 
             let selected_boxes = self.selected_boxes.as_ptr();
             let boxes = self.boxes.as_ptr();
@@ -110,17 +130,21 @@ impl DraftContainer {
                     // mut_ref contains `i`
                     if index.is_some() {
                         button.add_css_class("flat");
+                        button.remove_css_class("suggested-action");
                         mut_ref.remove(index.unwrap());
                     // mut_ref does not contain `i`
                     } else {
                         button.remove_css_class("flat");
+                        button.add_css_class("suggested-action");
                         mut_ref.push(i);
                         //mut_ref.dedup();
 
                         if mut_ref.len() > max_selected {
-                            unsafe {
+                            let b = &unsafe {
                                 boxes.as_ref().unwrap()[mut_ref.remove(0)].borrow()
-                            }.button.add_css_class("flat");
+                            }.button;
+                            b.add_css_class("flat");
+                            b.remove_css_class("suggested-action");
                         }
                     }
                 }

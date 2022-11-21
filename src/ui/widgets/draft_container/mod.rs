@@ -36,7 +36,7 @@ impl DraftContainer {
         return o;
     }
 
-    pub fn clear_boxes(&self) {
-        self.imp().clear_boxes();
+    pub fn populate_boxes(&self, card_ids: &Vec<Vec<u32>>) {
+        self.imp().populate_boxes(card_ids);
     }
 }
