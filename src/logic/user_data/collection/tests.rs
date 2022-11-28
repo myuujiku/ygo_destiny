@@ -31,7 +31,7 @@ fn vecs_eq<T: Eq + std::hash::Hash>(vec1: Vec<T>, vec2: Vec<T>) -> bool {
 #[test]
 fn add_change() {
     let mut collection = collection();
-    let change = Change::new(Action::Add, vec![Card{id: 123}], "42".to_string());
+    let change = Change::new(Action::Add, vec![Card { id: 123 }], "42".to_string());
 
     collection.add_change(change.clone());
     let added_change = &collection.changes[0];
@@ -45,13 +45,31 @@ fn add_change() {
 fn flatten_changes() {
     let mut collection = collection();
 
-    collection.new_change(Action::Add, vec![Card{id: 1}, Card{id: 2}, Card{id: 3}]);
-    collection.new_change(Action::Remove, vec![Card{id: 2}]);
-    assert_eq!(true, vecs_eq(collection.flatten_changes(), vec![Card{id: 1}, Card{id: 3}]));
+    collection.new_change(
+        Action::Add,
+        vec![Card { id: 1 }, Card { id: 2 }, Card { id: 3 }],
+    );
+    collection.new_change(Action::Remove, vec![Card { id: 2 }]);
+    assert_eq!(
+        true,
+        vecs_eq(
+            collection.flatten_changes(),
+            vec![Card { id: 1 }, Card { id: 3 }]
+        )
+    );
 
-    collection.new_change(Action::Remove, vec![Card{id: 4}]);
-    assert_eq!(true, vecs_eq(collection.flatten_changes(), vec![Card{id: 1}, Card{id: 3}]));
+    collection.new_change(Action::Remove, vec![Card { id: 4 }]);
+    assert_eq!(
+        true,
+        vecs_eq(
+            collection.flatten_changes(),
+            vec![Card { id: 1 }, Card { id: 3 }]
+        )
+    );
 
-    collection.new_change(Action::Remove, vec![Card{id: 3}]);
-    assert_eq!(true, vecs_eq(collection.flatten_changes(), vec![Card{id: 1}]));
+    collection.new_change(Action::Remove, vec![Card { id: 3 }]);
+    assert_eq!(
+        true,
+        vecs_eq(collection.flatten_changes(), vec![Card { id: 1 }])
+    );
 }

@@ -127,20 +127,17 @@ pub fn load_local_data() {
     }
 
     // Decode file contents
-    let banlists = decode(
-        files[0].as_ref().unwrap().as_ref(),
-        BINCODE_CONFIG,
-    ).unwrap().0;
+    let banlists = decode(files[0].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
+        .unwrap()
+        .0;
 
-    let cardinfo = decode(
-        files[1].as_ref().unwrap().as_ref(),
-        BINCODE_CONFIG,
-    ).unwrap().0;
+    let cardinfo = decode(files[1].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
+        .unwrap()
+        .0;
 
-    let cardsets = decode(
-        files[2].as_ref().unwrap().as_ref(),
-        BINCODE_CONFIG,
-    ).unwrap().0;
+    let cardsets = decode(files[2].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
+        .unwrap()
+        .0;
 
     update_cache(banlists, cardinfo, cardsets);
 }

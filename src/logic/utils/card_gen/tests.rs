@@ -61,7 +61,10 @@ fn test_new_dedup() {
 #[test]
 fn test_real() {
     http::load_local_data();
-    let cards = CACHE.lock().unwrap().get_cards_from_sets(vec!["Spell Ruler".to_string()]);
+    let cards = CACHE
+        .lock()
+        .unwrap()
+        .get_cards_from_sets(vec!["Spell Ruler".to_string()]);
     assert_eq!(104, cards.len());
     let mut cg = CardGenerator::new(cards.to_vec(), 3);
     assert_eq!(true, cards.contains(&cg.generate(1)[0]));

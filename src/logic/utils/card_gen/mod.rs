@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use rand::Rng;
 use rand::rngs::ThreadRng;
+use rand::Rng;
 
 pub struct CardGenerator {
     cards: Vec<u32>,
@@ -31,7 +31,9 @@ impl CardGenerator {
 
         let quants = if dups > 0 {
             Some(vec![dups; remaining_cards])
-        } else {None};
+        } else {
+            None
+        };
 
         let card_gen = CardGenerator {
             cards: cards,
@@ -62,21 +64,26 @@ impl CardGenerator {
 
             if self.card_quantities.is_some() {
                 let new_val = self.card_quantities.as_mut().unwrap().remove(rand_num) - 1;
-                self.card_quantities.as_mut().unwrap().insert(rand_num, new_val);
+                self.card_quantities
+                    .as_mut()
+                    .unwrap()
+                    .insert(rand_num, new_val);
 
                 if new_val < 1 {
-                    self.remaining_cards -=  1;
+                    self.remaining_cards -= 1;
                     self.cards.remove(rand_num);
                     self.card_quantities.as_mut().unwrap().remove(rand_num);
                 }
             }
-        };
+        }
 
         return generated;
     }
 
     pub fn batch_generate(&mut self, batches: usize, cards_per_batch: usize) -> Vec<Vec<u32>> {
-        (0..batches).map(|_| self.generate(cards_per_batch)).collect()
+        (0..batches)
+            .map(|_| self.generate(cards_per_batch))
+            .collect()
     }
 }
 

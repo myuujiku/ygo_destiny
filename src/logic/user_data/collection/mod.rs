@@ -93,7 +93,9 @@ impl Collection {
     // Create a new Change and add it
     pub fn new_change(&mut self, action: Action, cards: Vec<Card>) {
         self.add_change(Change::new(
-            action, cards, format!("{}", chrono::Local::now().format("%F %R")),
+            action,
+            cards,
+            format!("{}", chrono::Local::now().format("%F %R")),
         ));
     }
 
