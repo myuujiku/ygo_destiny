@@ -15,7 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+//! # YGO Destiny
+//!
+//! This library crate contains all modules used by the ygo_destiny binary.
+
+/// Back end module.
 pub mod logic;
+/// Front end module.
 pub mod ui;
 
+/// Reverse DNS style application identifier: `com.myujiku.ygo_destiny`.
 pub const APP_ID: &str = "com.myujiku.ygo_destiny";
