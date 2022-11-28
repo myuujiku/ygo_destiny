@@ -2,6 +2,21 @@
 
 This project is in a pre-alpha state and not functional yet.
 
+## Documentation
+The documentation is currently *not* available online and still work in progress.
+
+To build the documentation yourself run
+```
+cargo doc --document-private-items
+```
+in the root of this repository.
+
+If you don't care about private definitions you can run
+```
+cargo doc
+```
+instead.
+
 ## Build instructions
 Make sure you have everything on this list installed:
 - rust (tested on 1.64.0)
@@ -36,14 +51,16 @@ Things that still need to be done in no particular order.
 ### Project structure
 
 - [x] Persistent application settings
+- [ ] Back end documentation
+- [ ] Front end documentation
 - [ ] Unit tests
 - [ ] Logging
-- [ ] Documentation
 - [ ] .desktop entry
 - [ ] Installation (makefile?)
 
 ### Features
 - [ ] Card draft
+- [ ] Optional draft timer
 - [ ] Card info viewer + target lock
 - [ ] Collections
 - [ ] Settings page
