@@ -22,14 +22,20 @@ use gtk::glib::Sender;
 use crate::logic::utils::cache::CACHE;
 use crate::logic::utils::paths::PATHS;
 
+/// Root of the image API endpoint.
 static BASE_URL: &str = "https://images.ygoprodeck.com/images/";
 
+/// Enum used to differentiate which kind of card image should be downloaded.
 pub enum ImageType {
+    /// High resolution card image.
     Big,
+    /// Low resolution card image.
     Small,
+    /// Cropped card image (card art only).
     Cropped,
 }
 
+/// Returns a URL suffix based on `image_type`.
 fn get_type_suffix(image_type: &ImageType) -> String {
     match image_type {
         ImageType::Big => "cards/",
@@ -39,6 +45,7 @@ fn get_type_suffix(image_type: &ImageType) -> String {
     .to_string()
 }
 
+/// Returns the folder where images of type `image_type` are stored.
 fn get_type_folder(image_type: &ImageType) -> String {
     match image_type {
         ImageType::Big => PATHS.img_big_folder,
@@ -48,10 +55,16 @@ fn get_type_folder(image_type: &ImageType) -> String {
     .to_string()
 }
 
+/// Returns the full URL of the API endpoint based on `image_type`.
 fn get_url(image_type: ImageType) -> String {
     format!("{}{}", BASE_URL, get_type_suffix(&image_type))
 }
 
+/// Downloads all cards that are not present in the file system.
+///
+/// * `image_type` – Type of the images to download.
+///
+/// * `sender` – Gtk object to send the completion status to.
 pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String)>) {
     let paths = fs::read_dir(PATHS.img_dir().join(get_type_folder(&image_type))).unwrap();
 
@@ -95,9 +108,11 @@ pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String
             .unwrap();
         }
 
-        sender.send((
-            (i + 1) as f64 / cards_to_download as f64,
-            format!("Cards downloaded: {}/{}", i + 1, cards_to_download),
-        )).expect("Could not send through channel");
+        sender
+            .send((
+                (i + 1) as f64 / cards_to_download as f64,
+                format!("Cards downloaded: {}/{}", i + 1, cards_to_download),
+            ))
+            .expect("Could not send through channel");
     }
 }

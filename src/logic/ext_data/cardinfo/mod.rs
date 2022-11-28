@@ -24,13 +24,16 @@ use serde::{Deserialize, Serialize};
 use crate::logic::utils::http::CardSetMapType;
 use crate::logic::utils::paths::PATHS;
 
+/// Type contained in a processed cardinfo binary file.
 pub type CardinfoMetaType = HashMap<u32, Card>;
 
+/// External [URL](https://db.ygoprodeck.com/api/v7/cardinfo.php) to the card data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
+/// Path of the binary file containing the processed data.
 pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardinfo.bin"));
 
-// Representation of one card set of a card from the YGOPRODeck API
+/// Representation of one card set of a card from the YGOPRODECK API.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct YGOPDCardSet {
     pub set_name: String,
@@ -38,7 +41,7 @@ pub struct YGOPDCardSet {
     pub set_rarity: String,
 }
 
-// Representation of one card from the YGOPRODeck API
+/// Representation of one card from the YGOPRODECK API.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct YGOPDCard {
     pub id: u32,
@@ -56,13 +59,13 @@ pub struct YGOPDCard {
     pub card_sets: Option<Vec<YGOPDCardSet>>,
 }
 
-// Representation of the data from the YGOPRODeck API
+/// Representation of the data from the YGOPRODECK API.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct YGOPDData {
     pub data: Vec<YGOPDCard>,
 }
 
-// Representation of the data we need
+/// Representation of processed card data.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Card {
     pub id: u32,
@@ -79,6 +82,13 @@ pub struct Card {
     pub link_rating: Option<u8>,
 }
 
+/// Returns a processed cardinfo map.
+///
+/// # Arguments
+///
+/// * `cardinfo` – Slice containing raw cardinfo json data.
+///
+/// * `card_set_map` – HashMap to be populated with card ids.
 pub fn parse(cardinfo: &str, card_set_map: &mut CardSetMapType) -> CardinfoMetaType {
     let mut cardinfo_map: CardinfoMetaType = HashMap::new();
 

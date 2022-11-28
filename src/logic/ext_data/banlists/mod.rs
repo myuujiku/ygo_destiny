@@ -23,13 +23,22 @@ use regex::Regex;
 
 use crate::logic::utils::paths::PATHS;
 
+/// Banlist element (card with limit number) type.
 pub type BanlistElementType = HashMap<u32, u8>;
+/// Type contained in a processed banlist binary file.
 pub type BanlistsMetaType = HashMap<String, BanlistElementType>;
 
+/// External [URL](https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf) to the banlist data.
 pub const EXT_URL: &str = "https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf";
 
+/// Path of the binary file containing the processed data.
 pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("banlists.bin"));
 
+/// Returns a processed banlist.
+///
+/// # Arguments
+///
+/// * `banlist` – Slice containing raw banlist data.
 pub fn parse(banlists: &str) -> BanlistsMetaType {
     // Define regex for seperating the banlists in the TCGCombiList (all official TCG banlists)
     let re_banlist_section = Regex::new(r"!.*\n(?:[\d]* [\d].*\n)+").unwrap();

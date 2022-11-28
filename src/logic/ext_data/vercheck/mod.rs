@@ -24,15 +24,21 @@ use serde::{Deserialize, Serialize};
 use crate::logic::utils::http::ResponseType;
 use crate::logic::utils::paths::PATHS;
 
+/// External [URL](https://db.ygoprodeck.com/api/v7/checkDBVer.php) to the version data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/checkDBVer.php";
 
+/// Path of the json file containing the current version.
 pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("version.json"));
 
+/// Representation of a database version from the YGOPRODECK API.
 #[derive(Serialize, Deserialize)]
 struct DBVersion {
     last_update: String,
 }
 
+/// Returns the date of the new version if an update is available.
+///
+/// * `version_response` – Response from the http request to [`EXT_URL`].
 pub fn new_update_version_available(version_response: ResponseType) -> Option<String> {
     if version_response.is_ok() {
         // Get old version from file

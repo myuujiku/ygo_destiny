@@ -19,14 +19,23 @@ use once_cell::sync::OnceCell;
 
 use crate::logic::utils::http::get_response;
 
+/// A [OnceCell][`once_cell::sync::OnceCell`] containing all core boosters.
+///
+/// Set via [`get_core_boosters`]
 static CORE_BOOSTERS: OnceCell<Vec<String>> = OnceCell::new();
 
+/// A named card set with a list of tags (categories) attached to it.
+///
+/// Contains functions to make evaluating the tags of a card set easier.
 struct TaggedSet {
     name: String,
     tags: Vec<String>,
 }
 
 impl TaggedSet {
+    /// Initialises a new TaggedSet
+    ///
+    /// * `name` – Name of the card set.
     fn new(name: String) -> Self {
         Self {
             name: name,
@@ -34,18 +43,28 @@ impl TaggedSet {
         }
     }
 
+    /// Whether or not the `self.name` contains `search_text`.
     fn contains(&self, search_text: &str) -> bool {
         self.name.as_str().contains(search_text)
     }
 
+    /// Whether or not the `self.name` starts with `search_text`.
     fn starts_with(&self, search_text: &str) -> bool {
         self.name.as_str().starts_with(search_text)
     }
 
+    /// Adds `tag` to `self.tags`.
+    ///
+    /// Convenience method.
     fn add_tag(&mut self, tag: &str) {
         self.tags.push(tag.to_string());
     }
 
+    /// Adds `eval_to` to `self.tags` if `self.name` contains `search_text` and returns `true` if the tag was added.
+    ///
+    /// Calls [contains][`Self::contains`].
+    ///
+    /// Use [eval_default][`Self::eval_default`] instead for adding tags that have the same name as `search_text`.
     fn eval(&mut self, search_text: &str, eval_to: &str) -> bool {
         if self.contains(search_text) {
             self.add_tag(eval_to);
@@ -55,10 +74,32 @@ impl TaggedSet {
         }
     }
 
+    /// Adds `search_text` to `self.tags` if `self.name` contains `search_text` and returns `true` if the tag was added.
+    ///
+    /// Calls [eval][`Self::eval`].
+    ///
+    /// Convenience method for evaluating a `search_text` and then adding it as a tag.
     fn eval_default(&mut self, search_text: &str) -> bool {
         self.eval(search_text, search_text)
     }
 
+    /// Adds `eval_to` to `self.tags` if `self.name` starts with `search_text` and returns `true` if the tag was added.
+    ///
+    /// Calls [starts_with][`Self::starts_with`]
+    fn find_at_start(&mut self, search_text: &str, eval_to: &str) -> bool {
+        if self.starts_with(search_text) {
+            self.add_tag(eval_to);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /// Calls [eval][`Self::eval`] or [eval_default][`Self::eval_default`] on multiple elements and returns `true` any tag was added.
+    ///
+    /// This function stops at the first element that is successfully evaluated, so more likely tags should be checked first.
+    ///
+    /// * `args` – A list of tuples, where the first element is an `&str` and the second one an `Option<&str>`. If the second one is `None` [eval_default][`Self::eval_default`] is called. Otherwise [eval][`Self::eval`] is called.
     fn multi_eval(&mut self, args: Vec<(&str, Option<&str>)>) -> bool {
         args.iter().any(|&arg| {
             if arg.1.is_some() {
@@ -68,17 +109,11 @@ impl TaggedSet {
             }
         })
     }
-
-    fn find_at_start(&mut self, search_text: &str, eval_to: &str) -> bool {
-        if self.starts_with(search_text) {
-            self.add_tag(eval_to);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 
+/// Gets a list of the set names that belong to core boosters.
+///
+/// Scrapes data from the Yugipedia pages [TCG Core Boosters](https://yugipedia.com/wiki/Category:TCG_Core_Boosters) and [International Core Boosters](https://yugipedia.com/wiki/Category:International_Core_Boosters).
 fn get_core_boosters() -> Vec<String> {
     let mut core_boosters: Vec<String> = Vec::new();
 
@@ -99,7 +134,9 @@ fn get_core_boosters() -> Vec<String> {
     return core_boosters;
 }
 
-// Evaluate which tags a set should get...
+/// Evaluate which tags a set should get.
+///
+/// Each tag has to be defined by hand with the methods provided by [`TaggedSet`].
 pub fn eval_tags(name: String) -> Vec<String> {
     let mut tagset = TaggedSet::new(name);
 

@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/// Evaluate tags of a set by its name.
 mod eval;
 
 use std::collections::HashMap;
@@ -28,12 +29,16 @@ use crate::logic::utils::paths::PATHS;
 
 use eval::eval_tags;
 
+/// Type contained in a processed cardset binary file.
 pub type CardsetsMetaType = HashMap<String, Set>;
 
+/// External [URL](https://db.ygoprodeck.com/api/v7/cardsets.php) to the cardset data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardsets.php";
 
+/// Path of the binary file containing the processed data.
 pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardsets.bin"));
 
+/// Representation of an unprocessed card set from the YGOPRODECK API.
 #[derive(Serialize, Deserialize)]
 pub struct YGOPDSet {
     pub set_name: String,
@@ -41,6 +46,7 @@ pub struct YGOPDSet {
     pub tcg_date: Option<String>,
 }
 
+/// Representation of a processed card set.
 #[derive(Serialize, Deserialize)]
 pub struct Set {
     pub cards: Option<Vec<u32>>,
@@ -49,6 +55,13 @@ pub struct Set {
     pub tags: Vec<String>,
 }
 
+/// Returns a processed card set map.
+///
+/// # Arguments
+///
+/// * `cardsets` – Slice containing raw cardset json data.
+///
+/// * `card_set_map` – HashMap containing the cards in each card set.
 pub fn parse(cardsets: &str, card_set_map: CardSetMapType) -> CardsetsMetaType {
     let mut cardsets_map: CardsetsMetaType = HashMap::new();
 
