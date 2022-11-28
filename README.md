@@ -19,7 +19,7 @@ instead.
 
 ## Build instructions
 Make sure you have everything on this list installed:
-- rust (tested on 1.64.0)
+- rust (tested on 1.65.0)
 - python3 (tested on 3.10)
 - libadwaita
 - everything listed [here](https://gtk-rs.org/gtk4-rs/git/book/installation.html)
