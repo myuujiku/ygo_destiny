@@ -50,8 +50,6 @@ Things that still need to be done in no particular order.
 
 ### Project structure
 
-- [x] Persistent application settings
-- [ ] Back end documentation
 - [ ] Front end documentation
 - [ ] Unit tests
 - [ ] Logging
