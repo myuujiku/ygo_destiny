@@ -62,6 +62,8 @@ fn get_url(image_type: ImageType) -> String {
 
 /// Downloads all cards that are not present in the file system.
 ///
+/// # Arguments
+///
 /// * `image_type` – Type of the images to download.
 ///
 /// * `sender` – Gtk object to send the completion status to.

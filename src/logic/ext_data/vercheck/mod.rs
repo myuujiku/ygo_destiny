@@ -38,6 +38,8 @@ struct DBVersion {
 
 /// Returns the date of the new version if an update is available.
 ///
+/// # Arguments
+///
 /// * `version_response` – Response from the http request to [`EXT_URL`].
 pub fn new_update_version_available(version_response: ResponseType) -> Option<String> {
     if version_response.is_ok() {

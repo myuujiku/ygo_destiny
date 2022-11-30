@@ -15,17 +15,68 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+//! # Examples
+//!
+//! ## CardGenerator
+//!
+//! A `CardGenerator` can handle any `u32` value. In a real environment it only makes sense to
+//! use actual card ids as values.
+//! To get all cards from one or more sets see
+//! [`Cache::get_cards_from_sets`][`crate::logic::utils::cache::Cache::get_cards_from_sets`].
+//!
+//! ```rust
+//! use ygo_destiny::logic::utils::card_gen::CardGenerator;
+//!
+//! // Define the card pool
+//! let card_pool: Vec<u32> = vec![0, 1, 2, 3, 4, 5];
+//!
+//! // Set how many times each card should be in the card pool
+//! let duplicates: u32 = 3;
+//!
+//! // Create a new card generator
+//! let mut cg = CardGenerator::new(card_pool, duplicates);
+//!
+//! // Generate 5 cards
+//! let _cards: Vec<u32> = cg.generate(5);
+//!
+//! // Generate 4 batches of cards with 2 cards each
+//! let batches = 4;
+//! let cards_per_batch = 2;
+//! let cards: Vec<Vec<u32>> = cg.batch_generate(batches, cards_per_batch);
+//!
+//! assert_eq!(cards.len(), batches);
+//! assert_eq!(cards[0].len(), cards_per_batch);
+//! ```
+//!
+//! To remove an duplicates from the card pool beforehand use `CardGenerator::new_dedup`:
+//!
+//! ```rust
+//! let mut cg = CardGenerator::new_dedup(card_pool, duplicate);
+//! ```
+
 use rand::rngs::ThreadRng;
 use rand::Rng;
 
+/// Basic card generator that disregards rarities. Supports limiting the number of times a card can
+/// be generated.
 pub struct CardGenerator {
+    /// Card pool to generate cards from.
     cards: Vec<u32>,
+    /// Number of times each card is left in the card pool. If `None` any card can show up an
+    /// arbitrary number of times.
     card_quantities: Option<Vec<usize>>,
+    /// Number of *unique* cards remaining in the card pool.
     remaining_cards: usize,
     rng: ThreadRng,
 }
 
 impl CardGenerator {
+    /// Constructs a new [`CardGenerator`].
+    ///
+    /// # Arguments
+    ///
+    /// * `cards` – The card pool of the card generator.
+    /// * `dups` – The number of times each card can be generated. Set to `0` for no limit.
     pub fn new(cards: Vec<u32>, dups: usize) -> CardGenerator {
         let remaining_cards = cards.len();
 
@@ -45,7 +96,8 @@ impl CardGenerator {
         return card_gen;
     }
 
-    // Filter out any duplicates in the given cards Vec and return a CardGenerator
+    /// Constructs a [`CardGenerator`], but de-duplicates the card pool first. Same arguments as
+    /// [`new`][`CardGenerator::new`].
     pub fn new_dedup(cards: Vec<u32>, dups: usize) -> CardGenerator {
         let mut cards_mut = cards.to_vec();
         cards_mut.sort_unstable();
@@ -54,7 +106,9 @@ impl CardGenerator {
         return CardGenerator::new(cards_mut, dups);
     }
 
-    // Generate a Vec<u32> of length n
+    /// # Arguments
+    ///
+    /// * `n` – Number of cards to generate.
     pub fn generate(&mut self, n: usize) -> Vec<u32> {
         let mut generated = Vec::new();
 
@@ -80,6 +134,14 @@ impl CardGenerator {
         return generated;
     }
 
+    /// Generates cards, like [`generate`][`CardGenerator::generate`], but splits them into multiple
+    /// parts.
+    ///
+    /// # Arguments
+    ///
+    /// * `batches` – Number of batches to generate. This is equal to `result.len()`.
+    ///
+    /// * `cards_per_batch` – Number of cards generated for each batch.
     pub fn batch_generate(&mut self, batches: usize, cards_per_batch: usize) -> Vec<Vec<u32>> {
         (0..batches)
             .map(|_| self.generate(cards_per_batch))

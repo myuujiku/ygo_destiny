@@ -29,11 +29,13 @@ use crate::logic::utils::cache::CACHE;
 pub type ResponseType = Result<String, reqwest::Error>;
 pub type CardSetMapType = HashMap<String, Vec<u32>>;
 
+/// Configuration for all files managed by [`bincode`].
 static BINCODE_CONFIG: Configuration<BigEndian, Fixint> = bincode::config::standard()
     .with_big_endian()
     .with_fixed_int_encoding()
     .write_fixed_array_length();
 
+/// Considering to remove this in favour of just a bool. Or at least to rename/remove `Incomplete`.
 #[derive(Debug)]
 pub enum UpdateStatus {
     Complete,
@@ -41,18 +43,21 @@ pub enum UpdateStatus {
     Incomplete,
 }
 
+/// Container for results of requests to external sources.
 struct Responses {
     banlists: ResponseType,
     cardinfo: ResponseType,
     cardsets: ResponseType,
 }
 
+/// Returns a `String` if a new version is available or `None` otherwise.
 pub fn update_version() -> Option<String> {
     let version_response: ResponseType = get_response(vercheck::EXT_URL);
 
     return vercheck::new_update_version_available(version_response);
 }
 
+/// Updates all databases and loads them into the cache.
 pub fn update() -> UpdateStatus {
     let data: Responses = get_data();
 
@@ -103,10 +108,12 @@ pub fn update() -> UpdateStatus {
     return UpdateStatus::Complete;
 }
 
+/// Convenience function for making requests.
 pub fn get_response(url: &str) -> ResponseType {
     Ok(reqwest::blocking::get(url)?.text()?)
 }
 
+/// Loads data from local files into the cache.
 pub fn load_local_data() {
     // Read files to a vec
     let files = vec![
@@ -115,33 +122,37 @@ pub fn load_local_data() {
         fs::read(&*cardsets::EXT_PATH),
     ];
 
-    // Check if any errors occured
+    // Check if any errors occurred
     if files.iter().any(|f| f.is_err()) {
         // Files don't seem to be complete, so do an update
         update();
 
-        // Save the update version so that the data is not redownloaded immediately
+        // Save the update version so that the data is not re-downloaded immediately
         fs::write(&*vercheck::EXT_PATH, update_version().unwrap()).unwrap();
 
         return;
     }
 
     // Decode file contents
-    let banlists = decode(files[0].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
-        .unwrap()
-        .0;
+    #[rustfmt::skip]
+    let banlists = decode(
+        files[0].as_ref().unwrap().as_ref(), BINCODE_CONFIG
+    ).unwrap().0;
 
-    let cardinfo = decode(files[1].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
-        .unwrap()
-        .0;
+    #[rustfmt::skip]
+    let cardinfo = decode(
+        files[1].as_ref().unwrap().as_ref(), BINCODE_CONFIG
+    ).unwrap().0;
 
-    let cardsets = decode(files[2].as_ref().unwrap().as_ref(), BINCODE_CONFIG)
-        .unwrap()
-        .0;
+    #[rustfmt::skip]
+    let cardsets = decode(
+        files[2].as_ref().unwrap().as_ref(), BINCODE_CONFIG
+    ).unwrap().0;
 
     update_cache(banlists, cardinfo, cardsets);
 }
 
+/// Updates the cache with new data.
 fn update_cache(
     banlists: banlists::BanlistsMetaType,
     cardinfo: cardinfo::CardinfoMetaType,
