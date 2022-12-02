@@ -29,43 +29,15 @@ from xml import XmlTag
 class_name = "YGOWindow"
 parent_class = "AdwApplicationWindow"
 
-test_page = GtkProperty(
-    "child", GtkObject("AdwStatusPage", GtkProperty("title", "test"))
-)
-
-test_page2 = GtkProperty(
-    "child", GtkObject("AdwStatusPage", GtkProperty("title", "test2"))
-)
-
-header_bar = GtkChildObject("AdwHeaderBar", ())
-
-view_switcher = GtkChildObject(
-    "AdwViewSwitcher",
-    (
-        GtkProperty("policy", "narrow"),
-        GtkProperty("stack", "stack"),
-    ),
-)
-
-view_stack = GtkChildObject(
-    "AdwViewStack",
-    id="stack",
-    content=(
-        GtkProperty("vexpand", GtkTrue),
-        GtkChildObject(
-            "AdwViewStackPage",
-            (
-                GtkProperty("name", "1"),
-                GtkProperty("title", "1"),
-                test_page,
-            ),
-        ),
-        GtkChildObject(
-            "AdwViewStackPage",
-            (
-                GtkProperty("name", "2"),
-                GtkProperty("title", "2"),
-                test_page2,
+header_bar = GtkChildObject(
+    "AdwHeaderBar", (
+        GtkProperty(
+            "title-widget",
+            GtkObject(
+                "AdwWindowTitle",
+                (
+                    GtkProperty("title", "YGO Destiny"),
+                ),
             ),
         ),
     ),
@@ -80,8 +52,6 @@ main_box = GtkProperty(
             GtkProperty("vexpand", GtkTrue),
             GtkProperty("hexpand", GtkTrue),
             header_bar,
-            view_switcher,
-            view_stack,
         ),
     ),
 )
