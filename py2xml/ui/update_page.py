@@ -24,7 +24,7 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlString, XmlTag
+from xml import XmlTag
 
 class_name = "YGOUpdatePage"
 parent_class = "AdwBin"
@@ -45,17 +45,17 @@ container = GtkProperty(
                 "GtkBox",
                 (
                     *GtkMargins(12, 12, 12, 12),
-                    GtkProperty("orientation", XmlString("vertical")),
+                    GtkProperty("orientation", "vertical"),
                     GtkProperty("vexpand", GtkTrue),
                     GtkProperty("hexpand", GtkTrue),
-                    GtkProperty("valign", XmlString("center")),
+                    GtkProperty("valign", "center"),
                     progress_bar,
                     GtkChildObject(
                         "GtkLabel",
                         id="label",
                         content=(
-                            GtkProperty("label", XmlString("Updating database...")),
-                            # GtkProperty("halign", XmlString("start")),
+                            GtkProperty("label", "Updating database..."),
+                            # GtkProperty("halign", "start"),
                         ),
                     ),
                 ),

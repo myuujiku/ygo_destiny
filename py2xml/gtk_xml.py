@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from xml import XmlElement, XmlString, XmlTag
+from xml import XmlElement, XmlTag
 
 
 class GtkObject(XmlTag):
@@ -49,10 +49,10 @@ def GtkMargins(s: int, e: int, t: int, b: int) -> list[GtkProperty]:
     args: tuple = (s, e, t, b)
     directions: tuple = ("start", "end", "top", "bottom")
     return [
-        GtkProperty(f"margin-{directions[i]}", XmlString(str(args[i])))
+        GtkProperty(f"margin-{directions[i]}", str(args[i]))
         for i in range(4)
     ]
 
 
-GtkTrue = XmlString("true")
-GtkFalse = XmlString("false")
+GtkTrue = "true"
+GtkFalse = "false"

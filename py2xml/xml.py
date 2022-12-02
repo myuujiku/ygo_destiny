@@ -44,6 +44,8 @@ class XmlTag(XmlElement):
     def eval(self) -> str:
         if isinstance(self.content, XmlElement):
             content = self.content.eval()
+        elif isinstance(self.content, str):
+            content = self.content
         else:
             content: str = "".join((e.eval() for e in self.content))
 
@@ -55,18 +57,6 @@ class XmlTag(XmlElement):
             return f"<{self.name}{options}>{content}</{self.name}>"
         else:
             return f"<{self.name}{options} />"
-
-
-class XmlString(XmlElement):
-    __slots__ = "text"
-
-    text: str
-
-    def __init__(self, text: str):
-        self.text = text
-
-    def eval(self) -> str:
-        return self.text
 
 
 def save_to_file(path: str, content: XmlElement, header: str = "") -> None:

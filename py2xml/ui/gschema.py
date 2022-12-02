@@ -24,7 +24,7 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlElement, XmlString, XmlTag
+from xml import XmlElement, XmlTag
 
 schema_opts = {
     "id": project.app_id,
@@ -49,9 +49,7 @@ content = (
             XmlTag("default", GtkTrue),
             XmlTag(
                 "summary",
-                XmlString(
-                    "Whether or not to download bigger card images instead of the smaller ones"
-                ),
+                "Whether or not to download bigger card images instead of the smaller ones",
             ),
         ),
     ),

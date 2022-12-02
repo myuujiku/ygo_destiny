@@ -24,17 +24,17 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlString, XmlTag
+from xml import XmlTag
 
 class_name = "YGOWindow"
 parent_class = "AdwApplicationWindow"
 
 test_page = GtkProperty(
-    "child", GtkObject("AdwStatusPage", GtkProperty("title", XmlString("test")))
+    "child", GtkObject("AdwStatusPage", GtkProperty("title", "test"))
 )
 
 test_page2 = GtkProperty(
-    "child", GtkObject("AdwStatusPage", GtkProperty("title", XmlString("test2")))
+    "child", GtkObject("AdwStatusPage", GtkProperty("title", "test2"))
 )
 
 header_bar = GtkChildObject("AdwHeaderBar", ())
@@ -42,8 +42,8 @@ header_bar = GtkChildObject("AdwHeaderBar", ())
 view_switcher = GtkChildObject(
     "AdwViewSwitcher",
     (
-        GtkProperty("policy", XmlString("narrow")),
-        GtkProperty("stack", XmlString("stack")),
+        GtkProperty("policy", "narrow"),
+        GtkProperty("stack", "stack"),
     ),
 )
 
@@ -55,16 +55,16 @@ view_stack = GtkChildObject(
         GtkChildObject(
             "AdwViewStackPage",
             (
-                GtkProperty("name", XmlString("1")),
-                GtkProperty("title", XmlString("1")),
+                GtkProperty("name", "1"),
+                GtkProperty("title", "1"),
                 test_page,
             ),
         ),
         GtkChildObject(
             "AdwViewStackPage",
             (
-                GtkProperty("name", XmlString("2")),
-                GtkProperty("title", XmlString("2")),
+                GtkProperty("name", "2"),
+                GtkProperty("title", "2"),
                 test_page2,
             ),
         ),
@@ -76,7 +76,7 @@ main_box = GtkProperty(
     GtkObject(
         "GtkBox",
         (
-            GtkProperty("orientation", XmlString("vertical")),
+            GtkProperty("orientation", "vertical"),
             GtkProperty("vexpand", GtkTrue),
             GtkProperty("hexpand", GtkTrue),
             header_bar,
@@ -96,7 +96,7 @@ toast_overlay = GtkObject(
             content=(
                 GtkProperty("can-navigate-back", GtkTrue),
                 GtkProperty("can-unfold", GtkFalse),
-                GtkProperty("transition-type", XmlString("slide")),
+                GtkProperty("transition-type", "slide"),
                 GtkChildObject("AdwLeafletPage", main_box),
             ),
         )

@@ -24,7 +24,7 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlString, XmlTag
+from xml import XmlTag
 
 template_files = (
     "update_page.ui",
@@ -37,7 +37,7 @@ def gresource(prefix: str, content) -> XmlTag:
 
 
 def template(path: str) -> XmlTag:
-    return XmlTag("file", options={"compressed": "true"}, content=XmlString(path))
+    return XmlTag("file", options={"compressed": "true"}, content=path)
 
 
 resources = (
