@@ -16,6 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 
+from pathlib import Path
+
+
 class XmlElement:
     __slots__ = ()
 
@@ -60,7 +63,19 @@ class XmlTag(XmlElement):
 
 
 def save_to_file(path: str, content: XmlElement, header: str = "") -> None:
-    with open(path, "w") as file:
-        file.write(header + content.eval())
+    do_changes: bool = True
+    new_content: str = header + content.eval()
 
-    print(f"Compiled {path}")
+    if Path(path).is_file():
+        with open(path, "r") as file:
+            old_content = file.read()
+
+        do_changes = old_content != new_content
+
+    if do_changes:
+        with open(path, "w") as file:
+            file.write(new_content)
+
+        print(f"Compiled {path}")
+    else:
+        print(f"Skipped {path}")
