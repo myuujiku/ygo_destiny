@@ -24,7 +24,7 @@ from gtk_xml import (
     GtkTrue,
     GtkFalse,
 )
-from xml import XmlString, XmlTag
+from xml import XmlTag
 
 class_name = ""
 parent_class = ""
