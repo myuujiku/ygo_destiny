@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use adw::prelude::*;
+use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
 use ygo_destiny::APP_ID;
@@ -43,10 +44,24 @@ fn build_ui(app: &adw::Application) {
 
     let update_action = gio::SimpleAction::new("update_data", None);
     update_action.connect_activate(glib::clone!(@weak window => move |_, _| {
-        window.update();
-    }));
-    window.add_action(&update_action);
+        let (finished_sender, finished_receiver) = MainContext::channel(PRIORITY_DEFAULT);
 
+        window.update(finished_sender);
+
+        finished_receiver.attach(
+            None,
+            glib::clone!(@weak window => @default-return Continue(false),
+                move |()| {
+                    let leaflet = window.get_leaflet();
+                    leaflet.remove(&leaflet.visible_child().unwrap());
+                    Continue(true)
+                }
+            ),
+        );
+    }));
+
+
+    window.add_action(&update_action);
     window.show_update_notification();
 
     window.present();

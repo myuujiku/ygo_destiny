@@ -66,7 +66,7 @@ impl Window {
         }
     }
 
-    pub fn update(&self) {
+    pub fn update(&self, finished_sender: glib::Sender<()>) {
         let leaflet = self.get_leaflet();
         let update_page = UpdatePage::new();
 
@@ -76,7 +76,7 @@ impl Window {
         let update_version = self.get_update_version().lock().unwrap().clone();
 
         // Do the update in a different thread
-        let (sender, receiver) = MainContext::channel(PRIORITY_DEFAULT);
+        let (progress_sender, progress_receiver) = MainContext::channel(PRIORITY_DEFAULT);
 
         thread::spawn(move || {
             let update_status = http::update();
@@ -86,15 +86,16 @@ impl Window {
                     fs::write(&*vercheck::EXT_PATH, update_version).unwrap();
                     image_dl::cards::download_missing_cards(
                         image_dl::cards::ImageType::Big,
-                        sender,
+                        progress_sender,
                     );
                 }
                 x => println!("{:#?}", x),
             }
             //leaflet.remove(&leaflet.visible_child().unwrap());
+            finished_sender.send(()).expect("Could not send through channel");
         });
 
-        receiver.attach(
+        progress_receiver.attach(
             None,
             glib::clone!(@weak update_page => @default-return Continue(false),
                 move |args: (f64, String)| {
