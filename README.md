@@ -48,8 +48,14 @@ The resulting executable is located in `target/debug/ygo_destiny` or `target/rel
 
 Things that still need to be done in no particular order.
 
-### Project structure
+### First functional alpha version roadmap
+- [ ] Collections
+- [ ] Card info viewer
+- [ ] Simple collection menu
+- [ ] Working update page
+- [ ] First start setup
 
+### Project structure
 - [ ] Front end documentation
 - [ ] Unit tests
 - [ ] Logging
