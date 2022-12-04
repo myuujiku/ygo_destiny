@@ -51,7 +51,18 @@ impl ObjectImpl for RowSplitBox {
 }
 
 impl WidgetImpl for RowSplitBox {
-    fn size_allocate(&self, allocated_width: i32, _allocated_height: i32, _allocated_baseline: i32) {
+    fn size_allocate(
+        &self,
+        allocated_width: i32,
+        _allocated_height: i32,
+        _allocated_baseline: i32,
+    ) {
+        self.update_children(allocated_width);
+    }
+}
+
+impl RowSplitBox {
+    pub fn update_children(&self, allocated_width: i32) {
         let cell_width: i32 = *self.cell_width.get().unwrap();
         let cell_height: i32 = *self.cell_height.get().unwrap();
         let h_spacing: i32 = *self.h_spacing.get().unwrap();
@@ -78,11 +89,13 @@ impl WidgetImpl for RowSplitBox {
                     cell_height,
                 );
 
-                self.children.borrow_mut()[(row * column_count + element) as usize].size_allocate(&alloc, -1);
+                self.children.borrow_mut()[(row * column_count + element) as usize]
+                    .size_allocate(&alloc, -1);
             }
         }
 
-        let offset = allocated_width / 2 - (last_row_elements * cell_width + (last_row_elements - 1) * h_spacing) / 2;
+        let offset = allocated_width / 2
+            - (last_row_elements * cell_width + (last_row_elements - 1) * h_spacing) / 2;
         for element in 0..last_row_elements {
             let alloc = gdk::Rectangle::new(
                 offset + element * padded_width,
@@ -91,11 +104,17 @@ impl WidgetImpl for RowSplitBox {
                 cell_height,
             );
 
-            self.children.borrow_mut()[(full_rows * column_count + element) as usize].size_allocate(&alloc, -1);
+            self.children.borrow_mut()[(full_rows * column_count + element) as usize]
+                .size_allocate(&alloc, -1);
         }
 
-        let target_height = cell_height + padded_height * (full_rows - 1)
-            + if last_row_elements > 0 {padded_height} else {0};
+        let target_height = cell_height
+            + padded_height * (full_rows - 1)
+            + if last_row_elements > 0 {
+                padded_height
+            } else {
+                0
+            };
 
         self.obj().set_size_request(0, target_height);
     }

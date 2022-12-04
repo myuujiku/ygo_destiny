@@ -19,7 +19,7 @@ use std::cell::RefCell;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use gtk::{gdk, glib};
+use gtk::glib;
 use once_cell::sync::OnceCell;
 
 use crate::ui::utils::card::load_card;
@@ -76,7 +76,7 @@ impl ObjectImpl for DraftContainer {
 impl WidgetImpl for DraftContainer {}
 
 impl DraftContainer {
-    pub fn get_selected_cards(&self) -> Vec<u32> {
+    pub fn get_selected_cards(&mut self) -> Vec<u32> {
         let mut selected_cards = Vec::new();
 
         let boxes = self.boxes.borrow();
@@ -94,24 +94,33 @@ impl DraftContainer {
             let draft_box = self.boxes.borrow_mut().pop();
 
             if draft_box.is_some() {
-                self.layout.borrow_mut().remove(&draft_box.unwrap().borrow().button);
+                self.layout
+                    .borrow_mut()
+                    .remove(&draft_box.unwrap().borrow().button);
             } else {
-                break
+                break;
             }
         }
 
         let number_of_boxes = *self.number_of_boxes.get().unwrap();
 
         if card_ids.len() != number_of_boxes {
-            panic!("{}", format!("trying to assign {} boxes to a DraftContainer that holds {} boxes.", card_ids.len(), number_of_boxes));
+            panic!(
+                "{}",
+                format!(
+                    "trying to assign {} boxes to a DraftContainer that holds {} boxes.",
+                    card_ids.len(),
+                    number_of_boxes
+                )
+            );
         };
 
         // Repopulate
         for i in 0..number_of_boxes {
             let mut draft_box = DraftBox::new();
-            draft_box.button.set_label("test");
-            draft_box.button.add_css_class("flat");
-            draft_box.button.set_layout_manager(Some(&gtk::BinLayout::new()));
+            draft_box
+                .button
+                .set_layout_manager(Some(&gtk::BinLayout::new()));
 
             self.layout.borrow_mut().append(&draft_box.button);
 
@@ -142,21 +151,17 @@ impl DraftContainer {
 
                     // mut_ref contains `i`
                     if index.is_some() {
-                        button.add_css_class("flat");
                         button.remove_css_class("suggested-action");
                         mut_ref.remove(index.unwrap());
                     // mut_ref does not contain `i`
                     } else {
-                        button.remove_css_class("flat");
                         button.add_css_class("suggested-action");
                         mut_ref.push(i);
-                        //mut_ref.dedup();
 
                         if mut_ref.len() > max_selected {
                             let b = &unsafe {
                                 boxes.as_ref().unwrap()[mut_ref.remove(0)].borrow()
                             }.button;
-                            b.add_css_class("flat");
                             b.remove_css_class("suggested-action");
                         }
                     }

@@ -27,7 +27,7 @@ glib::wrapper! {
 }
 
 impl RowSplitBox {
-    pub fn new(cell_width: i32, cell_height: i32, h_spacing: i32, v_spacing: i32) -> Self{
+    pub fn new(cell_width: i32, cell_height: i32, h_spacing: i32, v_spacing: i32) -> Self {
         let o: Self = glib::Object::builder().build();
 
         o.imp().cell_width.set(cell_width).unwrap();

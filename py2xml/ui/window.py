@@ -31,6 +31,7 @@ parent_class = "AdwApplicationWindow"
 
 header_bar = GtkChildObject(
     "AdwHeaderBar", (
+        GtkChildObject("GtkButton", GtkProperty("icon-name", "open-menu-symbolic")),
         GtkProperty(
             "title-widget",
             GtkObject(
@@ -43,6 +44,16 @@ header_bar = GtkChildObject(
     ),
 )
 
+collection_list = GtkChildObject(
+    "YGOCollectionList",
+    id="collection_list", content=(
+        GtkProperty("orientation", "vertical"),
+        GtkProperty("vexpand", GtkTrue),
+        GtkProperty("hexpand", GtkTrue),
+        GtkProperty("valign", "center"),
+    ),
+)
+
 main_box = GtkProperty(
     "child",
     GtkObject(
@@ -52,6 +63,17 @@ main_box = GtkProperty(
             GtkProperty("vexpand", GtkTrue),
             GtkProperty("hexpand", GtkTrue),
             header_bar,
+            GtkChildObject("GtkScrolledWindow", (
+                GtkProperty("min-content-height", "200"),
+                GtkProperty("hscrollbar-policy", "never"),
+                GtkProperty("vexpand", GtkTrue),
+                GtkChildObject(
+                    "AdwClamp", (
+                        GtkProperty("orientation", "horizontal"),
+                        collection_list,
+                    ),
+                ),
+            )),
         ),
     ),
 )

@@ -15,8 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod collection_list;
-pub mod collection_row;
-pub mod draft_container;
-pub mod row_split_box;
-pub mod window;
+mod imp;
+
+use gtk::glib;
+
+glib::wrapper! {
+    pub struct CollectionRow(ObjectSubclass<imp::CollectionRow>)
+        @extends adw::ActionRow, adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
+        @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
+}
+
+#[gtk::template_callbacks]
+impl CollectionRow {
+    pub fn new() -> Self {
+        glib::Object::new(&[])
+    }
+}

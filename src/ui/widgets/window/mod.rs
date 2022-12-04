@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 mod imp;
 
 use std::fs;
-use std::thread;
 use std::sync::Mutex;
+use std::thread;
 
 use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
@@ -83,18 +83,16 @@ impl Window {
 
             match update_status {
                 http::UpdateStatus::Complete => {
-                    fs::write(
-                        &*vercheck::EXT_PATH,
-                        update_version,
-                    )
-                    .unwrap();
-                    image_dl::cards::download_missing_cards(image_dl::cards::ImageType::Big, sender);
-                },
+                    fs::write(&*vercheck::EXT_PATH, update_version).unwrap();
+                    image_dl::cards::download_missing_cards(
+                        image_dl::cards::ImageType::Big,
+                        sender,
+                    );
+                }
                 x => println!("{:#?}", x),
             }
             //leaflet.remove(&leaflet.visible_child().unwrap());
         });
-
 
         receiver.attach(
             None,
@@ -109,7 +107,7 @@ impl Window {
         );
     }
 
-    fn get_leaflet(&self) -> &gtk::TemplateChild<adw::Leaflet> {
+    pub fn get_leaflet(&self) -> &gtk::TemplateChild<adw::Leaflet> {
         return &self.imp().leaflet;
     }
 

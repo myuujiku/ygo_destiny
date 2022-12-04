@@ -15,32 +15,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::sync::Mutex;
-
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
-use crate::ui::widgets::collection_list::CollectionList;
-
 #[derive(CompositeTemplate, Default)]
-#[template(resource = "/com/myujiku/ygo_destiny/templates/window.ui")]
-pub struct Window {
+#[template(resource = "/com/myujiku/ygo_destiny/templates/collection_row.ui")]
+pub struct CollectionRow {
     #[template_child]
-    pub leaflet: TemplateChild<adw::Leaflet>,
-    #[template_child]
-    pub toast_overlay: TemplateChild<adw::ToastOverlay>,
-    pub update_version: Mutex<String>,
-    #[template_child]
-    pub collection_list: TemplateChild<CollectionList>,
+    pub star_button: TemplateChild<gtk::Button>,
 }
 
 #[glib::object_subclass]
-impl ObjectSubclass for Window {
-    const NAME: &'static str = "YGOWindow";
-    type Type = super::Window;
-    type ParentType = adw::ApplicationWindow;
+impl ObjectSubclass for CollectionRow {
+    const NAME: &'static str = "YGOCollectionRow";
+    type Type = super::CollectionRow;
+    type ParentType = adw::ActionRow;
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
@@ -52,13 +43,20 @@ impl ObjectSubclass for Window {
     }
 }
 
-impl ObjectImpl for Window {
+impl ObjectImpl for CollectionRow {
+    fn constructed(&self) {
+        self.parent_constructed();
+    }
+
     fn dispose(&self) {
-        self.toast_overlay.unparent();
+        // Unparent all direct children
+        while let Some(child) = self.obj().first_child() {
+            child.unparent();
+        }
     }
 }
 
-impl WidgetImpl for Window {}
-impl WindowImpl for Window {}
-impl ApplicationWindowImpl for Window {}
-impl AdwApplicationWindowImpl for Window {}
+impl WidgetImpl for CollectionRow {}
+impl ActionRowImpl for CollectionRow {}
+impl ListBoxRowImpl for CollectionRow {}
+impl PreferencesRowImpl for CollectionRow {}

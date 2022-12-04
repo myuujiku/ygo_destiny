@@ -26,34 +26,41 @@ from gtk_xml import (
 )
 from xml import XmlTag
 
-template_files = (
-    "collection_list.ui",
-    "collection_row.ui",
-    "update_page.ui",
-    "window.ui",
+class_name = "YGOCollectionRow"
+parent_class = "AdwActionRow"
+
+star_button = GtkObject(
+    "GtkButton",
+    id="star_button",
+    content=(
+        GtkProperty("icon-name", "starred"),
+        GtkProperty("valign", "center"),
+        GtkProperty("css-classes", "flat"),
+    )
 )
 
-
-def gresource(prefix: str, content) -> XmlTag:
-    return XmlTag("gresource", options={"prefix": prefix}, content=content)
-
-
-def template(path: str) -> XmlTag:
-    return XmlTag("file", options={"compressed": "true"}, content=path)
-
-
-resources = (
-    gresource(
-        project.app_path,
-        tuple(template(f"templates/{file}") for file in template_files),
+content = (
+    GtkProperty("activatable", GtkTrue),
+    GtkProperty("selectable", GtkFalse),
+    GtkProperty("title", "Test Collection"),
+    XmlTag(
+        "child",
+        options={"type": "suffix"},
+        content=star_button,
     ),
 )
 
-xml_content = XmlTag("gresources", *resources)
+gtk_template = XmlTag(
+    "template",
+    options={
+        "class": class_name,
+        "parent": parent_class,
+    },
+    content=content,
+)
 
+xml_content = XmlTag("interface", gtk_template)
 
 xml.save_to_file(
-    f"{project.directory.parent}/{__name__.split('.')[-1]}.xml",
-    xml_content,
-    project.header,
+    f"{project.directory}/{__name__.split('.')[-1]}.ui", xml_content, project.header
 )

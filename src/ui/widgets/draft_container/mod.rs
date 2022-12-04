@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod imp;
 
-use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
 
