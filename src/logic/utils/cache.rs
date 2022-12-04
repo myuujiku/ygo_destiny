@@ -39,7 +39,7 @@ use once_cell::sync::Lazy;
 
 use crate::logic::ext_data::{banlists, cardinfo, cardsets};
 
-/// This should generally only be accessed via [`CACHE`].
+/// Container for global variables. This should generally only be accessed via [`CACHE`].
 pub struct Cache {
     pub banlists: banlists::BanlistsMetaType,
     pub cardinfo: cardinfo::CardinfoMetaType,

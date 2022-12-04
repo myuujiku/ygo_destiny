@@ -21,6 +21,8 @@ use std::path::{Path, PathBuf};
 use directories::ProjectDirs;
 use once_cell::sync::Lazy;
 
+/// Container for file system paths used by YGO Destiny. This should generally only be accessed via
+/// [`PATHS`].
 pub struct Paths {
     project_dirs: ProjectDirs,
     ext_folder: &'static str,
@@ -49,7 +51,7 @@ impl Paths {
     }
 }
 
-// Lazy init default paths/directories
+/// Paths data container. See [`Paths`] for methods and fields.
 pub static PATHS: Lazy<Paths> = Lazy::new(|| {
     let paths = Paths {
         project_dirs: ProjectDirs::from("com", "myujiku", "ygo_destiny").unwrap(),

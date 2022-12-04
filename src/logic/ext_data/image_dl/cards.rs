@@ -19,8 +19,8 @@ use std::fs;
 
 use gtk::glib::Sender;
 
-use crate::logic::utils::cache::CACHE;
-use crate::logic::utils::paths::PATHS;
+use crate::logic::utils::CACHE;
+use crate::logic::utils::PATHS;
 
 /// Root of the image API endpoint.
 static BASE_URL: &str = "https://images.ygoprodeck.com/images/";

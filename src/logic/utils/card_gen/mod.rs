@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //! A `CardGenerator` can handle any `u32` value. In a real environment it only makes sense to
 //! use actual card ids as values.
 //! To get all cards from one or more sets see
-//! [`Cache::get_cards_from_sets`][`crate::logic::utils::cache::Cache::get_cards_from_sets`].
+//! [`Cache::get_cards_from_sets`][`crate::logic::utils::Cache::get_cards_from_sets`].
 //!
 //! ```rust
 //! use ygo_destiny::logic::utils::card_gen::CardGenerator;

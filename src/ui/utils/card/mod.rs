@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use adw::prelude::*;
 use gtk::Image;
 
-use crate::logic::utils::paths::PATHS;
+use crate::logic::utils::PATHS;
 
 pub fn load_card(id: u32) -> Image {
     let filename = PATHS.get_img_dir().join(format!("{}.jpg", id));

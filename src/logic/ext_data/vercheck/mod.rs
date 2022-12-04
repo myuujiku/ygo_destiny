@@ -22,7 +22,7 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::http::ResponseType;
-use crate::logic::utils::paths::PATHS;
+use crate::logic::utils::PATHS;
 
 /// External [URL](https://db.ygoprodeck.com/api/v7/checkDBVer.php) to the version data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/checkDBVer.php";

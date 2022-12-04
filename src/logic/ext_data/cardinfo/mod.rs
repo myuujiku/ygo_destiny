@@ -22,7 +22,7 @@ use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::http::CardSetMapType;
-use crate::logic::utils::paths::PATHS;
+use crate::logic::utils::PATHS;
 
 /// Type contained in a processed cardinfo binary file.
 pub type CardinfoMetaType = HashMap<u32, Card>;

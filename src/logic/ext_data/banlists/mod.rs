@@ -21,7 +21,7 @@ use std::path::PathBuf;
 use once_cell::sync::Lazy;
 use regex::Regex;
 
-use crate::logic::utils::paths::PATHS;
+use crate::logic::utils::PATHS;
 
 /// Banlist element (card with limit number) type.
 pub type BanlistElementType = HashMap<u32, u8>;

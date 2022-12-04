@@ -15,11 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/// Container for global variables.
-pub mod cache;
+#[doc(hidden)]
+mod cache;
 /// Random card selection for draft/sealed.
 pub mod card_gen;
 /// Interface for handling http requests.
 pub mod http;
-/// TODO: move to cache. There is no reason for this to be a separate module.
-pub mod paths;
+#[doc(hidden)]
+mod paths;
+
+pub use cache::Cache;
+pub use cache::CACHE;
+pub use paths::Paths;
+pub use paths::PATHS;
