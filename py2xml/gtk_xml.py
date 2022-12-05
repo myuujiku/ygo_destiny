@@ -48,10 +48,7 @@ class GtkProperty(XmlTag):
 def GtkMargins(s: int, e: int, t: int, b: int) -> list[GtkProperty]:
     args: tuple = (s, e, t, b)
     directions: tuple = ("start", "end", "top", "bottom")
-    return [
-        GtkProperty(f"margin-{directions[i]}", str(args[i]))
-        for i in range(4)
-    ]
+    return [GtkProperty(f"margin-{directions[i]}", str(args[i])) for i in range(4)]
 
 
 GtkTrue = "true"

@@ -30,15 +30,14 @@ class_name = "YGOWindow"
 parent_class = "AdwApplicationWindow"
 
 header_bar = GtkChildObject(
-    "AdwHeaderBar", (
+    "AdwHeaderBar",
+    (
         GtkChildObject("GtkButton", GtkProperty("icon-name", "open-menu-symbolic")),
         GtkProperty(
             "title-widget",
             GtkObject(
                 "AdwWindowTitle",
-                (
-                    GtkProperty("title", "YGO Destiny"),
-                ),
+                (GtkProperty("title", "YGO Destiny"),),
             ),
         ),
     ),
@@ -46,7 +45,8 @@ header_bar = GtkChildObject(
 
 collection_list = GtkChildObject(
     "YGOCollectionList",
-    id="collection_list", content=(
+    id="collection_list",
+    content=(
         GtkProperty("orientation", "vertical"),
         GtkProperty("vexpand", GtkTrue),
         GtkProperty("hexpand", GtkTrue),
@@ -63,17 +63,21 @@ main_box = GtkProperty(
             GtkProperty("vexpand", GtkTrue),
             GtkProperty("hexpand", GtkTrue),
             header_bar,
-            GtkChildObject("GtkScrolledWindow", (
-                GtkProperty("min-content-height", "200"),
-                GtkProperty("hscrollbar-policy", "never"),
-                GtkProperty("vexpand", GtkTrue),
-                GtkChildObject(
-                    "AdwClamp", (
-                        GtkProperty("orientation", "horizontal"),
-                        collection_list,
+            GtkChildObject(
+                "GtkScrolledWindow",
+                (
+                    GtkProperty("min-content-height", "200"),
+                    GtkProperty("hscrollbar-policy", "never"),
+                    GtkProperty("vexpand", GtkTrue),
+                    GtkChildObject(
+                        "AdwClamp",
+                        (
+                            GtkProperty("orientation", "horizontal"),
+                            collection_list,
+                        ),
                     ),
                 ),
-            )),
+            ),
         ),
     ),
 )

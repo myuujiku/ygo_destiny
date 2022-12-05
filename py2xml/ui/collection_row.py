@@ -36,7 +36,7 @@ star_button = GtkObject(
         GtkProperty("icon-name", "starred"),
         GtkProperty("valign", "center"),
         GtkProperty("css-classes", "flat"),
-    )
+    ),
 )
 
 content = (

@@ -33,20 +33,29 @@ content = (
     GtkProperty("vexpand", GtkTrue),
     GtkProperty("spacing", "6"),
     *GtkMargins(*(6,) * 4),
-    GtkChildObject("GtkLabel", (
-        GtkProperty("label", "Progressive Collections"),
-        GtkProperty("css-classes", "heading"),
-        GtkProperty("halign", "start"),
-    )),
-    GtkChildObject("GtkBox", (
-        GtkProperty("orientation", "horizontal"),
-        GtkProperty("spacing", "6"),
-        GtkChildObject("GtkSearchEntry", GtkProperty("hexpand", GtkTrue)),
-        GtkChildObject("GtkButton", (
-            GtkProperty("icon-name", "list-add"),
-            GtkProperty("css-classes", "circular"),
-        )),
-    )),
+    GtkChildObject(
+        "GtkLabel",
+        (
+            GtkProperty("label", "Progressive Collections"),
+            GtkProperty("css-classes", "heading"),
+            GtkProperty("halign", "start"),
+        ),
+    ),
+    GtkChildObject(
+        "GtkBox",
+        (
+            GtkProperty("orientation", "horizontal"),
+            GtkProperty("spacing", "6"),
+            GtkChildObject("GtkSearchEntry", GtkProperty("hexpand", GtkTrue)),
+            GtkChildObject(
+                "GtkButton",
+                (
+                    GtkProperty("icon-name", "list-add"),
+                    GtkProperty("css-classes", "circular"),
+                ),
+            ),
+        ),
+    ),
     GtkChildObject("GtkListBox", id="list_box"),
 )
 
