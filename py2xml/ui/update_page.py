@@ -50,18 +50,24 @@ database_page = GtkChildObject(
                     GtkProperty("vexpand", GtkTrue),
                     GtkProperty("hexpand", GtkTrue),
                     GtkProperty("valign", "center"),
-                    GtkChildObject("GtkSpinner", (
-                        GtkProperty("width-request", "48"),
-                        GtkProperty("height-request", "48"),
-                        GtkProperty("spinning", GtkTrue),
-                    )),
-                    GtkChildObject("GtkLabel", (
-                        GtkProperty("label", "Updating database..."),
-                        GtkProperty("css-classes", "title-1"),
-                    )),
-                    GtkChildObject("GtkLabel", (
-                        GtkProperty("label", "Please be patient ^^"),
-                    )),
+                    GtkChildObject(
+                        "GtkSpinner",
+                        (
+                            GtkProperty("width-request", "48"),
+                            GtkProperty("height-request", "48"),
+                            GtkProperty("spinning", GtkTrue),
+                        ),
+                    ),
+                    GtkChildObject(
+                        "GtkLabel",
+                        (
+                            GtkProperty("label", "Updating database..."),
+                            GtkProperty("css-classes", "title-1"),
+                        ),
+                    ),
+                    GtkChildObject(
+                        "GtkLabel", (GtkProperty("label", "Please be patient ^^"),)
+                    ),
                 ),
             ),
         ),
@@ -105,8 +111,8 @@ container = GtkProperty(
                 content=(
                     GtkProperty("can-unfold", GtkFalse),
                     GtkProperty("transition-type", "slide"),
-                    progress_page,
                     database_page,
+                    progress_page,
                     GtkProperty("visible-child-name", "database_page"),
                 ),
             ),
