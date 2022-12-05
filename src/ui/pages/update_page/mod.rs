@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 mod imp;
 
 use adw::subclass::prelude::*;
-use gtk::glib;
+use gtk::{glib, TemplateChild};
 
 glib::wrapper! {
     pub struct UpdatePage(ObjectSubclass<imp::UpdatePage>)
@@ -31,7 +31,11 @@ impl UpdatePage {
         glib::Object::new(&[])
     }
 
-    pub fn get_progress_bar(&self) -> &gtk::TemplateChild<gtk::ProgressBar> {
-        return &self.imp().progress_bar;
+    pub fn get_progress_bar(&self) -> &TemplateChild<gtk::ProgressBar> {
+        &self.imp().progress_bar
+    }
+
+    pub fn get_leaflet(&self) -> &TemplateChild<adw::Leaflet> {
+        &self.imp().leaflet
     }
 }

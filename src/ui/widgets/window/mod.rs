@@ -24,6 +24,7 @@ use std::thread;
 use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
+use std::cell::Cell;
 
 use crate::logic::ext_data::image_dl;
 use crate::logic::ext_data::vercheck;
@@ -95,10 +96,18 @@ impl Window {
             finished_sender.send(()).expect("Could not send through channel");
         });
 
+        let first_progress_update = Cell::new(true);
+
         progress_receiver.attach(
             None,
-            glib::clone!(@weak update_page => @default-return Continue(false),
+            glib::clone!(@weak update_page, @strong first_progress_update => @default-return Continue(false),
                 move |args: (f64, String)| {
+                    // Switch to progress bar
+                    if first_progress_update.get() {
+                        update_page.get_leaflet().set_visible_child_name("progress_page");
+                        first_progress_update.set(false);
+                    }
+
                     let (frac, text) = args;
                     update_page.imp().progress_bar.set_fraction(frac);
                     update_page.imp().label.set_label(&text);

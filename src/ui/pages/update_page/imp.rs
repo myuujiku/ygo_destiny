@@ -27,6 +27,8 @@ pub struct UpdatePage {
     pub progress_bar: TemplateChild<gtk::ProgressBar>,
     #[template_child]
     pub label: TemplateChild<gtk::Label>,
+    #[template_child]
+    pub leaflet: TemplateChild<adw::Leaflet>,
 }
 
 #[glib::object_subclass]

@@ -36,12 +36,45 @@ progress_bar = GtkChildObject(
 )
 
 
-container = GtkProperty(
-    "child",
-    GtkObject(
-        "AdwClamp",
-        (
-            GtkChildObject(
+database_page = GtkChildObject(
+    "AdwLeafletPage",
+    (
+        GtkProperty("name", "database_page"),
+        GtkProperty(
+            "child",
+            GtkObject(
+                "GtkBox",
+                (
+                    *GtkMargins(12, 12, 12, 12),
+                    GtkProperty("orientation", "vertical"),
+                    GtkProperty("vexpand", GtkTrue),
+                    GtkProperty("hexpand", GtkTrue),
+                    GtkProperty("valign", "center"),
+                    GtkChildObject("GtkSpinner", (
+                        GtkProperty("width-request", "48"),
+                        GtkProperty("height-request", "48"),
+                        GtkProperty("spinning", GtkTrue),
+                    )),
+                    GtkChildObject("GtkLabel", (
+                        GtkProperty("label", "Updating database..."),
+                        GtkProperty("css-classes", "title-1"),
+                    )),
+                    GtkChildObject("GtkLabel", (
+                        GtkProperty("label", "Please be patient ^^"),
+                    )),
+                ),
+            ),
+        ),
+    ),
+)
+
+progress_page = GtkChildObject(
+    "AdwLeafletPage",
+    (
+        GtkProperty("name", "progress_page"),
+        GtkProperty(
+            "child",
+            GtkObject(
                 "GtkBox",
                 (
                     *GtkMargins(12, 12, 12, 12),
@@ -53,11 +86,28 @@ container = GtkProperty(
                     GtkChildObject(
                         "GtkLabel",
                         id="label",
-                        content=(
-                            GtkProperty("label", "Updating database..."),
-                            # GtkProperty("halign", "start"),
-                        ),
                     ),
+                ),
+            ),
+        ),
+    ),
+)
+
+
+container = GtkProperty(
+    "child",
+    GtkObject(
+        "AdwClamp",
+        (
+            GtkChildObject(
+                "AdwLeaflet",
+                id="leaflet",
+                content=(
+                    GtkProperty("can-unfold", GtkFalse),
+                    GtkProperty("transition-type", "slide"),
+                    progress_page,
+                    database_page,
+                    GtkProperty("visible-child-name", "database_page"),
                 ),
             ),
         ),
