@@ -15,4 +15,5 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+/// Module containing a serializable card collection data type.
 pub mod progressive_collection;
