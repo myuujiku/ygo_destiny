@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
@@ -25,10 +25,10 @@ use once_cell::sync::Lazy;
 
 #[derive(Default)]
 pub struct CollectionData {
-    file: Cell<String>,
-    name: Cell<String>,
-    desc: Cell<String>,
-    date: Cell<String>,
+    file: RefCell<String>,
+    name: RefCell<String>,
+    desc: RefCell<String>,
+    date: RefCell<String>,
     star: Cell<bool>,
 }
 
@@ -80,10 +80,10 @@ impl ObjectImpl for CollectionData {
 
     fn property(&self, _id: usize, pspec: &ParamSpec) -> Value {
         match pspec.name() {
-            "file" => self.name.get().to_value(),
-            "name" => self.name.get().to_value(),
-            "desc" => self.desc.get().to_value(),
-            "date" => self.date.get().to_value(),
+            "file" => self.name.borrow().to_value(),
+            "name" => self.name.borrow().to_value(),
+            "desc" => self.desc.borrow().to_value(),
+            "date" => self.date.borrow().to_value(),
             "star" => self.star.get().to_value(),
             _ => unimplemented!(),
         }

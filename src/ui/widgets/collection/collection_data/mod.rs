@@ -24,13 +24,13 @@ glib::wrapper! {
 }
 
 impl CollectionData {
-    pub fn new(file: String, name: String, desc: String, date: String, star: bool) -> Self {
+    pub fn new(file: &str, name: &str, desc: &str, date: &str, star: bool) -> Self {
         glib::Object::new(&[
-            ("file": &name),
-            ("name": &name),
-            ("desc": &desc),
-            ("date": &desc),
-            ("star": &star),
+            ("file", &file.to_string()),
+            ("name", &name.to_string()),
+            ("desc", &desc.to_string()),
+            ("date", &date.to_string()),
+            ("star", &star),
         ])
     }
 }
