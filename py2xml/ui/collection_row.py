@@ -33,7 +33,6 @@ star_button = GtkObject(
     "GtkButton",
     id="star_button",
     content=(
-        GtkProperty("icon-name", "starred"),
         GtkProperty("valign", "center"),
         GtkProperty("css-classes", "flat"),
     ),
@@ -43,6 +42,7 @@ content = (
     GtkProperty("activatable", GtkTrue),
     GtkProperty("selectable", GtkFalse),
     GtkProperty("title", "Test Collection"),
+    GtkProperty("subtitle", "This is a test description."),
     XmlTag(
         "child",
         options={"type": "suffix"},
