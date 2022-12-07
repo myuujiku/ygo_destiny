@@ -48,12 +48,11 @@ impl ObjectSubclass for CollectionRow {
 }
 
 impl ObjectImpl for CollectionRow {
-	fn signals() -> &'static [Signal] {
-		static SIGNALS: Lazy<Vec<Signal>> = Lazy::new(|| {
-			vec![Signal::builder("pin-action").build()]
-		});
-		return SIGNALS.as_ref();
-	}
+    fn signals() -> &'static [Signal] {
+        static SIGNALS: Lazy<Vec<Signal>> =
+            Lazy::new(|| vec![Signal::builder("pin-action").build()]);
+        return SIGNALS.as_ref();
+    }
 
     fn constructed(&self) {
         self.parent_constructed();
@@ -62,17 +61,17 @@ impl ObjectImpl for CollectionRow {
 
         // Change star_button icon and pinned state on clicked
         self.star_button.connect_clicked(move |_| unsafe {
-        	let ptr_ref = self_ptr.as_ref().unwrap();
-        	let new_val = !ptr_ref.pinned.get();
+            let ptr_ref = self_ptr.as_ref().unwrap();
+            let new_val = !ptr_ref.pinned.get();
 
-        	ptr_ref.pinned.set(new_val);
-        	ptr_ref.obj().emit_by_name::<()>("pin-action", &[]);
+            ptr_ref.pinned.set(new_val);
+            ptr_ref.obj().emit_by_name::<()>("pin-action", &[]);
 
-        	if new_val {
-        		ptr_ref.star_button.set_icon_name("starred-symbolic");
-        	} else {
-        		ptr_ref.star_button.set_icon_name("non-starred-symbolic");
-        	}
+            if new_val {
+                ptr_ref.star_button.set_icon_name("starred-symbolic");
+            } else {
+                ptr_ref.star_button.set_icon_name("non-starred-symbolic");
+            }
         });
 
         // Modify button appearance if the row is not pinned
@@ -81,18 +80,18 @@ impl ObjectImpl for CollectionRow {
 
         // Show non-starred icon if mouse cursor is inside the collection_row
         row_motion_controller.connect_enter(move |_, _, _| unsafe {
-        	let ptr_ref = self_ptr.as_ref().unwrap();
-        	if !ptr_ref.pinned.get() {
-        		ptr_ref.star_button.set_icon_name("non-starred-symbolic")
-        	}
+            let ptr_ref = self_ptr.as_ref().unwrap();
+            if !ptr_ref.pinned.get() {
+                ptr_ref.star_button.set_icon_name("non-starred-symbolic")
+            }
         });
 
         // Hide non-starred icon if mouse cursor is outside the collection row
         row_motion_controller.connect_leave(move |_| unsafe {
-        	let ptr_ref = self_ptr.as_ref().unwrap();
-        	if !ptr_ref.pinned.get() {
-        		ptr_ref.star_button.set_icon_name("");
-        	}
+            let ptr_ref = self_ptr.as_ref().unwrap();
+            if !ptr_ref.pinned.get() {
+                ptr_ref.star_button.set_icon_name("");
+            }
         });
     }
 
