@@ -15,7 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod collection;
-pub mod draft_container;
-pub mod row_split_box;
-pub mod window;
+pub mod collection_list;
+pub mod collection_row;
+
+pub use collection_list::CollectionList;
+pub use collection_row::CollectionRow;

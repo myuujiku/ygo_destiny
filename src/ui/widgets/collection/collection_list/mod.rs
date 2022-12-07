@@ -31,4 +31,3 @@ impl CollectionList {
         glib::Object::builder().build()
     }
 }
-

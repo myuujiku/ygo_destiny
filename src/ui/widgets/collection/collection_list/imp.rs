@@ -49,23 +49,12 @@ impl ObjectImpl for CollectionList {
 
         self.list_box.add_css_class("boxed-list");
 
-        self.list_box.append(&crate::ui::widgets::collection_row::CollectionRow::new());
-        self.list_box.append(
-            &adw::ActionRow::builder()
-                .title("Collection 1")
-                .subtitle("this is a collection :)")
-                .activatable(true)
-                .selectable(false)
-                .build()
-        );
-        self.list_box.append(
-            &adw::ActionRow::builder()
-                .title("Collection 2")
-                .subtitle("another collection")
-                .activatable(true)
-                .selectable(false)
-                .build()
-        );
+        self.list_box
+            .append(&crate::ui::widgets::collection::CollectionRow::new());
+        self.list_box
+            .append(&crate::ui::widgets::collection::CollectionRow::new());
+        self.list_box
+            .append(&crate::ui::widgets::collection::CollectionRow::new());
     }
 
     fn dispose(&self) {

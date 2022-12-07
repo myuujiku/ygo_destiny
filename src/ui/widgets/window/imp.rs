@@ -22,7 +22,7 @@ use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
-use crate::ui::widgets::collection_list::CollectionList;
+use crate::ui::widgets::collection::CollectionList;
 
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/com/myujiku/ygo_destiny/templates/window.ui")]
