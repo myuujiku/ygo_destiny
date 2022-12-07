@@ -15,10 +15,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-pub mod collection_data;
-pub mod collection_list;
-pub mod collection_row;
+mod imp;
 
-pub use collection_data::CollectionData;
-pub use collection_list::CollectionList;
-pub use collection_row::CollectionRow;
+use gtk::glib;
+
+glib::wrapper! {
+    pub struct CollectionData(ObjectSubclass<imp::CollectionData>);
+}
+
+impl CollectionData {
+    pub fn new(file: String, name: String, desc: String, date: String, star: bool) -> Self {
+        glib::Object::new(&[
+            ("file": &name),
+            ("name": &name),
+            ("desc": &desc),
+            ("date": &desc),
+            ("star": &star),
+        ])
+    }
+}
