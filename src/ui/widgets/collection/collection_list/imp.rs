@@ -28,6 +28,8 @@ use crate::ui::widgets::collection::{CollectionData, CollectionModel, Collection
 pub struct CollectionList {
     #[template_child]
     pub list_box: TemplateChild<gtk::ListBox>,
+    #[template_child]
+    pub search_bar: TemplateChild<gtk::SearchEntry>,
 }
 
 #[glib::object_subclass]
@@ -83,6 +85,19 @@ impl ObjectImpl for CollectionList {
             false,
         ));
 
+        let filter = gtk::CustomFilter::new(move |obj| {
+            let data = obj
+                .downcast_ref::<CollectionData>()
+                .expect("Object not of type `CollectionData`.");
+
+            let filter = data.property::<String>("filter");
+
+            // TODO: Consider making description search optional
+            return data.property::<String>("name").to_lowercase().contains(filter.as_str()) || data.property::<String>("desc").to_lowercase().contains(filter.as_str());
+        });
+
+        let filter_model = gtk::FilterListModel::new(Some(&collection_model), Some(&filter));
+
         let sorter = gtk::CustomSorter::new(move |obj1, obj2| {
             let a = obj1
                 .downcast_ref::<CollectionData>()
@@ -117,7 +132,25 @@ impl ObjectImpl for CollectionList {
             }
         });
 
-        let sort_model = gtk::SortListModel::new(Some(&collection_model), Some(&sorter));
+        let sort_model = gtk::SortListModel::new(Some(&filter_model), Some(&sorter));
+
+        self.search_bar.connect_search_changed(glib::clone!(@weak filter, @weak collection_model => move |search_bar| {
+            let text = search_bar.text().to_lowercase();
+
+            let mut i = 0;
+            loop {
+                let item = collection_model.item(i);
+
+                if item.is_none() {
+                    break;
+                }
+
+                item.unwrap().set_property("filter", text.clone());
+                i += 1;
+            }
+
+            filter.changed(gtk::FilterChange::Different);
+        }));
 
         self.list_box.bind_model(Some(&sort_model), move |item| {
             let row = CollectionRow::new(

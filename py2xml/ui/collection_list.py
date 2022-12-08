@@ -46,7 +46,11 @@ content = (
         (
             GtkProperty("orientation", "horizontal"),
             GtkProperty("spacing", "6"),
-            GtkChildObject("GtkSearchEntry", GtkProperty("hexpand", GtkTrue)),
+            GtkChildObject(
+                "GtkSearchEntry",
+                id="search_bar",
+                content=(GtkProperty("hexpand", GtkTrue)),
+            ),
             GtkChildObject(
                 "GtkButton",
                 (

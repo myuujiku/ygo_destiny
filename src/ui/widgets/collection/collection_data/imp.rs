@@ -29,6 +29,7 @@ pub struct CollectionData {
     name: RefCell<String>,
     desc: RefCell<String>,
     date: RefCell<String>,
+    filter: RefCell<String>,
     star: Cell<bool>,
 }
 
@@ -46,6 +47,7 @@ impl ObjectImpl for CollectionData {
                 ParamSpecString::builder("name").build(),
                 ParamSpecString::builder("desc").build(),
                 ParamSpecString::builder("date").build(),
+                ParamSpecString::builder("filter").build(),
                 ParamSpecBoolean::builder("star").build(),
             ]
         });
@@ -70,6 +72,10 @@ impl ObjectImpl for CollectionData {
                 let val = value.get().expect("Expected `String`.");
                 self.date.replace(val);
             }
+            "filter" => {
+                let val = value.get().expect("Expected `String`.");
+                self.filter.replace(val);
+            }
             "star" => {
                 let val = value.get().expect("Expected `Boolean`.");
                 self.star.replace(val);
@@ -84,6 +90,7 @@ impl ObjectImpl for CollectionData {
             "name" => self.name.borrow().to_value(),
             "desc" => self.desc.borrow().to_value(),
             "date" => self.date.borrow().to_value(),
+            "filter" => self.filter.borrow().to_value(),
             "star" => self.star.get().to_value(),
             _ => unimplemented!(),
         }
