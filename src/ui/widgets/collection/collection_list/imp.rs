@@ -30,6 +30,8 @@ pub struct CollectionList {
     pub list_box: TemplateChild<gtk::ListBox>,
     #[template_child]
     pub search_bar: TemplateChild<gtk::SearchEntry>,
+    #[template_child]
+    pub add_collection_button: TemplateChild<gtk::Button>,
 }
 
 #[glib::object_subclass]
@@ -52,6 +54,7 @@ impl ObjectImpl for CollectionList {
     fn constructed(&self) {
         self.parent_constructed();
 
+        // Add the libadwaita `boxed-list` style
         self.list_box.add_css_class("boxed-list");
 
         let collection_model = CollectionModel::new();

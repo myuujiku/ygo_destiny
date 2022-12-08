@@ -16,12 +16,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use adw::prelude::*;
+use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
 use ygo_destiny::APP_ID;
 use ygo_destiny::logic::utils::http;
-use ygo_destiny::ui::widgets::window::Window;
+use ygo_destiny::ui::widgets::{
+    window::Window,
+    collection::NewCollectionWindow,
+};
 
 fn main() {
     // Preload external data
@@ -42,6 +46,17 @@ fn main() {
 fn build_ui(app: &adw::Application) {
     let window = Window::new(app);
 
+    // Let search bar capture key input from the window
+    window.imp().collection_list.imp().search_bar.set_key_capture_widget(Some(&window));
+
+    window.imp().collection_list.imp().add_collection_button.connect_clicked(glib::clone!(@weak window =>
+        move |_| {
+            let collection_window = NewCollectionWindow::new();
+            collection_window.set_transient_for(Some(&window));
+            collection_window.present();
+        }
+    ));
+
     let update_action = gio::SimpleAction::new("update_data", None);
     update_action.connect_activate(glib::clone!(@weak window => move |_, _| {
         let (finished_sender, finished_receiver) = MainContext::channel(PRIORITY_DEFAULT);
@@ -59,7 +74,6 @@ fn build_ui(app: &adw::Application) {
             ),
         );
     }));
-
 
     window.add_action(&update_action);
     window.show_update_notification();

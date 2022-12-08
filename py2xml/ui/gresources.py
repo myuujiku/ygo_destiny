@@ -29,6 +29,7 @@ from xml import XmlTag
 template_files = (
     "collection_list.ui",
     "collection_row.ui",
+    "new_collection_window.ui",
     "update_page.ui",
     "window.ui",
 )

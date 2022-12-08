@@ -72,6 +72,7 @@ main_box = GtkProperty(
                     GtkChildObject(
                         "AdwClamp",
                         (
+                            GtkProperty("maximum-size", "800"),
                             GtkProperty("orientation", "horizontal"),
                             collection_list,
                         ),
@@ -106,6 +107,8 @@ gtk_template = XmlTag(
         "parent": parent_class,
     },
     content=(
+        GtkProperty("width-request", "640"),
+        GtkProperty("height-request", "480"),
         GtkProperty(
             "content",
             toast_overlay,

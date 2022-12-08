@@ -26,43 +26,25 @@ from gtk_xml import (
 )
 from xml import XmlTag
 
-class_name = "YGOCollectionList"
-parent_class = "GtkBox"
+class_name = "YGONewCollectionWindow"
+parent_class = "AdwWindow"
+
 
 content = (
-    GtkProperty("vexpand", GtkTrue),
-    GtkProperty("spacing", "6"),
-    *GtkMargins(*(6,) * 4),
-    GtkChildObject(
-        "GtkLabel",
-        (
-            GtkProperty("label", "Progressive Collections"),
-            GtkProperty("css-classes", "heading"),
-            GtkProperty("halign", "start"),
-        ),
-    ),
-    GtkChildObject(
+    GtkProperty("title", "New Collection"),
+    GtkProperty("modal", GtkTrue),
+    GtkProperty("default-width", "600"),
+    GtkProperty("default-height", "400"),
+    GtkProperty("resizable", GtkFalse),
+    GtkProperty("content", GtkObject(
         "GtkBox",
         (
-            GtkProperty("orientation", "horizontal"),
-            GtkProperty("spacing", "6"),
-            GtkChildObject(
-                "GtkSearchEntry",
-                id="search_bar",
-                content=(GtkProperty("hexpand", GtkTrue)),
-            ),
-            GtkChildObject(
-                "GtkButton",
-                id="add_collection_button",
-                content=(
-                    GtkProperty("icon-name", "list-add"),
-                    GtkProperty("css-classes", "circular"),
-                ),
-            ),
-        ),
-    ),
-    GtkChildObject("GtkListBox", id="list_box"),
+            GtkProperty("orientation", "vertical"),
+            GtkChildObject("GtkHeaderBar"),
+        )
+    )),
 )
+
 
 gtk_template = XmlTag(
     "template",
