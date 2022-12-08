@@ -17,8 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
+use chrono::prelude::*;
 use glib::subclass::InitializingObject;
-use gtk::{glib, CompositeTemplate};
+use gtk::{glib, CompositeTemplate, Ordering};
 
 use crate::ui::widgets::collection::{CollectionData, CollectionModel, CollectionRow};
 
@@ -55,16 +56,16 @@ impl ObjectImpl for CollectionList {
 
         collection_model.append(&CollectionData::new(
             "",
-            "Collection 1",
-            "desc 1",
-            "2022-12-07 14:01:09",
+            "Collection 2",
+            "desc 2",
+            "2022-12-07 14:02:32",
             false,
         ));
         collection_model.append(&CollectionData::new(
             "",
-            "Collection 2",
-            "desc 2",
-            "2022-12-07 14:02:32",
+            "Collection 1",
+            "desc 1",
+            "2022-12-07 14:01:09",
             false,
         ));
         collection_model.append(&CollectionData::new(
@@ -82,15 +83,63 @@ impl ObjectImpl for CollectionList {
             false,
         ));
 
-        collection_model.sort();
+		let sorter = gtk::CustomSorter::new(
+			move |obj1, obj2|  {
+				let a = obj1
+					.downcast_ref::<CollectionData>()
+					.expect("Object not of type `CollectionData`.");
+				let b = obj2
+					.downcast_ref::<CollectionData>()
+					.expect("Object not of type `CollectionData`.");
+
+				let d1 = Utc
+					.datetime_from_str(&a.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+					.unwrap();
+				let d2 = Utc
+					.datetime_from_str(&b.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+					.unwrap();
+
+				let a_starred = a.property::<bool>("star");
+				let b_starred = b.property::<bool>("star");
+
+				if a_starred == b_starred {
+					if d1 < d2 {
+						return Ordering::Larger;
+					} else if d1 != d2 {
+						return Ordering::Smaller;
+					} else {
+						return Ordering::Equal;
+					}
+				} else {
+					return match a_starred {
+						true => Ordering::Smaller,
+						false => Ordering::Larger,
+					}
+				}
+			}
+		);
+
+        let sort_model = gtk::SortListModel::new(
+        	Some(&collection_model),
+			Some(&sorter),
+        );
 
         self.list_box
-            .bind_model(Some(&collection_model), move |item| {
-                CollectionRow::new(
+            .bind_model(Some(&sort_model), move |item| {
+                let row = CollectionRow::new(
                     item.downcast_ref::<CollectionData>()
                         .expect("CollectionData is of wrong type."),
-                )
-                .upcast::<gtk::Widget>()
+                );
+
+				row.connect_closure(
+					"pin-action",
+					false,
+					glib::closure_local!(@weak-allow-none sorter => move |_: CollectionRow| {
+						sorter.unwrap().changed(gtk::SorterChange::Different);
+					}),
+				);
+
+                return row.upcast::<gtk::Widget>();
             });
     }
 

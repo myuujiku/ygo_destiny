@@ -17,11 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod imp;
 
-use std::cmp::Ordering;
-
 use adw::prelude::*;
 use adw::subclass::prelude::*;
-use chrono::prelude::*;
 use gtk::{gio, glib};
 
 use crate::ui::widgets::collection::CollectionData;
@@ -51,29 +48,6 @@ impl CollectionModel {
         self.imp().0.borrow_mut().remove(index as usize);
         // (changed_index, removed_items, added_items)
         self.items_changed(index, 1, 0);
-    }
-
-    pub fn sort(&self) {
-        let mut data = self.imp().0.borrow_mut();
-        data.sort_unstable_by(move |a, b| {
-            let d1 = Utc
-                .datetime_from_str(&a.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
-                .unwrap();
-            let d2 = Utc
-                .datetime_from_str(&b.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
-                .unwrap();
-
-            if (a.property::<bool>("star") && !b.property::<bool>("star")) || (d1 > d2) {
-                return Ordering::Greater;
-            } else if d1 != d2 {
-                return Ordering::Less;
-            } else {
-                return Ordering::Equal;
-            }
-        });
-
-        let len = data.len() as u32;
-        self.items_changed(0, len, len);
     }
 }
 
