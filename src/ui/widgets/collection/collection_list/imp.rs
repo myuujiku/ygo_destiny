@@ -20,6 +20,8 @@ use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
+use crate::ui::widgets::collection::{CollectionData, CollectionModel, CollectionRow};
+
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/com/myujiku/ygo_destiny/templates/collection_list.ui")]
 pub struct CollectionList {
@@ -49,12 +51,47 @@ impl ObjectImpl for CollectionList {
 
         self.list_box.add_css_class("boxed-list");
 
+        let collection_model = CollectionModel::new();
+
+        collection_model.append(&CollectionData::new(
+            "",
+            "Collection 1",
+            "desc 1",
+            "2022-12-07 14:01:09",
+            false,
+        ));
+        collection_model.append(&CollectionData::new(
+            "",
+            "Collection 2",
+            "desc 2",
+            "2022-12-07 14:02:32",
+            false,
+        ));
+        collection_model.append(&CollectionData::new(
+            "",
+            "Collection 3",
+            "desc 3",
+            "2022-12-07 14:07:40",
+            true,
+        ));
+        collection_model.append(&CollectionData::new(
+            "",
+            "Collection 4",
+            "desc 4",
+            "2022-12-08 00:51:11",
+            false,
+        ));
+
+        collection_model.sort();
+
         self.list_box
-            .append(&crate::ui::widgets::collection::CollectionRow::new());
-        self.list_box
-            .append(&crate::ui::widgets::collection::CollectionRow::new());
-        self.list_box
-            .append(&crate::ui::widgets::collection::CollectionRow::new());
+            .bind_model(Some(&collection_model), move |item| {
+                CollectionRow::new(
+                    item.downcast_ref::<CollectionData>()
+                        .expect("CollectionData is of wrong type."),
+                )
+                .upcast::<gtk::Widget>()
+            });
     }
 
     fn dispose(&self) {
@@ -73,19 +110,5 @@ impl WidgetImpl for CollectionList {
 
 impl BoxImpl for CollectionList {}
 
-// TODO: Implement a sort_func for ListBox
-//
-// (a, b) -> gtk::Ordering
-//
-// if (pinned(a) && !pinned(b)) || date(a) > date(b) {
-//     return Ordering::Larger;
-// } else if date(a) != date(b) {
-//     return Ordering::Smaller;
-// } else {
-//     return Ordering::Equal;
-// }
-//
-// pinned is actually a Vec::contains call.
-// date should give a value that can be compared and is the last modified date of the file
-// containing the collection.
+// TODO: Implement meta data
 // see std::path::Path::{read_dir, metadata} and std::fs::Metadata::modified

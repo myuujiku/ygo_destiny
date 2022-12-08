@@ -15,20 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::cell::Cell;
+use std::cell::RefCell;
 
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::subclass::{InitializingObject, Signal};
+use glib::{ParamSpec, ParamSpecBoolean, ParamSpecObject, Value};
 use gtk::{glib, CompositeTemplate};
 use once_cell::sync::Lazy;
+
+use crate::ui::widgets::collection::CollectionData;
 
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/com/myujiku/ygo_destiny/templates/collection_row.ui")]
 pub struct CollectionRow {
     #[template_child]
     pub star_button: TemplateChild<gtk::Button>,
-    pub pinned: Cell<bool>,
+    pub data: RefCell<Option<CollectionData>>,
+    pub pinned: RefCell<bool>,
 }
 
 #[glib::object_subclass]
@@ -54,44 +58,96 @@ impl ObjectImpl for CollectionRow {
         return SIGNALS.as_ref();
     }
 
+    fn properties() -> &'static [ParamSpec] {
+        static PROPERTIES: Lazy<Vec<ParamSpec>> = Lazy::new(|| {
+            vec![
+                ParamSpecObject::builder::<CollectionData>("data")
+                    .construct_only()
+                    .build(),
+                ParamSpecBoolean::builder("pinned").build(),
+            ]
+        });
+        return PROPERTIES.as_ref();
+    }
+
+    fn set_property(&self, _id: usize, value: &Value, pspec: &ParamSpec) {
+        match pspec.name() {
+            "data" => {
+                let data = value.get().unwrap();
+                self.data.replace(data);
+            }
+            "pinned" => {
+                let pinned = value.get().unwrap();
+                self.pinned.replace(pinned);
+            }
+            _ => unimplemented!(),
+        }
+    }
+
+    fn property(&self, _id: usize, pspec: &ParamSpec) -> Value {
+        match pspec.name() {
+            "data" => self.data.borrow().to_value(),
+            "pinned" => self.pinned.borrow().to_value(),
+            _ => unimplemented!(),
+        }
+    }
+
     fn constructed(&self) {
         self.parent_constructed();
 
-        let self_ptr = self as *const Self;
+        let obj = self.obj();
+        let item = self.data.borrow().as_ref().cloned().unwrap();
 
-        // Change star_button icon and pinned state on clicked
-        self.star_button.connect_clicked(move |_| unsafe {
-            let ptr_ref = self_ptr.as_ref().unwrap();
-            let new_val = !ptr_ref.pinned.get();
+        item.bind_property("star", obj.as_ref(), "pinned")
+            .sync_create()
+            .bidirectional()
+            .build();
 
-            ptr_ref.pinned.set(new_val);
-            ptr_ref.obj().emit_by_name::<()>("pin-action", &[]);
+        obj.set_title(&item.property::<String>("name"));
+        obj.set_subtitle(&item.property::<String>("desc"));
 
-            if new_val {
-                ptr_ref.star_button.set_icon_name("starred-symbolic");
-            } else {
-                ptr_ref.star_button.set_icon_name("non-starred-symbolic");
-            }
-        });
+        if self.pinned.borrow().clone() {
+            self.star_button.set_icon_name("starred-symbolic");
+        }
+
+        self.star_button
+            .connect_clicked(glib::clone!(@weak item, @weak obj => move |btn| {
+                let new_val = !item.property::<bool>("star");
+                item.set_property("star", new_val);
+
+                if new_val {
+                    btn.set_icon_name("starred-symbolic");
+                } else {
+                    btn.set_icon_name("non-starred-symbolic");
+                }
+
+                obj.emit_by_name::<()>("pin-action", &[]);
+            }));
 
         // Modify button appearance if the row is not pinned
         let row_motion_controller = gtk::EventControllerMotion::new();
-        self.obj().add_controller(&row_motion_controller);
+        obj.add_controller(&row_motion_controller);
 
         // Show non-starred icon if mouse cursor is inside the collection_row
-        row_motion_controller.connect_enter(move |_, _, _| unsafe {
-            let ptr_ref = self_ptr.as_ref().unwrap();
-            if !ptr_ref.pinned.get() {
-                ptr_ref.star_button.set_icon_name("non-starred-symbolic")
-            }
-        });
+        row_motion_controller.connect_enter(
+            glib::clone!(@weak item, @strong self.star_button as btn => move |_, _, _| {
+                if !item.property::<bool>("star") {
+                    btn.set_icon_name("non-starred-symbolic")
+                }
+            }),
+        );
 
         // Hide non-starred icon if mouse cursor is outside the collection row
-        row_motion_controller.connect_leave(move |_| unsafe {
-            let ptr_ref = self_ptr.as_ref().unwrap();
-            if !ptr_ref.pinned.get() {
-                ptr_ref.star_button.set_icon_name("");
-            }
+        row_motion_controller.connect_leave(
+            glib::clone!(@weak item, @strong self.star_button as btn => move |_| {
+                if !item.property::<bool>("star") {
+                    btn.set_icon_name("")
+                }
+            }),
+        );
+
+        obj.connect_activated(move |_| {
+            println!("edit collection");
         });
     }
 

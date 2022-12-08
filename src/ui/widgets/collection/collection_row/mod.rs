@@ -19,6 +19,8 @@ mod imp;
 
 use gtk::glib;
 
+use crate::ui::widgets::collection::CollectionData;
+
 glib::wrapper! {
     pub struct CollectionRow(ObjectSubclass<imp::CollectionRow>)
         @extends adw::ActionRow, adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
@@ -27,7 +29,11 @@ glib::wrapper! {
 
 #[gtk::template_callbacks]
 impl CollectionRow {
-    pub fn new() -> Self {
+    pub fn new(collection_data: &CollectionData) -> Self {
+        glib::Object::new(&[("data", &collection_data)])
+    }
+
+    pub fn empty() -> Self {
         glib::Object::new(&[])
     }
 }
