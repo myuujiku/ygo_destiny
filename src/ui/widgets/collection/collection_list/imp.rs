@@ -83,64 +83,58 @@ impl ObjectImpl for CollectionList {
             false,
         ));
 
-		let sorter = gtk::CustomSorter::new(
-			move |obj1, obj2|  {
-				let a = obj1
-					.downcast_ref::<CollectionData>()
-					.expect("Object not of type `CollectionData`.");
-				let b = obj2
-					.downcast_ref::<CollectionData>()
-					.expect("Object not of type `CollectionData`.");
+        let sorter = gtk::CustomSorter::new(move |obj1, obj2| {
+            let a = obj1
+                .downcast_ref::<CollectionData>()
+                .expect("Object not of type `CollectionData`.");
+            let b = obj2
+                .downcast_ref::<CollectionData>()
+                .expect("Object not of type `CollectionData`.");
 
-				let d1 = Utc
-					.datetime_from_str(&a.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
-					.unwrap();
-				let d2 = Utc
-					.datetime_from_str(&b.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
-					.unwrap();
+            let d1 = Utc
+                .datetime_from_str(&a.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+                .unwrap();
+            let d2 = Utc
+                .datetime_from_str(&b.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+                .unwrap();
 
-				let a_starred = a.property::<bool>("star");
-				let b_starred = b.property::<bool>("star");
+            let a_starred = a.property::<bool>("star");
+            let b_starred = b.property::<bool>("star");
 
-				if a_starred == b_starred {
-					if d1 < d2 {
-						return Ordering::Larger;
-					} else if d1 != d2 {
-						return Ordering::Smaller;
-					} else {
-						return Ordering::Equal;
-					}
-				} else {
-					return match a_starred {
-						true => Ordering::Smaller,
-						false => Ordering::Larger,
-					}
-				}
-			}
-		);
+            if a_starred == b_starred {
+                if d1 < d2 {
+                    return Ordering::Larger;
+                } else if d1 != d2 {
+                    return Ordering::Smaller;
+                } else {
+                    return Ordering::Equal;
+                }
+            } else {
+                return match a_starred {
+                    true => Ordering::Smaller,
+                    false => Ordering::Larger,
+                };
+            }
+        });
 
-        let sort_model = gtk::SortListModel::new(
-        	Some(&collection_model),
-			Some(&sorter),
-        );
+        let sort_model = gtk::SortListModel::new(Some(&collection_model), Some(&sorter));
 
-        self.list_box
-            .bind_model(Some(&sort_model), move |item| {
-                let row = CollectionRow::new(
-                    item.downcast_ref::<CollectionData>()
-                        .expect("CollectionData is of wrong type."),
-                );
+        self.list_box.bind_model(Some(&sort_model), move |item| {
+            let row = CollectionRow::new(
+                item.downcast_ref::<CollectionData>()
+                    .expect("CollectionData is of wrong type."),
+            );
 
-				row.connect_closure(
-					"pin-action",
-					false,
-					glib::closure_local!(@weak-allow-none sorter => move |_: CollectionRow| {
-						sorter.unwrap().changed(gtk::SorterChange::Different);
-					}),
-				);
+            row.connect_closure(
+                "pin-action",
+                false,
+                glib::closure_local!(@weak-allow-none sorter => move |_: CollectionRow| {
+                    sorter.unwrap().changed(gtk::SorterChange::Different);
+                }),
+            );
 
-                return row.upcast::<gtk::Widget>();
-            });
+            return row.upcast::<gtk::Widget>();
+        });
     }
 
     fn dispose(&self) {
