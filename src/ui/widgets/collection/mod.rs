@@ -17,8 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 pub mod collection_data;
 pub mod collection_list;
+pub mod collection_model;
 pub mod collection_row;
 
 pub use collection_data::CollectionData;
 pub use collection_list::CollectionList;
+pub use collection_model::CollectionModel;
 pub use collection_row::CollectionRow;
