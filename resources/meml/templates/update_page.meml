@@ -1,0 +1,104 @@
+{ LICENSE
+
+YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
+Copyright (C) 2022  myujiku
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+LICENSE }
+
+include <function> property     // arguments: name, content
+include <function> margin       // arguments: direction, margin
+// include <function> style_class  // arguments: name
+
+def class_name: "YGOUpdatePage"
+def parent_class: "AdwBin"
+
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+    property {
+        name: "child"
+        object {
+            class: "AdwClamp"
+            child { object {
+                class: "AdwLeaflet"
+                id: "leaflet"
+                property("can-unfold" "false")
+                property("transition-type" "slide")
+                database_page
+                progress_page
+                property("visible-child-name" "database_page")
+            }}
+        }
+    }
+}}
+
+def database_page: child { object {
+    class: "AdwLeafletPage"
+    property("name" "database_page")
+    property {
+        name: "child"
+        object {
+            class: "GtkBox"
+            margin("start" "12")
+            margin("end" "12")
+            margin("top" "12")
+            margin("bottom" "12")
+            property("orientation" "vertical")
+            property("vexpand" "true")
+            property("hexpand" "true")
+            property("align" "center")
+            child { object {
+                class: "GtkSpinner"
+                property("width-request" "48")
+                property("height-request" "48")
+                property("spinning" "true")
+            }}
+            child { object {
+                class: "GtkLabel"
+                property("label" "Please be patient ^^")
+            }}
+        }
+    }
+}}
+
+def progress_page: child { object {
+    class: "AdwleafletPage"
+    property("name" "progress_page")
+    property {
+        name: "child"
+        object {
+            class: "GtkBox"
+            margin("start" "12")
+            margin("end" "12")
+            margin("top" "12")
+            margin("bottom" "12")
+            property("orientation" "vertical")
+            property("vexpand" "true")
+            property("hexpand" "true")
+            property("align" "center")
+            progress_bar
+            child { object {
+                class: "GtkLabel"
+                id: "label"
+            }}
+        }
+    }
+}}
+
+def progress_bar: child { object {
+    class: "GtkProgressBar"
+    id: "progress_bar"
+    property("show-text" "true")
+}}

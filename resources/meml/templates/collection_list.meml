@@ -1,0 +1,62 @@
+{ LICENSE
+
+YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
+Copyright (C) 2022  myujiku
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+LICENSE }
+
+include <function> property     // arguments: name, content
+include <function> margin       // arguments: direction, margin
+include <function> style_class  // arguments: name
+
+def class_name: "YGOCollectionList"
+def parent_class: "GtkBox"
+
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+    property("vexpand" "true")
+    property("spacing" "6")
+    margin("start" "6")
+    margin("end" "6")
+    margin("top" "6")
+    margin("bottom" "6")
+    child { object {
+        class: "GtkLabel"
+        property("label" "Progressive Collections")
+        style { style_class("heading") }
+        property("halign" "start")
+    }}
+    child { object {
+        class: "GtkBox"
+        property("orientation" "horizontal")
+        property("spacing" "6")
+        child { object {
+            class: "GtkSearchEntry"
+            id: "search_bar"
+            property("hexpand" "true")
+        }}
+        child { object {
+            class: "GtkButton"
+            id: "add_collection_button"
+            property("icon-name" "list-add")
+            style { style_class("circular") }
+        }}
+    }}
+    child { object {
+        class: "GtkListBox"
+        id: "list_box"
+    }}
+}}

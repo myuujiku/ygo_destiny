@@ -20,17 +20,8 @@ instead.
 ## Build instructions
 Make sure you have everything on this list installed:
 - rust (tested on 1.65.0)
-- python3 (tested on 3.10)
 - libadwaita
 - everything listed [here](https://gtk-rs.org/gtk4-rs/git/book/installation.html)
-
-Before compiling the project, run `py2xml/project.py`.
-
-```
-python3 ./py2xml/project.py
-```
-
-This only has to be done once if nothing in `py2xml/` is changed.
 
 To build the binary use
 ```
@@ -52,7 +43,6 @@ Things that still need to be done in no particular order.
 - [ ] Collections
 - [ ] Card info viewer
 - [ ] Simple collection menu
-- [ ] Working update page
 - [ ] First start setup
 
 ### Project structure

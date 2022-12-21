@@ -1,4 +1,5 @@
-"""
+{ LICENSE
+
 YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
 Copyright (C) 2022  myujiku
 
@@ -13,15 +14,17 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
 
-from pathlib import Path
+LICENSE }
 
-app_id = "com.myujiku.ygo_destiny"
-app_path = "/com/myujiku/ygo_destiny/"
+// include <function> property     // arguments: name, content
+// include <function> margin       // arguments: direction, margin
+// include <function> style_class  // arguments: name
 
-directory: str = Path(__file__).absolute().parent.parent / "resources/templates"
-header: str = """<?xml version="1.0" encoding="UTF-8"?>"""
+def class_name: ""
+def parent_class: ""
 
-if __name__ == "__main__":
-    from ui import *
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+}}
