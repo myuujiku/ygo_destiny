@@ -22,7 +22,18 @@ use gtk::{glib, CompositeTemplate};
 
 #[derive(Debug, Default, CompositeTemplate)]
 #[template(resource = "/com/myujiku/ygo_destiny/templates/collection_create_window.ui")]
-pub struct CollectionCreateWindow {}
+pub struct CollectionCreateWindow {
+    #[template_child]
+    pub draft_rounds_spinner: TemplateChild<gtk::SpinButton>,
+    #[template_child]
+    pub draft_cards_spinner: TemplateChild<gtk::SpinButton>,
+    #[template_child]
+    pub draft_follow_sets_expander: TemplateChild<adw::ExpanderRow>,
+    #[template_child]
+    pub draft_set_rotation_expander: TemplateChild<adw::ExpanderRow>,
+    #[template_child]
+    pub draft_keep_sets_spinner: TemplateChild<gtk::SpinButton>,
+}
 
 #[glib::object_subclass]
 impl ObjectSubclass for CollectionCreateWindow {

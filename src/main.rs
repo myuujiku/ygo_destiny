@@ -46,13 +46,23 @@ fn main() {
 fn build_ui(app: &adw::Application) {
     let window = Window::new(app);
 
+    let collection_list = window.imp().collection_list.imp();
     // Let search bar capture key input from the window
-    window.imp().collection_list.imp().search_bar.set_key_capture_widget(Some(&window));
+    collection_list.search_bar.set_key_capture_widget(Some(&window));
 
-    window.imp().collection_list.imp().options_button.connect_activated(glib::clone!(@weak window =>
+    collection_list.options_button.connect_activated(glib::clone!(@weak window =>
         move |_| {
-            let collection_window = CollectionCreateWindow::new();
+            let collection_window = CollectionCreateWindow::from_options(
+                window.imp().collection_options.borrow().clone()
+            );
             collection_window.set_transient_for(Some(&window));
+
+            collection_window.connect_destroy(
+                glib::clone!(@weak window => move |w| {
+                    *window.imp().collection_options.borrow_mut() = Some(w.collect_options());
+                })
+            );
+
             collection_window.present();
         }
     ));

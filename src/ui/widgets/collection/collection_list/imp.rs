@@ -34,6 +34,8 @@ pub struct CollectionList {
     pub add_collection_button: TemplateChild<gtk::MenuButton>,
     #[template_child]
     pub options_button: TemplateChild<adw::ActionRow>,
+    #[template_child]
+    pub create_button: TemplateChild<gtk::Button>,
 }
 
 #[glib::object_subclass]

@@ -45,6 +45,7 @@ def draft_page: child { object {
             property("subtitle" "")
             child { object {
                 class: "GtkSpinButton"
+                id: "draft_rounds_spinner"
                 property("valign" "center")
                 spinner_bounds("1.0" "9999.0" "1.0")
                 property("value" "20.0")
@@ -56,6 +57,7 @@ def draft_page: child { object {
             property("subtitle" "Number of cards shown in each round")
             child { object {
                 class: "GtkSpinButton"
+                id: "draft_cards_spinner"
                 property("valign" "center")
                 spinner_bounds("1.0" "9999.0" "1.0")
                 property("value" "5.0")
@@ -66,12 +68,14 @@ def draft_page: child { object {
         class: "AdwPreferencesGroup"
         child { object {
             class: "AdwExpanderRow"
+            id: "draft_follow_sets_expander"
             property("title" "Follow Sets")
             property("subtitle" "Draft packs in a set order")
             property("show-enable-switch" "true")
             property("enable-expansion" "false")
             child { object {
                 class: "AdwExpanderRow"
+                id: "draft_set_rotation_expander"
                 property("title" "Set Rotation")
                 property("subtitle" "Only the most recent sets are in the active card pool")
                 property("show-enable-switch" "true")
@@ -82,6 +86,7 @@ def draft_page: child { object {
                     property("subtitle" "Maximum number of sets that are active at one time")
                     child { object {
                         class: "GtkSpinButton"
+                        id: "draft_keep_sets_spinner"
                         property("valign" "center")
                         spinner_bounds("1.0" "9999.0" "1.0")
                         property("value" "3.0")

@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use std::cell::RefCell;
 use std::sync::Mutex;
 
 use adw::prelude::*;
@@ -22,7 +23,7 @@ use adw::subclass::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
-use crate::ui::widgets::collection::CollectionList;
+use crate::ui::widgets::collection::{CollectionList, CollectionOptions};
 
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/com/myujiku/ygo_destiny/templates/window.ui")]
@@ -34,6 +35,7 @@ pub struct Window {
     pub update_version: Mutex<String>,
     #[template_child]
     pub collection_list: TemplateChild<CollectionList>,
+    pub collection_options: RefCell<Option<CollectionOptions>>,
 }
 
 #[glib::object_subclass]
