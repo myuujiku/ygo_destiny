@@ -15,14 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+pub mod collection_create_window;
 pub mod collection_data;
 pub mod collection_list;
 pub mod collection_model;
 pub mod collection_row;
-pub mod new_collection_window;
 
+pub use collection_create_window::CollectionCreateWindow;
 pub use collection_data::CollectionData;
 pub use collection_list::CollectionList;
 pub use collection_model::CollectionModel;
 pub use collection_row::CollectionRow;
-pub use new_collection_window::NewCollectionWindow;

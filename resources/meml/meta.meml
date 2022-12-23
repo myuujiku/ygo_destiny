@@ -32,6 +32,16 @@ export def margin(direction margin): property {
 
 export def style_class(name): class { name: "${name}" }
 
+export def spinner_bounds(lower upper step): property {
+    name: "adjustment"
+    object {
+        class: "GtkAdjustment"
+        property { name: "lower" "${lower}" }
+        property { name: "upper" "${upper}" }
+        property { name: "step-increment" "${step}" }
+    }
+}
+
 templates {
     action: "xml"
     directory: "templates"

@@ -24,7 +24,7 @@ use ygo_destiny::APP_ID;
 use ygo_destiny::logic::utils::http;
 use ygo_destiny::ui::widgets::{
     window::Window,
-    collection::NewCollectionWindow,
+    collection::CollectionCreateWindow,
 };
 
 fn main() {
@@ -49,9 +49,9 @@ fn build_ui(app: &adw::Application) {
     // Let search bar capture key input from the window
     window.imp().collection_list.imp().search_bar.set_key_capture_widget(Some(&window));
 
-    window.imp().collection_list.imp().add_collection_button.connect_clicked(glib::clone!(@weak window =>
+    window.imp().collection_list.imp().options_button.connect_activated(glib::clone!(@weak window =>
         move |_| {
-            let collection_window = NewCollectionWindow::new();
+            let collection_window = CollectionCreateWindow::new();
             collection_window.set_transient_for(Some(&window));
             collection_window.present();
         }

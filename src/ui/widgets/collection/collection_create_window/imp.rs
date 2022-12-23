@@ -21,30 +21,31 @@ use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate};
 
 #[derive(Debug, Default, CompositeTemplate)]
-#[template(resource = "/com/myujiku/ygo_destiny/templates/new_collection_window.ui")]
-pub struct NewCollectionWindow {}
+#[template(resource = "/com/myujiku/ygo_destiny/templates/collection_create_window.ui")]
+pub struct CollectionCreateWindow {}
 
 #[glib::object_subclass]
-impl ObjectSubclass for NewCollectionWindow {
-    const NAME: &'static str = "YGONewCollectionWindow";
-    type Type = super::NewCollectionWindow;
-    type ParentType = adw::Window;
+impl ObjectSubclass for CollectionCreateWindow {
+    const NAME: &'static str = "YGOCollectionCreateWindow";
+    type Type = super::CollectionCreateWindow;
+    type ParentType = adw::PreferencesWindow;
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
         klass.bind_template_callbacks();
     }
 
-    fn instance_init(obj:  &InitializingObject<Self>) {
+    fn instance_init(obj: &InitializingObject<Self>) {
         obj.init_template();
     }
 }
 
-impl ObjectImpl for NewCollectionWindow {}
-impl WidgetImpl for NewCollectionWindow {}
-impl WindowImpl for NewCollectionWindow {}
-impl AdwWindowImpl for NewCollectionWindow {}
+impl ObjectImpl for CollectionCreateWindow {}
+
+impl WidgetImpl for CollectionCreateWindow {}
+impl WindowImpl for CollectionCreateWindow {}
+impl AdwWindowImpl for CollectionCreateWindow {}
+impl PreferencesWindowImpl for CollectionCreateWindow {}
 
 #[gtk::template_callbacks]
-impl NewCollectionWindow {}
-
+impl CollectionCreateWindow {}

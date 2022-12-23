@@ -19,9 +19,9 @@ include <string> app_path
 
 gresources { gresource {
     prefix: "$(app_path)"
+    file { compressed: "true" "templates/collection_create_window.ui" }
     file { compressed: "true" "templates/collection_list.ui" }
     file { compressed: "true" "templates/collection_row.ui" }
-    file { compressed: "true" "templates/new_collection_window.ui" }
     file { compressed: "true" "templates/update_page.ui" }
     file { compressed: "true" "templates/window.ui" }
 }}

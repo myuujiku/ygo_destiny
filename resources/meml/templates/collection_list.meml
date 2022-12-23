@@ -49,10 +49,15 @@ interface { template {
             property("hexpand" "true")
         }}
         child { object {
-            class: "GtkButton"
+            class: "GtkMenuButton"
             id: "add_collection_button"
-            property("icon-name" "list-add")
             style { style_class("circular") }
+            property("icon-name" "list-add")
+            property("direction" "left")
+            property {
+                name: "popover"
+                popover
+            }
         }}
     }}
     child { object {
@@ -60,3 +65,66 @@ interface { template {
         id: "list_box"
     }}
 }}
+
+def popover: object {
+    class: "GtkPopover"
+    property("autohide" "false")
+    property("valign" "start")
+    child { object {
+        class: "GtkBox"
+        property("orientation" "vertical")
+        property("spacing" "6")
+        child { object {
+            class: "AdwPreferencesGroup"
+            child { object {
+                class: "AdwActionRow"
+                id: "options_button"
+                property("title" "Options")
+                property("activatable" "true")
+                child { object {
+                    class: "GtkImage"
+                    property("icon-name" "go-next-symbolic")
+                }}
+            }}
+        }}
+        child { object {
+            class: "AdwPreferencesGroup"
+            child { object {
+                class: "AdwEntryRow"
+                id: "name_entry"
+                property("title" "Name")
+            }}
+            child { object {
+                class: "AdwEntryRow"
+                id: "desc_entry"
+                property("title" "Description")
+            }}
+        }}
+        child { object {
+            class: "AdwPreferencesGroup"
+            child { object {
+                class: "AdwActionRow"
+                property("title" "Starred")
+                property("subtitle" "Starred collections are listed above non-starred ones")
+                child { object {
+                    class: "GtkSwitch"
+                    id: "starred_switch"
+                    property("valign" "center")
+                }}
+            }}
+        }}
+        child { object {
+            class: "AdwPreferencesGroup"
+            child { object {
+                class: "GtkButton"
+                id: "create_button"
+                property("label" "Create")
+                style {
+                    style_class("title-4")
+                    style_class("suggested-action")
+                }
+                property("height-request" "50")
+            }}
+        }}
+    }}
+}

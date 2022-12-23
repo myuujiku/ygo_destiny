@@ -17,16 +17,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod imp;
 
+use adw::prelude::*;
 use gtk::glib;
 
 glib::wrapper! {
-    pub struct NewCollectionWindow(ObjectSubclass<imp::NewCollectionWindow>)
-        @extends adw::Window, gtk::Widget, gtk::Window;
+    pub struct CollectionCreateWindow(ObjectSubclass<imp::CollectionCreateWindow>)
+        @extends adw::PreferencesWindow, adw::Window, gtk::Widget, gtk::Window;
 }
 
-impl NewCollectionWindow {
+impl CollectionCreateWindow {
     pub fn new() -> Self {
         glib::Object::new(&[])
     }
 }
-

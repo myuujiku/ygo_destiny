@@ -1,0 +1,75 @@
+{ LICENSE
+
+YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
+Copyright (C) 2022  myujiku
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+LICENSE }
+
+include <function> property     // arguments: name, content
+// include <function> margin       // arguments: direction, margin
+include <function> style_class  // arguments: name
+
+def class_name: "YGONewCollectionWindow"
+def parent_class: "AdwPreferencesWindow"
+
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+    property("title" "New Collection")
+    property("modal" "true")
+    property("default-width" "460")
+    property("default-height" "580")
+    property("resizable" "false")
+}}
+
+def general_page: child { object {
+    class: "AdwPreferencesPage"
+    property("title" "General")
+    child { object {
+        class: "AdwPreferencesGroup"
+        child { object {
+            class: "AdwEntryRow"
+            property("title" "Name")
+        }}
+        child { object {
+            class: "AdwEntryRow"
+            property("title" "Description")
+        }}
+    }}
+    child { object {
+        class: "AdwPreferencesGroup"
+        child { object {
+            class: "AdwActionRow"
+            property("title" "Starred")
+            property("subtitle" "Starred collections are listed above non-starred ones")
+            child { object {
+                class: "GtkSwitch"
+                property("valign" "center")
+            }}
+        }}
+    }}
+    child { object {
+        class: "AdwPreferencesGroup"
+        child { object {
+            class: "GtkButton"
+            property("label" "Create")
+            style {
+                style_class("title-4")
+                style_class("suggested-action")
+            }
+            property("height-request" "50")
+        }}
+    }}
+}}

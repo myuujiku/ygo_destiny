@@ -31,7 +31,9 @@ pub struct CollectionList {
     #[template_child]
     pub search_bar: TemplateChild<gtk::SearchEntry>,
     #[template_child]
-    pub add_collection_button: TemplateChild<gtk::Button>,
+    pub add_collection_button: TemplateChild<gtk::MenuButton>,
+    #[template_child]
+    pub options_button: TemplateChild<adw::ActionRow>,
 }
 
 #[glib::object_subclass]
@@ -96,7 +98,14 @@ impl ObjectImpl for CollectionList {
             let filter = data.property::<String>("filter");
 
             // TODO: Consider making description search optional
-            return data.property::<String>("name").to_lowercase().contains(filter.as_str()) || data.property::<String>("desc").to_lowercase().contains(filter.as_str());
+            return data
+                .property::<String>("name")
+                .to_lowercase()
+                .contains(filter.as_str())
+                || data
+                    .property::<String>("desc")
+                    .to_lowercase()
+                    .contains(filter.as_str());
         });
 
         let filter_model = gtk::FilterListModel::new(Some(&collection_model), Some(&filter));
@@ -137,23 +146,25 @@ impl ObjectImpl for CollectionList {
 
         let sort_model = gtk::SortListModel::new(Some(&filter_model), Some(&sorter));
 
-        self.search_bar.connect_search_changed(glib::clone!(@weak filter, @weak collection_model => move |search_bar| {
-            let text = search_bar.text().to_lowercase();
+        self.search_bar.connect_search_changed(
+            glib::clone!(@weak filter, @weak collection_model => move |search_bar| {
+                let text = search_bar.text().to_lowercase();
 
-            let mut i = 0;
-            loop {
-                let item = collection_model.item(i);
+                let mut i = 0;
+                loop {
+                    let item = collection_model.item(i);
 
-                if item.is_none() {
-                    break;
+                    if item.is_none() {
+                        break;
+                    }
+
+                    item.unwrap().set_property("filter", text.clone());
+                    i += 1;
                 }
 
-                item.unwrap().set_property("filter", text.clone());
-                i += 1;
-            }
-
-            filter.changed(gtk::FilterChange::Different);
-        }));
+                filter.changed(gtk::FilterChange::Different);
+            }),
+        );
 
         self.list_box.bind_model(Some(&sort_model), move |item| {
             let row = CollectionRow::new(

@@ -1,0 +1,95 @@
+{ LICENSE
+
+YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
+Copyright (C) 2022  myujiku
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+LICENSE }
+
+include <function> property         // arguments: name, content
+// include <function> margin           // arguments: direction, margin
+include <function> style_class      // arguments: name
+include <function> spinner_bounds   // arguments: lower, upper, step
+
+def class_name: "YGOCollectionCreateWindow"
+def parent_class: "AdwPreferencesWindow"
+
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+    property("title" "Collection Settings")
+    property("modal" "true")
+    property("default-width" "460")
+    property("default-height" "580")
+    property("resizable" "false")
+    draft_page
+}}
+
+def draft_page: child { object {
+    class: "AdwPreferencesPage"
+    property("title" "Draft")
+    child { object {
+        class: "AdwPreferencesGroup"
+        child { object {
+            class: "AdwActionRow"
+            property("title" "Rounds")
+            property("subtitle" "")
+            child { object {
+                class: "GtkSpinButton"
+                property("valign" "center")
+                spinner_bounds("1.0" "9999.0" "1.0")
+                property("value" "20.0")
+            }}
+        }}
+        child { object {
+            class: "AdwActionRow"
+            property("title" "Cards")
+            property("subtitle" "Number of cards shown in each round")
+            child { object {
+                class: "GtkSpinButton"
+                property("valign" "center")
+                spinner_bounds("1.0" "9999.0" "1.0")
+                property("value" "5.0")
+            }}
+        }}
+    }}
+    child { object {
+        class: "AdwPreferencesGroup"
+        child { object {
+            class: "AdwExpanderRow"
+            property("title" "Follow Sets")
+            property("subtitle" "Draft packs in a set order")
+            property("show-enable-switch" "true")
+            property("enable-expansion" "false")
+            child { object {
+                class: "AdwExpanderRow"
+                property("title" "Set Rotation")
+                property("subtitle" "Only the most recent sets are in the active card pool")
+                property("show-enable-switch" "true")
+                property("enable-expansion" "false")
+                child { object {
+                    class: "AdwActionRow"
+                    property("title" "Keep Sets")
+                    property("subtitle" "Maximum number of sets that are active at one time")
+                    child { object {
+                        class: "GtkSpinButton"
+                        property("valign" "center")
+                        spinner_bounds("1.0" "9999.0" "1.0")
+                        property("value" "3.0")
+                    }}
+                }}
+            }}
+        }}
+    }}
+}}
