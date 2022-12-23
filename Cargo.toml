@@ -27,7 +27,7 @@ serde_json = "1.0"
 
 [build-dependencies.meml]
 git = "https://github.com/myuujiku/meml"
-rev = "1612548e852eb620d6085d08da562234135db8a4"
+rev = "fd7f52641b2198b1ff2076fd130b875e2e54f9f5"
 
 [build-dependencies]
 glib-build-tools = "0.16"

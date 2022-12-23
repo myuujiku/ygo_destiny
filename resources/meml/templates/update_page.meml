@@ -1,5 +1,4 @@
-{ LICENSE
-
+/*
 YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
 Copyright (C) 2022  myujiku
 
@@ -14,12 +13,12 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
-LICENSE }
-
-include <function> property     // arguments: name, content
-include <function> margin       // arguments: direction, margin
-// include <function> style_class  // arguments: name
+use <function> property         // arguments: name, content
+use <function> margin           // arguments: direction, margin
+// use <function> style_class      // arguments: name
+// use <function> spinner_bounds   // arguments: lower, upper, step
 
 def class_name: "YGOUpdatePage"
 def parent_class: "AdwBin"
