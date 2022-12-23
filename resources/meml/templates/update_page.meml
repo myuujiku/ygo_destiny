@@ -58,7 +58,7 @@ def database_page: child { object {
             property("orientation" "vertical")
             property("vexpand" "true")
             property("hexpand" "true")
-            property("align" "center")
+            property("valign" "center")
             child { object {
                 class: "GtkSpinner"
                 property("width-request" "48")
@@ -74,7 +74,7 @@ def database_page: child { object {
 }}
 
 def progress_page: child { object {
-    class: "AdwleafletPage"
+    class: "AdwLeafletPage"
     property("name" "progress_page")
     property {
         name: "child"
@@ -87,7 +87,7 @@ def progress_page: child { object {
             property("orientation" "vertical")
             property("vexpand" "true")
             property("hexpand" "true")
-            property("align" "center")
+            property("valign" "center")
             progress_bar
             child { object {
                 class: "GtkLabel"
