@@ -50,6 +50,7 @@ fn build_ui(app: &adw::Application) {
     // Let search bar capture key input from the window
     collection_list.search_bar.set_key_capture_widget(Some(&window));
 
+    *window.imp().collection_options.borrow_mut() = CollectionCreateWindow::new().collect_options();
     collection_list.options_button.connect_activated(glib::clone!(@weak window =>
         move |_| {
             let collection_window = CollectionCreateWindow::from_options(
@@ -59,7 +60,7 @@ fn build_ui(app: &adw::Application) {
 
             collection_window.connect_destroy(
                 glib::clone!(@weak window => move |w| {
-                    *window.imp().collection_options.borrow_mut() = Some(w.collect_options());
+                    *window.imp().collection_options.borrow_mut() = w.collect_options();
                 })
             );
 

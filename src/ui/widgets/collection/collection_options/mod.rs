@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct DraftOptions {
     pub rounds: i32,
     pub cards: i32,
@@ -24,7 +24,7 @@ pub struct DraftOptions {
     pub rotate_after: i32,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct CollectionOptions {
     pub draft_options: DraftOptions,
 }

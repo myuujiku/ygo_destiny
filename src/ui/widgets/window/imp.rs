@@ -35,7 +35,7 @@ pub struct Window {
     pub update_version: Mutex<String>,
     #[template_child]
     pub collection_list: TemplateChild<CollectionList>,
-    pub collection_options: RefCell<Option<CollectionOptions>>,
+    pub collection_options: RefCell<CollectionOptions>,
 }
 
 #[glib::object_subclass]

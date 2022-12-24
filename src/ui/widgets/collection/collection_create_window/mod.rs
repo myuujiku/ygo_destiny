@@ -33,14 +33,10 @@ impl CollectionCreateWindow {
         glib::Object::new(&[])
     }
 
-    pub fn from_options(options: Option<CollectionOptions>) -> Self {
-        if let Some(options) = options {
-            let obj = Self::new();
-            obj.set_options(options);
-            return obj;
-        } else {
-            Self::new()
-        }
+    pub fn from_options(options: CollectionOptions) -> Self {
+        let obj = Self::new();
+        obj.set_options(options);
+        return obj;
     }
 
     pub fn collect_options(&self) -> CollectionOptions {
