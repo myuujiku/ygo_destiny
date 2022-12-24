@@ -68,6 +68,13 @@ fn build_ui(app: &adw::Application) {
         }
     ));
 
+    collection_list.create_button.connect_clicked(glib::clone!(@weak window =>
+        move |_| {
+            window.imp().collection_list.imp().popover.popdown();
+            println!("{:#?}", window.imp().collection_options);
+        }
+    ));
+
     let update_action = gio::SimpleAction::new("update_data", None);
     update_action.connect_activate(glib::clone!(@weak window => move |_, _| {
         let (finished_sender, finished_receiver) = MainContext::channel(PRIORITY_DEFAULT);

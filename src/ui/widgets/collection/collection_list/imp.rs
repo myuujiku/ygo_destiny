@@ -36,6 +36,8 @@ pub struct CollectionList {
     pub options_button: TemplateChild<adw::ActionRow>,
     #[template_child]
     pub create_button: TemplateChild<gtk::Button>,
+    #[template_child]
+    pub popover: TemplateChild<gtk::Popover>,
 }
 
 #[glib::object_subclass]
