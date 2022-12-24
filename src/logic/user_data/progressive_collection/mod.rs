@@ -51,14 +51,14 @@ pub struct Change {
 }
 
 /// Container for settings related to drafting.
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Clone, Default, Debug)]
 pub struct DraftSettings {
     pub draft_type: DraftType,
     pub rounds_num: usize,
     pub cards_num: usize,
     pub follow_sets: bool,
-    pub sets: Option<Vec<String>>,
-    pub rotate_sets: usize,
+    pub sets: Option<Vec<Vec<String>>>,
+    pub rotate_after: usize,
     pub allow_undo: bool,
     // ChoiceDraft
     pub choices_num: usize,
@@ -151,6 +151,21 @@ impl Clone for Change {
 }
 
 impl ProgressiveCollection {
+    /// Constructs a copy of `self` without data that is user-specific.
+    pub fn generic(&self) -> Self {
+        Self {
+            meta_data: MetaData {
+                name: self.meta_data.name.clone(),
+                description: self.meta_data.description.clone(),
+                pinned: false,
+            },
+            draft_settings: self.draft_settings.clone(),
+            cards: HashMap::default(),
+            changes: VecDeque::default(),
+            tags: HashMap::default(),
+        }
+    }
+
     /// Adds a new `Change` and applies it to [`cards`][`ProgressiveCollection::cards`].
     pub fn add_change(&mut self, change: Change) {
         if change.has_action() {
@@ -205,5 +220,5 @@ impl ProgressiveCollection {
     }
 }
 
-// #[cfg(test)]
-// mod tests;
+#[cfg(test)]
+mod tests;
