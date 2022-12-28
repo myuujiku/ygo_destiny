@@ -16,12 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::collections::HashMap;
-use std::path::PathBuf;
 
-use once_cell::sync::Lazy;
 use regex::Regex;
-
-use crate::logic::utils::PATHS;
 
 /// Banlist element (card with limit number) type.
 pub type BanlistElementType = HashMap<u32, u8>;
@@ -30,9 +26,6 @@ pub type BanlistsMetaType = HashMap<String, BanlistElementType>;
 
 /// External [URL](https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf) to the banlist data.
 pub const EXT_URL: &str = "https://ygo.anihelp.co.uk/public/config3/TCGCombiList.conf";
-
-/// Path of the binary file containing the processed data.
-pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("banlists.bin"));
 
 /// Returns a processed banlist.
 ///

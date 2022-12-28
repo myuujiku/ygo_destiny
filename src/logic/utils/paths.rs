@@ -21,56 +21,102 @@ use std::path::{Path, PathBuf};
 use directories::ProjectDirs;
 use once_cell::sync::Lazy;
 
+pub struct ExtData {
+    pub banlists: PathBuf,
+    pub cardinfo: PathBuf,
+    pub cardsets: PathBuf,
+    pub version: PathBuf,
+}
+
+impl ExtData {
+    pub fn new(root: PathBuf) -> Self {
+        Self {
+            banlists: root.join("banlists.bin"),
+            cardinfo: root.join("cardinfo.bin"),
+            cardsets: root.join("cardsets.bin"),
+            version: root.join("version.json"),
+        }
+    }
+
+    pub fn ensure(&self) {
+        fs::create_dir_all(self.banlists.parent().unwrap()).unwrap();
+    }
+}
+
+pub struct ImagePaths {
+    pub cards_big: PathBuf,
+    pub cards_small: PathBuf,
+    pub cards_cropped: PathBuf,
+    pub products: PathBuf,
+}
+
+impl ImagePaths {
+    pub fn new(root: PathBuf) -> Self {
+        Self {
+            cards_big: root.join("big"),
+            cards_small: root.join("small"),
+            cards_cropped: root.join("cropped"),
+            products: root.join("products"),
+        }
+    }
+
+    pub fn ensure(&self) {
+        fs::create_dir_all(&self.cards_big).unwrap();
+        fs::create_dir_all(&self.cards_small).unwrap();
+        fs::create_dir_all(&self.cards_cropped).unwrap();
+        fs::create_dir_all(&self.products).unwrap();
+    }
+}
+
+pub struct UserPaths {
+    pub collections: PathBuf,
+}
+
+impl UserPaths {
+    pub fn new(root: PathBuf) -> Self {
+        Self {
+            collections: root.join("collections"),
+        }
+    }
+
+    pub fn ensure(&self) {
+        fs::create_dir_all(&self.collections).unwrap();
+    }
+}
+
 /// Container for file system paths used by YGO Destiny. This should generally only be accessed via
 /// [`PATHS`].
 pub struct Paths {
-    project_dirs: ProjectDirs,
-    ext_folder: &'static str,
-    pub img_big_folder: &'static str,
-    pub img_small_folder: &'static str,
-    pub img_cropped_folder: &'static str,
-    pub img_products_folder: &'static str,
+    pub ext_data: ExtData,
+    pub image_paths: ImagePaths,
+    pub user_paths: UserPaths,
 }
 
 impl Paths {
-    pub fn data_dir(&self) -> &Path {
-        return self.project_dirs.data_dir();
+    pub fn new() -> Self {
+        let project_dirs = ProjectDirs::from("com", "myujiku", "ygo_destiny").unwrap();
+        let data_dir = project_dirs.data_dir();
+
+        Self {
+            ext_data: ExtData::new(data_dir.join("external")),
+            image_paths: ImagePaths::new(data_dir.join("images")),
+            user_paths: UserPaths::new(data_dir.join("user")),
+        }.ensured()
     }
 
-    pub fn ext_dir<P: AsRef<Path>>(&self, path: P) -> PathBuf {
-        return self.data_dir().join(self.ext_folder).join(path);
+    pub fn ensured(self) -> Self {
+        self.ext_data.ensure();
+        self.image_paths.ensure();
+        self.user_paths.ensure();
+        self
     }
 
-    pub fn img_dir(&self) -> PathBuf {
-        return self.data_dir().join("img");
-    }
-
-    // Dummy. TODO: Get image folder from settings or drop support for small images
-    pub fn get_img_dir(&self) -> PathBuf {
-        return self.img_dir().join(self.img_big_folder);
+    pub fn get_img_dir(&self) -> &Path {
+        self.image_paths.cards_big.as_path()
     }
 }
 
 /// Paths data container. See [`Paths`] for methods and fields.
 pub static PATHS: Lazy<Paths> = Lazy::new(|| {
-    let paths = Paths {
-        project_dirs: ProjectDirs::from("com", "myujiku", "ygo_destiny").unwrap(),
-        ext_folder: "ext",
-        img_big_folder: "big",
-        img_small_folder: "small",
-        img_cropped_folder: "cropped",
-        img_products_folder: "products",
-    };
-
-    // Ensure "$DATA_DIR/ext"
-    fs::create_dir_all(paths.data_dir().join(paths.ext_folder)).unwrap();
-
-    // Ensure image directories
-    let img_dir = paths.img_dir();
-    fs::create_dir_all(img_dir.join(paths.img_big_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(paths.img_small_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(paths.img_cropped_folder)).unwrap();
-    fs::create_dir_all(img_dir.join(paths.img_products_folder)).unwrap();
-
-    paths
+    Paths::new()
 });

@@ -26,9 +26,10 @@ use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 use std::cell::Cell;
 
-use crate::logic::ext_data::image_dl;
-use crate::logic::ext_data::vercheck;
-use crate::logic::utils::http;
+use crate::logic::{
+    ext_data::image_dl,
+    utils::{http, PATHS},
+};
 use crate::ui::pages::update_page::UpdatePage;
 
 glib::wrapper! {
@@ -84,7 +85,7 @@ impl Window {
 
             match update_status {
                 http::UpdateStatus::Complete => {
-                    fs::write(&*vercheck::EXT_PATH, update_version).unwrap();
+                    fs::write(&PATHS.ext_data.version, update_version).unwrap();
                     image_dl::cards::download_missing_cards(
                         image_dl::cards::ImageType::Big,
                         progress_sender,

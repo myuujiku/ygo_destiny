@@ -19,13 +19,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 mod eval;
 
 use std::collections::HashMap;
-use std::path::PathBuf;
 
-use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::http::CardSetMapType;
-use crate::logic::utils::PATHS;
 
 use eval::eval_tags;
 
@@ -34,9 +31,6 @@ pub type CardsetsMetaType = HashMap<String, Set>;
 
 /// External [URL](https://db.ygoprodeck.com/api/v7/cardsets.php) to the cardset data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardsets.php";
-
-/// Path of the binary file containing the processed data.
-pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardsets.bin"));
 
 /// Representation of an unprocessed card set from the YGOPRODECK API.
 #[derive(Serialize, Deserialize)]

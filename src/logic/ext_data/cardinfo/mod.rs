@@ -16,22 +16,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::collections::HashMap;
-use std::path::PathBuf;
-
-use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::http::CardSetMapType;
-use crate::logic::utils::PATHS;
 
 /// Type contained in a processed cardinfo binary file.
 pub type CardinfoMetaType = HashMap<u32, Card>;
 
 /// External [URL](https://db.ygoprodeck.com/api/v7/cardinfo.php) to the card data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
-
-/// Path of the binary file containing the processed data.
-pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("cardinfo.bin"));
 
 /// Representation of one card set of a card from the YGOPRODECK API.
 #[derive(Serialize, Deserialize, Debug)]

@@ -24,7 +24,7 @@ use bincode::serde::encode_to_vec as encode;
 use regex::Regex;
 
 use crate::logic::ext_data::{banlists, cardinfo, cardsets, vercheck};
-use crate::logic::utils::cache::CACHE;
+use crate::logic::utils::{CACHE, PATHS};
 
 pub type ResponseType = Result<String, reqwest::Error>;
 pub type CardSetMapType = HashMap<String, Vec<u32>>;
@@ -85,15 +85,15 @@ pub fn update() -> UpdateStatus {
 
     if [
         fs::write(
-            &*banlists::EXT_PATH,
+            &PATHS.ext_data.banlists,
             encode(&parsed_banlists, BINCODE_CONFIG).unwrap(),
         ),
         fs::write(
-            &*cardinfo::EXT_PATH,
+            &PATHS.ext_data.cardinfo,
             encode(&parsed_cardinfo, BINCODE_CONFIG).unwrap(),
         ),
         fs::write(
-            &*cardsets::EXT_PATH,
+            &PATHS.ext_data.cardsets,
             encode(&parsed_cardsets, BINCODE_CONFIG).unwrap(),
         ),
     ]
@@ -117,9 +117,9 @@ pub fn get_response(url: &str) -> ResponseType {
 pub fn load_local_data() {
     // Read files to a vec
     let files = vec![
-        fs::read(&*banlists::EXT_PATH),
-        fs::read(&*cardinfo::EXT_PATH),
-        fs::read(&*cardsets::EXT_PATH),
+        fs::read(&PATHS.ext_data.banlists),
+        fs::read(&PATHS.ext_data.cardinfo),
+        fs::read(&PATHS.ext_data.cardsets),
     ];
 
     // Check if any errors occurred
@@ -128,7 +128,7 @@ pub fn load_local_data() {
         update();
 
         // Save the update version so that the data is not re-downloaded immediately
-        fs::write(&*vercheck::EXT_PATH, update_version().unwrap()).unwrap();
+        fs::write(&PATHS.ext_data.version, update_version().unwrap()).unwrap();
 
         return;
     }

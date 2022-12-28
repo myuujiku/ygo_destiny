@@ -16,9 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::fs;
-use std::path::PathBuf;
 
-use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::http::ResponseType;
@@ -26,9 +24,6 @@ use crate::logic::utils::PATHS;
 
 /// External [URL](https://db.ygoprodeck.com/api/v7/checkDBVer.php) to the version data.
 pub const EXT_URL: &str = "https://db.ygoprodeck.com/api/v7/checkDBVer.php";
-
-/// Path of the json file containing the current version.
-pub static EXT_PATH: Lazy<PathBuf> = Lazy::new(|| PATHS.ext_dir("version.json"));
 
 /// Representation of a database version from the YGOPRODECK API.
 #[derive(Serialize, Deserialize)]
@@ -44,9 +39,9 @@ struct DBVersion {
 pub fn new_update_version_available(version_response: ResponseType) -> Option<String> {
     if version_response.is_ok() {
         // Get old version from file
-        let old_version = match EXT_PATH.is_file() {
+        let old_version = match PATHS.ext_data.version.is_file() {
             true => Some(serde_json::from_str::<DBVersion>(
-                fs::read_to_string(&*EXT_PATH).unwrap().as_str(),
+                fs::read_to_string(&PATHS.ext_data.version).unwrap().as_str(),
             )),
             false => None,
         };

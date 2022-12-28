@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::fs;
+use std::path::PathBuf;
 
 use gtk::glib::Sender;
 
@@ -46,17 +47,16 @@ fn get_type_suffix(image_type: &ImageType) -> String {
 }
 
 /// Returns the folder where images of type `image_type` are stored.
-fn get_type_folder(image_type: &ImageType) -> String {
+fn get_type_path(image_type: &ImageType) -> &PathBuf {
     match image_type {
-        ImageType::Big => PATHS.img_big_folder,
-        ImageType::Small => PATHS.img_small_folder,
-        ImageType::Cropped => PATHS.img_cropped_folder,
+        ImageType::Big => &PATHS.image_paths.cards_big,
+        ImageType::Small => &PATHS.image_paths.cards_small,
+        ImageType::Cropped => &PATHS.image_paths.cards_cropped,
     }
-    .to_string()
 }
 
 /// Returns the full URL of the API endpoint based on `image_type`.
-fn get_url(image_type: ImageType) -> String {
+pub fn get_url(image_type: ImageType) -> String {
     format!("{}{}", BASE_URL, get_type_suffix(&image_type))
 }
 
@@ -68,7 +68,7 @@ fn get_url(image_type: ImageType) -> String {
 ///
 /// * `sender` – Gtk object to send the completion status to.
 pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String)>) {
-    let paths = fs::read_dir(PATHS.img_dir().join(get_type_folder(&image_type))).unwrap();
+    let paths = fs::read_dir(get_type_path(&image_type)).unwrap();
 
     let existing_images: Vec<u32> = paths
         .filter_map(|x| {
@@ -101,10 +101,7 @@ pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String
 
         if response.is_ok() {
             fs::write(
-                PATHS
-                    .img_dir()
-                    .join(get_type_folder(&image_type))
-                    .join(&filename),
+                get_type_path(&image_type),
                 response.unwrap().bytes().unwrap(),
             )
             .unwrap();
