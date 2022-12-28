@@ -110,7 +110,8 @@ impl Paths {
             ext_data: ExtData::new(data_dir.join("external")),
             image_paths: ImagePaths::new(data_dir.join("images")),
             user_paths: UserPaths::new(data_dir.join("user")),
-        }.ensured()
+        }
+        .ensured()
     }
 
     /// Returns `self` and ensures that all directories exist.
@@ -129,6 +130,4 @@ impl Paths {
 }
 
 /// Paths data container. See [`Paths`] for methods and fields.
-pub static PATHS: Lazy<Paths> = Lazy::new(|| {
-    Paths::new()
-});
+pub static PATHS: Lazy<Paths> = Lazy::new(|| Paths::new());

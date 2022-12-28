@@ -41,7 +41,9 @@ pub fn new_update_version_available(version_response: ResponseType) -> Option<St
         // Get old version from file
         let old_version = match PATHS.ext_data.version.is_file() {
             true => Some(serde_json::from_str::<DBVersion>(
-                fs::read_to_string(&PATHS.ext_data.version).unwrap().as_str(),
+                fs::read_to_string(&PATHS.ext_data.version)
+                    .unwrap()
+                    .as_str(),
             )),
             false => None,
         };
