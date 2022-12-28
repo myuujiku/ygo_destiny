@@ -70,8 +70,8 @@ fn build_ui(app: &adw::Application) {
 
     collection_list.create_button.connect_clicked(glib::clone!(@weak window =>
         move |_| {
-            window.imp().collection_list.imp().popover.popdown();
-            println!("{:#?}", window.imp().collection_options);
+            let collection = window.get_new_collection();
+            println!("{:#?}", collection);
         }
     ));
 

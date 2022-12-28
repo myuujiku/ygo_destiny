@@ -67,6 +67,7 @@ interface { template {
 
 def popover: object {
     class: "GtkPopover"
+    id: "popover"
     property("autohide" "false")
     property("valign" "start")
     child { object {
