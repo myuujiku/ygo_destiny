@@ -30,6 +30,8 @@ pub struct CollectionList {
     #[template_child]
     pub list_box: TemplateChild<gtk::ListBox>,
     #[template_child]
+    pub no_collections_message: TemplateChild<adw::StatusPage>,
+    #[template_child]
     pub search_bar: TemplateChild<gtk::SearchEntry>,
     #[template_child]
     pub add_collection_button: TemplateChild<gtk::MenuButton>,
@@ -93,7 +95,17 @@ impl CollectionList {
     pub fn update_model(&self) {
         let collection_model = CollectionModel::new();
 
-        for collection_name in ProgressiveCollection::get_names() {
+        let collection_names = ProgressiveCollection::get_names();
+
+        if collection_names.is_empty() {
+            self.no_collections_message.set_visible(true);
+            self.list_box.set_visible(false);
+        } else {
+            self.no_collections_message.set_visible(false);
+            self.list_box.set_visible(true);
+        }
+
+        for collection_name in collection_names {
             let meta_data = ProgressiveCollection::get_metadata_from(&collection_name);
             collection_model.append(&CollectionData::new(
                 &collection_name,

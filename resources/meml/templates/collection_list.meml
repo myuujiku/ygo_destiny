@@ -63,6 +63,13 @@ interface { template {
         class: "GtkListBox"
         id: "list_box"
     }}
+    child { object {
+        class: "AdwStatusPage"
+        id: "no_collections_message"
+        property("title" "No Collections Found")
+        property("description" "Create a new collection using the plus button.")
+        property("icon-name" "preferences-desktop-screensaver")
+    }}
 }}
 
 def popover: object {
