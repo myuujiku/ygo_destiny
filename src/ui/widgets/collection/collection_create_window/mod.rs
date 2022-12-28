@@ -21,7 +21,7 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::glib;
 
-use crate::ui::widgets::collection::{CollectionOptions, collection_options};
+use crate::ui::widgets::collection::{collection_options, CollectionOptions};
 
 glib::wrapper! {
     pub struct CollectionCreateWindow(ObjectSubclass<imp::CollectionCreateWindow>)
@@ -47,7 +47,7 @@ impl CollectionCreateWindow {
                 follow_sets: self.draft_follow_sets_expander_true(),
                 rotate_sets: self.draft_set_rotation_expander_true(),
                 rotate_after: self.draft_keep_sets_spinner_value(),
-            }
+            },
         }
     }
 
@@ -55,11 +55,16 @@ impl CollectionCreateWindow {
         let imp = self.imp();
 
         let draft_options = options.draft_options;
-        imp.draft_rounds_spinner.set_value(draft_options.rounds as f64);
-        imp.draft_cards_spinner.set_value(draft_options.cards as f64);
-        imp.draft_follow_sets_expander.set_enable_expansion(draft_options.follow_sets);
-        imp.draft_set_rotation_expander.set_enable_expansion(draft_options.rotate_sets);
-        imp.draft_keep_sets_spinner.set_value(draft_options.rotate_after as f64);
+        imp.draft_rounds_spinner
+            .set_value(draft_options.rounds as f64);
+        imp.draft_cards_spinner
+            .set_value(draft_options.cards as f64);
+        imp.draft_follow_sets_expander
+            .set_enable_expansion(draft_options.follow_sets);
+        imp.draft_set_rotation_expander
+            .set_enable_expansion(draft_options.rotate_sets);
+        imp.draft_keep_sets_spinner
+            .set_value(draft_options.rotate_after as f64);
     }
 
     pub fn draft_rounds_spinner_value(&self) -> i32 {

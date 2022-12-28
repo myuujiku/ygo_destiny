@@ -17,7 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod imp;
 
+use adw::prelude::*;
+use adw::subclass::prelude::*;
+use chrono::prelude::*;
 use gtk::glib;
+
+use crate::logic::user_data::{MetaData, LAST_CHANGED_FORMAT};
 
 glib::wrapper! {
     pub struct CollectionList(ObjectSubclass<imp::CollectionList>)
@@ -29,5 +34,15 @@ glib::wrapper! {
 impl CollectionList {
     pub fn new() -> Self {
         glib::Object::builder().build()
+    }
+
+    pub fn new_collection_meta_data(&self) -> MetaData {
+        let imp = self.imp();
+        MetaData {
+            name: imp.name_entry.text().to_string(),
+            description: imp.desc_entry.text().to_string(),
+            pinned: imp.starred_switch.is_active(),
+            last_changed: format!("{}", Utc::now().format(LAST_CHANGED_FORMAT)),
+        }
     }
 }

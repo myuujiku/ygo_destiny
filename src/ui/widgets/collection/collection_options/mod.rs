@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use crate::logic::user_data::progressive_collection::DraftSettings;
+
 #[derive(Clone, Debug, Default)]
 pub struct DraftOptions {
     pub rounds: i32,
@@ -27,4 +29,21 @@ pub struct DraftOptions {
 #[derive(Clone, Debug, Default)]
 pub struct CollectionOptions {
     pub draft_options: DraftOptions,
+}
+
+impl CollectionOptions {
+    pub fn as_draft_settings(&self) -> DraftSettings {
+        let draft = &self.draft_options;
+        DraftSettings {
+            rounds_num: draft.rounds as usize,
+            cards_num: draft.cards as usize,
+            follow_sets: draft.follow_sets,
+            rotate_after: if draft.rotate_sets {
+                draft.rotate_after as usize
+            } else {
+                0
+            },
+            ..Default::default()
+        }
+    }
 }

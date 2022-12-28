@@ -23,6 +23,7 @@ use bincode::{
     serde::decode_from_slice as decode,
     serde::encode_to_vec as encode,
 };
+use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::logic::utils::PATHS;
@@ -32,6 +33,8 @@ static BINCODE_CONFIG: Configuration<BigEndian, Fixint> = bincode::config::stand
     .with_big_endian()
     .with_fixed_int_encoding()
     .write_fixed_array_length();
+
+pub static LAST_CHANGED_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
 
 /// Action executed by a [`Change`] in a [`ProgressiveCollection`].
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug, PartialEq)]
@@ -93,6 +96,7 @@ pub struct MetaData {
     pub name: String,
     pub description: String,
     pub pinned: bool,
+    pub last_changed: String,
 }
 
 /// Card collection data type holding draft settings and more.
@@ -205,12 +209,23 @@ impl ProgressiveCollection {
     /// # Arguments
     ///
     /// * `name` – Name of the collection.
-    pub fn save(&self, name: String) {
+    pub fn save(&mut self, name: String) {
+        self.meta_data.last_changed = format!("{}", Utc::now().format(LAST_CHANGED_FORMAT));
         fs::write(
             &PATHS.user_paths.collections.join(name),
             encode(self, BINCODE_CONFIG).unwrap(),
         )
         .expect("Failed to save collection.");
+    }
+
+    pub fn get_metadata_from(name: &String) -> MetaData {
+        decode(
+            &fs::read(&PATHS.user_paths.collections.join(name))
+                .expect("Failed to read collection."),
+            BINCODE_CONFIG,
+        )
+        .expect("Failed to decode collection.")
+        .0
     }
 
     /// Constructs a copy of `self` without data that is user-specific.
@@ -220,6 +235,7 @@ impl ProgressiveCollection {
                 name: self.meta_data.name.clone(),
                 description: self.meta_data.description.clone(),
                 pinned: false,
+                last_changed: format!("{}", Utc::now().format(LAST_CHANGED_FORMAT)),
             },
             draft_settings: self.draft_settings.clone(),
             cards: HashMap::default(),

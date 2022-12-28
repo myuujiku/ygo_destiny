@@ -21,12 +21,14 @@ use std::fs;
 use std::sync::Mutex;
 use std::thread;
 
+use adw::prelude::*;
 use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 use std::cell::Cell;
 
 use crate::logic::{
+    user_data::ProgressiveCollection,
     ext_data::image_dl,
     utils::{http, PATHS},
 };
@@ -50,6 +52,16 @@ impl Window {
     // TODO: Remove this from here and add it to the update page
     pub fn obj(&self) -> glib::BorrowedObject<Self> {
         self.imp().obj()
+    }
+
+    pub fn get_new_collection(&self) -> ProgressiveCollection {
+        let imp = self.imp();
+        imp.collection_list.imp().popover.popdown();
+
+        ProgressiveCollection::builder()
+            .meta_data(imp.collection_list.new_collection_meta_data())
+            .draft_settings(imp.collection_options.borrow().as_draft_settings())
+            .build()
     }
 
     pub fn show_update_notification(&self) {

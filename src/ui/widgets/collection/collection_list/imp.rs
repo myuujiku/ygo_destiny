@@ -21,6 +21,7 @@ use chrono::prelude::*;
 use glib::subclass::InitializingObject;
 use gtk::{glib, CompositeTemplate, Ordering};
 
+use crate::logic::user_data::{ProgressiveCollection, LAST_CHANGED_FORMAT};
 use crate::ui::widgets::collection::{CollectionData, CollectionModel, CollectionRow};
 
 #[derive(CompositeTemplate, Default)]
@@ -38,6 +39,12 @@ pub struct CollectionList {
     pub create_button: TemplateChild<gtk::Button>,
     #[template_child]
     pub popover: TemplateChild<gtk::Popover>,
+    #[template_child]
+    pub name_entry: TemplateChild<adw::EntryRow>,
+    #[template_child]
+    pub desc_entry: TemplateChild<adw::EntryRow>,
+    #[template_child]
+    pub starred_switch: TemplateChild<gtk::Switch>,
 }
 
 #[glib::object_subclass]
@@ -65,34 +72,16 @@ impl ObjectImpl for CollectionList {
 
         let collection_model = CollectionModel::new();
 
-        collection_model.append(&CollectionData::new(
-            "",
-            "Collection 2",
-            "desc 2",
-            "2022-12-07 14:02:32",
-            false,
-        ));
-        collection_model.append(&CollectionData::new(
-            "",
-            "Collection 1",
-            "desc 1",
-            "2022-12-07 14:01:09",
-            false,
-        ));
-        collection_model.append(&CollectionData::new(
-            "",
-            "Collection 3",
-            "desc 3",
-            "2022-12-07 14:07:40",
-            true,
-        ));
-        collection_model.append(&CollectionData::new(
-            "",
-            "Collection 4",
-            "desc 4",
-            "2022-12-08 00:51:11",
-            false,
-        ));
+        for collection_name in ProgressiveCollection::get_names() {
+            let meta_data = ProgressiveCollection::get_metadata_from(&collection_name);
+            collection_model.append(&CollectionData::new(
+                &collection_name,
+                &meta_data.name,
+                &meta_data.description,
+                &meta_data.last_changed,
+                meta_data.pinned,
+            ));
+        }
 
         let filter = gtk::CustomFilter::new(move |obj| {
             let data = obj
@@ -123,10 +112,10 @@ impl ObjectImpl for CollectionList {
                 .expect("Object not of type `CollectionData`.");
 
             let d1 = Utc
-                .datetime_from_str(&a.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+                .datetime_from_str(&a.property::<String>("date"), LAST_CHANGED_FORMAT)
                 .unwrap();
             let d2 = Utc
-                .datetime_from_str(&b.property::<String>("date"), "%Y-%m-%d %H:%M:%S")
+                .datetime_from_str(&b.property::<String>("date"), LAST_CHANGED_FORMAT)
                 .unwrap();
 
             let a_starred = a.property::<bool>("star");

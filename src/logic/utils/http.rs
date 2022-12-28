@@ -18,9 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use std::collections::HashMap;
 use std::fs;
 
-use bincode::config::{BigEndian, Configuration, Fixint};
-use bincode::serde::decode_from_slice as decode;
-use bincode::serde::encode_to_vec as encode;
+use bincode::{
+    config::{BigEndian, Configuration, Fixint},
+    serde::decode_from_slice as decode,
+    serde::encode_to_vec as encode,
+};
 use regex::Regex;
 
 use crate::logic::ext_data::{banlists, cardinfo, cardsets, vercheck};
