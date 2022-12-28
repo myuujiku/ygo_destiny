@@ -16,8 +16,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::collections::{HashMap, VecDeque};
+use std::fs;
 
+use bincode::{
+    config::{BigEndian, Configuration, Fixint},
+    serde::decode_from_slice as decode,
+    serde::encode_to_vec as encode,
+};
 use serde::{Deserialize, Serialize};
+
+use crate::logic::utils::PATHS;
+
+/// Bincode configuration for all collections.
+static BINCODE_CONFIG: Configuration<BigEndian, Fixint> = bincode::config::standard()
+    .with_big_endian()
+    .with_fixed_int_encoding()
+    .write_fixed_array_length();
 
 /// Action executed by a [`Change`] in a [`ProgressiveCollection`].
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug, PartialEq)]
@@ -104,12 +118,7 @@ impl Change {
     /// * `cards` – Cards that are to be changed.
     /// * `date` – Date when the change was executed.
     /// * `round` – Optional. The draft round the change was executed in.
-    pub fn new(
-        action: Action,
-        cards: Vec<Card>,
-        date: String,
-        round: Option<u16>,
-    ) -> Self {
+    pub fn new(action: Action, cards: Vec<Card>, date: String, round: Option<u16>) -> Self {
         Self {
             action: action,
             cards: cards,
@@ -160,6 +169,50 @@ impl ProgressiveCollection {
         ProgressiveCollectionBuilder::new()
     }
 
+    /// Returns the names of all locally saved collections.
+    pub fn get_names() -> Vec<String> {
+        if let Ok(read_dir) = PATHS.user_paths.collections.read_dir() {
+            read_dir
+                .map(|path| {
+                    path.expect(&format!("Failed to read path."))
+                        .file_name()
+                        .into_string()
+                        .expect("Failed to get file name.")
+                })
+                .collect()
+        } else {
+            Vec::new()
+        }
+    }
+
+    /// Creates a collection from its file name.
+    ///
+    /// # Arguments
+    ///
+    /// * `name` – Name of the collection.
+    pub fn from_name(name: String) -> Self {
+        decode(
+            &fs::read(&PATHS.user_paths.collections.join(name))
+                .expect("Failed to read collection."),
+            BINCODE_CONFIG,
+        )
+        .expect("Failed to decode collection.")
+        .0
+    }
+
+    /// Saves a collection to a file.
+    ///
+    /// # Arguments
+    ///
+    /// * `name` – Name of the collection.
+    pub fn save(&self, name: String) {
+        fs::write(
+            &PATHS.user_paths.collections.join(name),
+            encode(self, BINCODE_CONFIG).unwrap(),
+        )
+        .expect("Failed to save collection.");
+    }
+
     /// Constructs a copy of `self` without data that is user-specific.
     pub fn generic(&self) -> Self {
         Self {
@@ -188,7 +241,7 @@ impl ProgressiveCollection {
         }
     }
 
-    /// Removes the most recent `Change` applies the inverse action to
+    /// Removes the most recent `Change` and applies the inverse action to
     /// [`cards`][`ProgressiveCollection::cards`].
     pub fn undo_change(&mut self) {
         let change = self.changes.pop_front().unwrap();
@@ -233,7 +286,7 @@ impl ProgressiveCollectionBuilder {
     /// Constructs a new `ProgressiveCollectionBuilder` with a default [`ProgressiveCollection`].
     pub fn new() -> Self {
         Self {
-            collection: ProgressiveCollection::default()
+            collection: ProgressiveCollection::default(),
         }
     }
 
