@@ -28,8 +28,8 @@ use gtk::{gio, glib};
 use std::cell::Cell;
 
 use crate::logic::{
-    user_data::ProgressiveCollection,
     ext_data::image_dl,
+    user_data::ProgressiveCollection,
     utils::{http, PATHS},
 };
 use crate::ui::pages::update_page::UpdatePage;
@@ -52,6 +52,10 @@ impl Window {
     // TODO: Remove this from here and add it to the update page
     pub fn obj(&self) -> glib::BorrowedObject<Self> {
         self.imp().obj()
+    }
+
+    pub fn update_collections(&self) {
+        self.imp().collection_list.imp().update_model();
     }
 
     pub fn get_new_collection(&self) -> ProgressiveCollection {
@@ -106,7 +110,9 @@ impl Window {
                 x => println!("{:#?}", x),
             }
             //leaflet.remove(&leaflet.visible_child().unwrap());
-            finished_sender.send(()).expect("Could not send through channel");
+            finished_sender
+                .send(())
+                .expect("Could not send through channel");
         });
 
         let first_progress_update = Cell::new(true);

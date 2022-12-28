@@ -20,12 +20,9 @@ use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
-use ygo_destiny::APP_ID;
 use ygo_destiny::logic::utils::http;
-use ygo_destiny::ui::widgets::{
-    window::Window,
-    collection::CollectionCreateWindow,
-};
+use ygo_destiny::ui::widgets::{collection::CollectionCreateWindow, window::Window};
+use ygo_destiny::APP_ID;
 
 fn main() {
     // Preload external data
@@ -48,32 +45,39 @@ fn build_ui(app: &adw::Application) {
 
     let collection_list = window.imp().collection_list.imp();
     // Let search bar capture key input from the window
-    collection_list.search_bar.set_key_capture_widget(Some(&window));
+    collection_list
+        .search_bar
+        .set_key_capture_widget(Some(&window));
 
     *window.imp().collection_options.borrow_mut() = CollectionCreateWindow::new().collect_options();
-    collection_list.options_button.connect_activated(glib::clone!(@weak window =>
-        move |_| {
-            let collection_window = CollectionCreateWindow::from_options(
-                window.imp().collection_options.borrow().clone()
-            );
-            collection_window.set_transient_for(Some(&window));
+    collection_list
+        .options_button
+        .connect_activated(glib::clone!(@weak window =>
+            move |_| {
+                let collection_window = CollectionCreateWindow::from_options(
+                    window.imp().collection_options.borrow().clone()
+                );
+                collection_window.set_transient_for(Some(&window));
 
-            collection_window.connect_destroy(
-                glib::clone!(@weak window => move |w| {
-                    *window.imp().collection_options.borrow_mut() = w.collect_options();
-                })
-            );
+                collection_window.connect_destroy(
+                    glib::clone!(@weak window => move |w| {
+                        *window.imp().collection_options.borrow_mut() = w.collect_options();
+                    })
+                );
 
-            collection_window.present();
-        }
-    ));
+                collection_window.present();
+            }
+        ));
 
-    collection_list.create_button.connect_clicked(glib::clone!(@weak window =>
-        move |_| {
-            let collection = window.get_new_collection();
-            println!("{:#?}", collection);
-        }
-    ));
+    collection_list
+        .create_button
+        .connect_clicked(glib::clone!(@weak window =>
+            move |_| {
+                let mut collection = window.get_new_collection();
+                collection.save(format!("{}.ydpc", collection.meta_data.last_changed));
+                window.update_collections();
+            }
+        ));
 
     let update_action = gio::SimpleAction::new("update_data", None);
     update_action.connect_activate(glib::clone!(@weak window => move |_, _| {

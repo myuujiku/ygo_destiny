@@ -70,6 +70,27 @@ impl ObjectImpl for CollectionList {
         // Add the libadwaita `boxed-list` style
         self.list_box.add_css_class("boxed-list");
 
+        self.update_model();
+    }
+
+    fn dispose(&self) {
+        // Unparent all direct children
+        while let Some(child) = self.obj().first_child() {
+            child.unparent();
+        }
+    }
+}
+
+impl WidgetImpl for CollectionList {
+    fn size_allocate(&self, width: i32, height: i32, baseline: i32) {
+        self.parent_size_allocate(width, height, baseline);
+    }
+}
+
+impl BoxImpl for CollectionList {}
+
+impl CollectionList {
+    pub fn update_model(&self) {
         let collection_model = CollectionModel::new();
 
         for collection_name in ProgressiveCollection::get_names() {
@@ -176,22 +197,4 @@ impl ObjectImpl for CollectionList {
             return row.upcast::<gtk::Widget>();
         });
     }
-
-    fn dispose(&self) {
-        // Unparent all direct children
-        while let Some(child) = self.obj().first_child() {
-            child.unparent();
-        }
-    }
 }
-
-impl WidgetImpl for CollectionList {
-    fn size_allocate(&self, width: i32, height: i32, baseline: i32) {
-        self.parent_size_allocate(width, height, baseline);
-    }
-}
-
-impl BoxImpl for CollectionList {}
-
-// TODO: Implement meta data
-// see std::path::Path::{read_dir, metadata} and std::fs::Metadata::modified
