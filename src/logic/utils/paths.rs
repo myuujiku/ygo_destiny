@@ -28,7 +28,9 @@ pub struct ExtData {
     pub version: PathBuf,
 }
 
+/// Container for paths to store externally obtained data (except images).
 impl ExtData {
+    /// * `root` – Path containing the data.
     pub fn new(root: PathBuf) -> Self {
         Self {
             banlists: root.join("banlists.bin"),
@@ -38,6 +40,7 @@ impl ExtData {
         }
     }
 
+    /// Create all missing parent directories.
     pub fn ensure(&self) {
         fs::create_dir_all(self.banlists.parent().unwrap()).unwrap();
     }
@@ -50,7 +53,9 @@ pub struct ImagePaths {
     pub products: PathBuf,
 }
 
+/// Container for paths to store images in.
 impl ImagePaths {
+    /// * `root` – Path containing the image directories.
     pub fn new(root: PathBuf) -> Self {
         Self {
             cards_big: root.join("big"),
@@ -60,6 +65,7 @@ impl ImagePaths {
         }
     }
 
+    /// Create all missing image path directories.
     pub fn ensure(&self) {
         fs::create_dir_all(&self.cards_big).unwrap();
         fs::create_dir_all(&self.cards_small).unwrap();
@@ -68,24 +74,27 @@ impl ImagePaths {
     }
 }
 
+/// Container for paths to store user-created data in.
 pub struct UserPaths {
     pub collections: PathBuf,
 }
 
 impl UserPaths {
+    /// * `root` – Path containing the user data directories.
     pub fn new(root: PathBuf) -> Self {
         Self {
             collections: root.join("collections"),
         }
     }
 
+    /// Create all missing user path directories.
     pub fn ensure(&self) {
         fs::create_dir_all(&self.collections).unwrap();
     }
 }
 
 /// Container for file system paths used by YGO Destiny. This should generally only be accessed via
-/// [`PATHS`].
+/// [`PATHS`] (lazily initialised).
 pub struct Paths {
     pub ext_data: ExtData,
     pub image_paths: ImagePaths,
@@ -104,6 +113,7 @@ impl Paths {
         }.ensured()
     }
 
+    /// Returns `self` and ensures that all directories exist.
     pub fn ensured(self) -> Self {
         self.ext_data.ensure();
         self.image_paths.ensure();
@@ -111,6 +121,8 @@ impl Paths {
         self
     }
 
+    /// Return the directory of the card images to use.
+    /// TODO: make use of the `use-big-images` setting.
     pub fn get_img_dir(&self) -> &Path {
         self.image_paths.cards_big.as_path()
     }
