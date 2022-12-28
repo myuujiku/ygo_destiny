@@ -91,6 +91,10 @@ pub struct ProgressiveCollection {
     pub tags: HashMap<String, Vec<Card>>,
 }
 
+pub struct ProgressiveCollectionBuilder {
+    collection: ProgressiveCollection,
+}
+
 impl Change {
     /// Creates a new change.
     ///
@@ -151,6 +155,11 @@ impl Clone for Change {
 }
 
 impl ProgressiveCollection {
+    /// Constructs a [`ProgressiveCollectionBuilder`]
+    pub fn builder() -> ProgressiveCollectionBuilder {
+        ProgressiveCollectionBuilder::new()
+    }
+
     /// Constructs a copy of `self` without data that is user-specific.
     pub fn generic(&self) -> Self {
         Self {
@@ -217,6 +226,30 @@ impl ProgressiveCollection {
                 }
             }
         }
+    }
+}
+
+impl ProgressiveCollectionBuilder {
+    /// Constructs a new `ProgressiveCollectionBuilder` with a default [`ProgressiveCollection`].
+    pub fn new() -> Self {
+        Self {
+            collection: ProgressiveCollection::default()
+        }
+    }
+
+    /// Consumes `self` and returns a collection.
+    pub fn build(self) -> ProgressiveCollection {
+        self.collection
+    }
+
+    pub fn meta_data(mut self, data: MetaData) -> Self {
+        self.collection.meta_data = data;
+        self
+    }
+
+    pub fn draft_settings(mut self, data: DraftSettings) -> Self {
+        self.collection.draft_settings = data;
+        self
     }
 }
 
