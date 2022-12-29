@@ -86,7 +86,7 @@ impl ObjectImpl for CollectionData {
 
     fn property(&self, _id: usize, pspec: &ParamSpec) -> Value {
         match pspec.name() {
-            "file" => self.name.borrow().to_value(),
+            "file" => self.file.borrow().to_value(),
             "name" => self.name.borrow().to_value(),
             "desc" => self.desc.borrow().to_value(),
             "date" => self.date.borrow().to_value(),
