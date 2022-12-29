@@ -101,7 +101,7 @@ pub fn download_missing_cards(image_type: ImageType, sender: Sender<(f64, String
 
         if response.is_ok() {
             fs::write(
-                get_type_path(&image_type),
+                get_type_path(&image_type).join(&filename),
                 response.unwrap().bytes().unwrap(),
             )
             .unwrap();
