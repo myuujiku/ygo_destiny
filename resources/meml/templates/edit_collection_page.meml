@@ -1,0 +1,54 @@
+/*
+YGO Destiny – A Yu-Gi-Oh! sealed draft simulator written in rust.
+Copyright (C) 2022  myujiku
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+use <function> property         // arguments: name, content
+// use <function> margin           // arguments: direction, margin
+// use <function> style_class      // arguments: name
+// use <function> spinner_bounds   // arguments: lower, upper, step
+
+def class_name: "YGOEditCollectionPage"
+def parent_class: "GtkBox"
+
+interface { template {
+    class: "$(class_name)"
+    parent: "$(parent_class)"
+    property("orientation" "vertical")
+    property("vexpand" "true")
+    property("hexpand" "true")
+    header_bar
+    child { object {
+        class: "AdwStatusPage"
+        property("title" "Test")
+    }}
+}}
+
+def header_bar: child { object {
+    class: "AdwHeaderBar"
+    child { object {
+        class: "GtkButton"
+        id: "back_button"
+        property("icon-name" "go-previous-symbolic")
+    }}
+    property {
+        name: "title-widget"
+        object {
+            class: "AdwWindowTitle"
+            id: "window_title"
+            property("title" "YGO Destiny")
+        }
+    }
+}}

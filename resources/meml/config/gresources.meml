@@ -22,6 +22,7 @@ gresources { gresource {
     file { compressed: "true" "templates/collection_create_window.ui" }
     file { compressed: "true" "templates/collection_list.ui" }
     file { compressed: "true" "templates/collection_row.ui" }
+    file { compressed: "true" "templates/edit_collection_page.ui" }
     file { compressed: "true" "templates/update_page.ui" }
     file { compressed: "true" "templates/window.ui" }
 }}
