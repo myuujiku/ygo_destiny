@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use <function> property         // arguments: name, content
 // use <function> margin           // arguments: direction, margin
-use <function> style_class      // arguments: name
+// use <function> style_class      // arguments: name
 use <function> spinner_bounds   // arguments: lower, upper, step
 
 def class_name: "YGOCollectionCreateWindow"
