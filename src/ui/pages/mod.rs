@@ -15,4 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+pub mod edit_collection_page;
 pub mod update_page;
+
+pub use edit_collection_page::EditCollectionPage;
+pub use update_page::UpdatePage;

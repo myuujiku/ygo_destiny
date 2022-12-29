@@ -32,7 +32,7 @@ use crate::logic::{
     user_data::ProgressiveCollection,
     utils::{http, PATHS},
 };
-use crate::ui::pages::update_page::UpdatePage;
+use crate::ui::pages::{EditCollectionPage, UpdatePage};
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -52,6 +52,21 @@ impl Window {
     // TODO: Remove this from here and add it to the update page
     pub fn obj(&self) -> glib::BorrowedObject<Self> {
         self.imp().obj()
+    }
+
+    pub fn open_collection(&self, name: &String) {
+        let edit_page = EditCollectionPage::new(name);
+
+        let leaflet = self.get_leaflet().get();
+        leaflet.append(&edit_page);
+        leaflet.navigate(adw::NavigationDirection::Forward);
+
+        edit_page
+            .imp()
+            .back_button
+            .connect_clicked(glib::clone!(@weak leaflet => move |_| {
+                leaflet.remove(&leaflet.visible_child().unwrap());
+            }));
     }
 
     pub fn update_collections(&self) {
@@ -109,7 +124,6 @@ impl Window {
                 }
                 x => println!("{:#?}", x),
             }
-            //leaflet.remove(&leaflet.visible_child().unwrap());
             finished_sender
                 .send(())
                 .expect("Could not send through channel");

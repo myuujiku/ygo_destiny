@@ -145,10 +145,6 @@ impl ObjectImpl for CollectionRow {
                 }
             }),
         );
-
-        obj.connect_activated(move |_| {
-            println!("edit collection");
-        });
     }
 
     fn dispose(&self) {

@@ -21,7 +21,10 @@ use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
 use ygo_destiny::logic::utils::http;
-use ygo_destiny::ui::widgets::{collection::CollectionCreateWindow, window::Window};
+use ygo_destiny::ui::widgets::{
+    collection::{CollectionCreateWindow, CollectionRow},
+    window::Window,
+};
 use ygo_destiny::APP_ID;
 
 fn main() {
@@ -74,10 +77,19 @@ fn build_ui(app: &adw::Application) {
         .connect_clicked(glib::clone!(@weak window =>
             move |_| {
                 let mut collection = window.get_new_collection();
-                collection.save(format!("{}.ydpc", collection.meta_data.last_changed));
+                let collection_name = format!("{}.ydpc", collection.meta_data.last_changed);
+                collection.save(&collection_name);
+                window.open_collection(&collection_name);
                 window.update_collections();
             }
         ));
+
+    collection_list.list_box.connect_row_activated(glib::clone!(@weak window =>
+        move |_, row| {
+            let collection_name = row.downcast_ref::<CollectionRow>().unwrap().imp().data.borrow().as_ref().unwrap().property::<String>("file");
+            window.open_collection(&collection_name);
+        }
+    ));
 
     let update_action = gio::SimpleAction::new("update_data", None);
     update_action.connect_activate(glib::clone!(@weak window => move |_, _| {

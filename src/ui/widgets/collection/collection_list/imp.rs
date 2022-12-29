@@ -106,7 +106,7 @@ impl CollectionList {
         }
 
         for collection_name in collection_names {
-            let meta_data = ProgressiveCollection::get_metadata_from(&collection_name);
+            let meta_data = ProgressiveCollection::get_metadata_from(&collection_name.clone());
             collection_model.append(&CollectionData::new(
                 &collection_name,
                 &meta_data.name,

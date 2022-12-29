@@ -209,7 +209,7 @@ impl ProgressiveCollection {
     /// # Arguments
     ///
     /// * `name` – Name of the collection.
-    pub fn save(&mut self, name: String) {
+    pub fn save(&mut self, name: &String) {
         self.meta_data.last_changed = format!("{}", Utc::now().format(LAST_CHANGED_FORMAT));
         fs::write(
             &PATHS.user_paths.collections.join(name),
