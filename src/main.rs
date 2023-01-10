@@ -20,12 +20,11 @@ use adw::subclass::prelude::*;
 use glib::{Continue, MainContext, PRIORITY_DEFAULT};
 use gtk::{gio, glib};
 
-use ygo_destiny::logic::utils::http;
-use ygo_destiny::ui::widgets::{
+use ygod_core::{APP_ID, utils::http};
+use ygod_gtk::widgets::{
     collection::{CollectionCreateWindow, CollectionRow},
     window::Window,
 };
-use ygo_destiny::APP_ID;
 
 fn main() {
     // Preload external data
