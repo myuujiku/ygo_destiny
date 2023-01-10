@@ -18,6 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use glib_build_tools::compile_resources;
 
 fn main() {
+    println!("cargo:rerun-if-changed=ygod_gtk/resources/meml");
+    meml::parse_manifest("ygod_gtk/resources/meml/meta.meml");
+
     compile_resources(
         "ygod_gtk/resources",
         "ygod_gtk/resources/gresources.xml",

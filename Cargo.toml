@@ -19,5 +19,9 @@ version = "0.2"
 package = "gtk4"
 version = "0.5"
 
+[build-dependencies.meml]
+git = "https://github.com/myuujiku/meml"
+rev = "fd7f52641b2198b1ff2076fd130b875e2e54f9f5"
+
 [build-dependencies]
 glib-build-tools = "0.16"
