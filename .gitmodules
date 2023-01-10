@@ -1,0 +1,6 @@
+[submodule "ygod_core"]
+	path = ygod_core
+	url = git@github.com:myuujiku/ygod_core.git
+[submodule "ygod_gtk"]
+	path = ygod_gtk
+	url = git@github.com:myuujiku/ygod_gtk.git
