@@ -23,6 +23,11 @@ Make sure you have everything on this list installed:
 - libadwaita
 - everything listed [here](https://gtk-rs.org/gtk4-rs/git/book/installation.html)
 
+Clone the repository:
+```
+git clone --recursive https://github.com/myuujiku/ygo_destiny.git
+```
+
 To build the binary use
 ```
 cargo build
