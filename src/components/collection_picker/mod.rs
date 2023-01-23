@@ -15,7 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use adw::prelude::*;
+use gtk::{Align, Orientation};
 use relm4::prelude::*;
+
+use crate::AppInput;
 
 pub struct CollectionPicker;
 
@@ -23,12 +27,46 @@ pub struct CollectionPicker;
 impl SimpleComponent for CollectionPicker {
     type Init = ();
     type Input = ();
-    type Output = ();
+    type Output = AppInput;
     type Widgets = CollectionPickerWidgets;
 
     view! {
         #[root]
-        gtk::Box::new(gtk::Orientation::Vertical, 6) {}
+        gtk::ScrolledWindow {
+            set_min_content_height: 200,
+            set_hscrollbar_policy: gtk::PolicyType::Never,
+
+            adw::Clamp {
+                set_orientation: Orientation::Horizontal,
+                set_maximum_size: 800,
+
+                gtk::Box::new(Orientation::Vertical, 6) {
+                    set_hexpand: true,
+                    set_vexpand: true,
+                    set_valign: Align::Center,
+                    set_margin_all: 6,
+
+                    gtk::Label::new(Some("Collection")) {
+                        add_css_class: "heading",
+                        set_halign: Align::Start,
+                    },
+                    gtk::Box::new(Orientation::Horizontal, 6) {
+                        gtk::SearchEntry {
+                            set_hexpand: true,
+                        },
+                        gtk::Button {
+                            set_icon_name: "list-add",
+                            add_css_class: "circular",
+                        }
+                    },
+                    adw::StatusPage {
+                        set_icon_name: Some("preferences-desktop-screensaver"),
+                        set_title: "No Collections Found",
+                        set_description: Some("Create a new collection using the plus button."),
+                    }
+                }
+            }
+        }
     }
 
     fn init(

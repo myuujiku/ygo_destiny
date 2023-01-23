@@ -23,6 +23,12 @@ use relm4::prelude::*;
 use crate::components::CollectionPicker;
 use crate::templates::ContentBox;
 
+#[derive(Debug)]
+pub enum AppInput {
+    AddPage(gtk::Widget),
+    ClosePage,
+}
+
 pub struct App {
     collection_picker: Controller<CollectionPicker>,
 }
@@ -30,7 +36,7 @@ pub struct App {
 #[relm4::component(pub)]
 impl SimpleComponent for App {
     type Init = ();
-    type Input = ();
+    type Input = AppInput;
     type Output = ();
 
     view! {
@@ -62,5 +68,12 @@ impl SimpleComponent for App {
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
+    }
+
+    fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>) {
+        match input  {
+            AppInput::AddPage(widget) => (),
+            AppInput::ClosePage => (),
+        }
     }
 }
