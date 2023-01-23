@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "GPLv3 only"
 
-[dependencies.relm]
+[dependencies.relm4]
 package = "relm4"
 version = "0.5.0-rc.1"
 features = ["libadwaita"]
