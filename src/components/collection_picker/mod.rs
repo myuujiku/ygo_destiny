@@ -19,7 +19,7 @@ use adw::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
 
-use crate::AppInput;
+use crate::components::ViewControllerInput;
 
 pub struct CollectionPicker;
 
@@ -27,7 +27,7 @@ pub struct CollectionPicker;
 impl SimpleComponent for CollectionPicker {
     type Init = ();
     type Input = ();
-    type Output = AppInput;
+    type Output = ViewControllerInput;
     type Widgets = CollectionPickerWidgets;
 
     view! {
@@ -72,7 +72,7 @@ impl SimpleComponent for CollectionPicker {
     fn init(
         _params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self;
         let widgets = view_output!();
