@@ -15,6 +15,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod collection_picker;
+use relm4::prelude::*;
 
-pub use collection_picker::CollectionPicker;
+pub struct CollectionPicker;
+
+#[relm4::component(pub)]
+impl SimpleComponent for CollectionPicker {
+    type Init = ();
+    type Input = ();
+    type Output = ();
+    type Widgets = CollectionPickerWidgets;
+
+    view! {
+        #[root]
+        gtk::Box::new(gtk::Orientation::Vertical, 6) {}
+    }
+
+    fn init(
+        _params: Self::Init,
+        root: &Self::Root,
+        sender: ComponentSender<Self>
+    ) -> ComponentParts<Self> {
+        let model = Self;
+        let widgets = view_output!();
+        ComponentParts { model, widgets }
+    }
+}
