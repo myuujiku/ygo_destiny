@@ -16,5 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 mod collection_picker;
+mod view_controller;
 
 pub use collection_picker::CollectionPicker;
+pub use view_controller::{ViewController, ViewControllerInput};
