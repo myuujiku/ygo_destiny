@@ -4,24 +4,14 @@ version = "0.1.0"
 edition = "2021"
 license = "GPLv3 only"
 
+[dependencies.relm]
+package = "relm4"
+version = "0.5.0-rc.1"
+features = ["libadwaita"]
+
 [dependencies.ygod_core]
 path = "ygod_core"
 
-[dependencies.ygod_gtk]
-path = "ygod_gtk"
-
-[dependencies.adw]
-features = ["v1_2"]
-package = "libadwaita"
-version = "0.2"
-
-[dependencies.gtk]
-package = "gtk4"
-version = "0.5"
-
-[build-dependencies.meml]
-git = "https://github.com/myuujiku/meml"
-rev = "fd7f52641b2198b1ff2076fd130b875e2e54f9f5"
-
-[build-dependencies]
-glib-build-tools = "0.16"
+[dependencies]
+relm4-components = "0.5.0-rc.1"
+relm4-macros = "0.5.0-rc.1"
