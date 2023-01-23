@@ -15,6 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod content_box;
+use adw::prelude::*;
+use relm4::prelude::*;
 
-pub use content_box::ContentBox;
+#[relm4::widget_template(pub)]
+impl WidgetTemplate for ContentBox {
+    view! {
+        gtk::Box::new(gtk::Orientation::Vertical, 0) {
+            set_hexpand: true,
+            set_vexpand: true,
+        }
+    }
+}
