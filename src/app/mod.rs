@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use std::convert::identity;
+
 use adw::prelude::*;
 use relm4::prelude::*;
 
@@ -22,7 +24,7 @@ use crate::components::CollectionPicker;
 use crate::templates::ContentBox;
 
 pub struct App {
-    collection_picker: CollectionPicker,
+    collection_picker: Controller<CollectionPicker>,
 }
 
 #[relm4::component(pub)]
@@ -49,10 +51,10 @@ impl SimpleComponent for App {
     fn init(
         _params: Self::Init,
         root: &Self::Root,
-        _sender: ComponentSender<Self>
+        sender: ComponentSender<Self>
     ) -> ComponentParts<Self> {
         let model = Self {
-            collection_picker: CollectionPicker,
+            collection_picker: CollectionPicker::builder().launch(()).forward(sender.input_sender(), identity),
         };
 
         let widgets = view_output!();

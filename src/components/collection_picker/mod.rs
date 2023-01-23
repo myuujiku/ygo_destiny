@@ -34,7 +34,7 @@ impl SimpleComponent for CollectionPicker {
     fn init(
         _params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self;
         let widgets = view_output!();
