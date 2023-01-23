@@ -51,10 +51,12 @@ impl SimpleComponent for App {
     fn init(
         _params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self {
-            collection_picker: CollectionPicker::builder().launch(()).forward(sender.input_sender(), identity),
+            collection_picker: CollectionPicker::builder()
+                .launch(())
+                .forward(sender.input_sender(), identity),
         };
 
         let widgets = view_output!();
