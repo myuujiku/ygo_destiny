@@ -19,10 +19,10 @@ use std::convert::identity;
 
 use relm4::prelude::*;
 
-use crate::{AppInput, components::CollectionPicker};
+use crate::{AppEvent, components::CollectionPicker};
 
 #[derive(Debug)]
-pub enum ViewControllerInput {
+pub enum ViewControllerEvent {
     AddPage(gtk::Widget),
     ClosePage,
     AppMessage,
@@ -35,8 +35,8 @@ pub struct ViewController {
 #[relm4::component(pub)]
 impl SimpleComponent for ViewController {
     type Init = ();
-    type Input = ViewControllerInput;
-    type Output = AppInput;
+    type Input = ViewControllerEvent;
+    type Output = AppEvent;
     type Widgets = ViewControllerWidgets;
 
     view! {

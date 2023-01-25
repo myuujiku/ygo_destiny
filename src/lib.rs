@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod app;
 
-pub use app::{App, AppInput};
+pub use app::{App, AppEvent};
 
 pub mod components;
 pub mod templates;

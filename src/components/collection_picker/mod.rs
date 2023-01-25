@@ -19,7 +19,7 @@ use adw::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
 
-use crate::components::ViewControllerInput;
+use crate::components::ViewControllerEvent;
 
 pub struct CollectionPicker;
 
@@ -27,7 +27,7 @@ pub struct CollectionPicker;
 impl SimpleComponent for CollectionPicker {
     type Init = ();
     type Input = ();
-    type Output = ViewControllerInput;
+    type Output = ViewControllerEvent;
     type Widgets = CollectionPickerWidgets;
 
     view! {
