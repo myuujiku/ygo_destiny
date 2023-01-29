@@ -21,13 +21,13 @@ use adw::prelude::*;
 use relm4::prelude::*;
 
 use crate::{
-    components::{ViewController, ViewControllerEvent},
+    components::{ViewController, ViewControllerInput},
     templates::ContentBox,
 };
 
 #[derive(Debug)]
-pub enum AppEvent {
-    ChangView(ViewControllerEvent),
+pub enum AppInput {
+    ChangView(ViewControllerInput),
 }
 
 pub struct App {
@@ -37,7 +37,7 @@ pub struct App {
 #[relm4::component(pub)]
 impl SimpleComponent for App {
     type Init = ();
-    type Input = AppEvent;
+    type Input = AppInput;
     type Output = ();
 
     view! {
@@ -72,8 +72,12 @@ impl SimpleComponent for App {
     }
 
     fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>) {
-        match input  {
-            AppEvent::ChangView(_message) => (),
-        }
+        match input {
+            AppInput::ChangView(message) => self
+                .view_controller
+                .sender()
+                .send(message)
+                .unwrap_or_default(),
+        };
     }
 }

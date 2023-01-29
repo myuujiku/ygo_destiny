@@ -19,4 +19,4 @@ mod collection_picker;
 mod view_controller;
 
 pub use collection_picker::CollectionPicker;
-pub use view_controller::{ViewController, ViewControllerEvent};
+pub use view_controller::{ViewController, ViewControllerInput};
