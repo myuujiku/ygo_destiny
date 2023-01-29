@@ -118,7 +118,7 @@ impl SimpleComponent for CollectionPicker {
             }
         });
 
-        let mut collection_entries = FactoryVecDeque::from_vec(
+        let collection_entries = FactoryVecDeque::from_vec(
             collection_entries_components,
             gtk::ListBox::default(),
             sender.input_sender(),
@@ -215,6 +215,9 @@ impl SimpleComponent for CollectionPicker {
                         break;
                     }
                 }
+            }
+            CollectionEntryOutput::OpenCollection(file_name) => {
+                println!("{}", file_name);
             }
         }
     }

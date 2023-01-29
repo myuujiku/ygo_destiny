@@ -76,6 +76,7 @@ pub enum CollectionEntryInput {
     SetVisible(bool),
     CursorEntered,
     CursorLeft,
+    Open,
 }
 
 #[derive(Debug)]
@@ -83,6 +84,7 @@ pub enum CollectionEntryOutput {
     SortUp(DynamicIndex),
     SortDown(DynamicIndex),
     FilterBy(String),
+    OpenCollection(String),
 }
 
 #[derive(Debug)]
@@ -109,10 +111,11 @@ impl FactoryComponent for CollectionEntry {
         #[name = "root"]
         #[root]
         adw::ActionRow {
-            // set_activatable: true,
-            set_selectable: true,
+            set_selectable: false,
             set_title: &self.name,
             set_subtitle: &self.description,
+            set_activatable_widget: Some(&gtk::Label::new(None)),
+            connect_activated => CollectionEntryInput::Open,
             add_controller: &{
                 let controller = gtk::EventControllerMotion::new();
                 controller.connect_enter(glib::clone!(@strong sender => move |_, _, _| {
@@ -178,6 +181,9 @@ impl FactoryComponent for CollectionEntry {
                 if !self.pinned.get() {
                     widgets.star_button.set_icon_name("");
                 }
+            }
+            CollectionEntryInput::Open => {
+                sender.output(CollectionEntryOutput::OpenCollection(self.file.clone()));
             }
         }
     }
