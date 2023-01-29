@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 mod collection_entry;
 
 use std::cmp::Ordering;
-use std::convert::identity;
 
 use adw::prelude::*;
 use chrono::prelude::*;
@@ -28,7 +27,9 @@ use relm4::prelude::*;
 use ygod_core::user_data::{collection::LAST_CHANGED_FORMAT, Collection};
 
 use crate::components::ViewControllerInput;
-use collection_entry::{CollectionData, CollectionEntry};
+use collection_entry::{
+    CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput,
+};
 
 pub struct CollectionPicker {
     collection_entries: FactoryVecDeque<CollectionEntry>,
@@ -37,7 +38,7 @@ pub struct CollectionPicker {
 #[relm4::component(pub)]
 impl SimpleComponent for CollectionPicker {
     type Init = ();
-    type Input = ();
+    type Input = CollectionEntryOutput;
     type Output = ViewControllerInput;
     type Widgets = CollectionPickerWidgets;
 
@@ -90,38 +91,128 @@ impl SimpleComponent for CollectionPicker {
             let meta_data = Collection::get_metadata_from(&collection_name);
             collection_entries_components.push(CollectionData::new(collection_name, meta_data));
         }
-        collection_entries_components
-            .sort_unstable_by(|first, second| {
-                let first_date = Utc
-                    .datetime_from_str(&first.meta_data.last_changed, LAST_CHANGED_FORMAT)
-                    .unwrap();
-                let second_date = Utc
-                    .datetime_from_str(&second.meta_data.last_changed, LAST_CHANGED_FORMAT)
-                    .unwrap();
+        collection_entries_components.sort_unstable_by(|first, second| {
+            let first_date = Utc
+                .datetime_from_str(&first.meta_data.last_changed, LAST_CHANGED_FORMAT)
+                .unwrap();
+            let second_date = Utc
+                .datetime_from_str(&second.meta_data.last_changed, LAST_CHANGED_FORMAT)
+                .unwrap();
 
-                if first.meta_data.pinned == second.meta_data.pinned {
-                    if first_date < second_date {
-                        Ordering::Greater
-                    } else if first_date != second_date {
-                        Ordering::Less
-                    } else {
-                        Ordering::Equal
-                    }
+            if first.meta_data.pinned == second.meta_data.pinned {
+                if first_date < second_date {
+                    Ordering::Greater
+                } else if first_date != second_date {
+                    Ordering::Less
                 } else {
-                    match first.meta_data.pinned {
-                        true => Ordering::Less,
-                        false => Ordering::Greater,
-                    }
+                    Ordering::Equal
                 }
-            });
+            } else {
+                match first.meta_data.pinned {
+                    true => Ordering::Less,
+                    false => Ordering::Greater,
+                }
+            }
+        });
 
-        let mut collection_entries =
-            FactoryVecDeque::from_vec(collection_entries_components, gtk::ListBox::default(), sender.input_sender());
+        let mut collection_entries = FactoryVecDeque::from_vec(
+            collection_entries_components,
+            gtk::ListBox::default(),
+            sender.input_sender(),
+        );
 
         let model = Self { collection_entries };
         let collection_entry_box = model.collection_entries.widget();
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
+    }
+
+    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>) {
+        match input {
+            CollectionEntryOutput::SortUp(dynamic_index) => {
+                let mut index = dynamic_index.current_index();
+                let entry = self.collection_entries.get(index).unwrap();
+                let entry_date = Utc
+                    .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
+                    .unwrap();
+                loop {
+                    if index == 0 {
+                        break;
+                    }
+
+                    if let Some(other) = self.collection_entries.get(index - 1) {
+                        let other_date = Utc
+                            .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
+                            .unwrap();
+                        if other.pinned.get() && entry_date < other_date {
+                            break;
+                        }
+
+                        self.collection_entries.guard().move_to(index, index - 1);
+                        index -= 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            CollectionEntryOutput::SortDown(dynamic_index) => {
+                let mut index = dynamic_index.current_index();
+                let entry = self.collection_entries.get(index).unwrap();
+                let entry_date = Utc
+                    .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
+                    .unwrap();
+                loop {
+                    if index == usize::MAX {
+                        break;
+                    }
+
+                    if let Some(other) = self.collection_entries.get(index + 1) {
+                        let other_date = Utc
+                            .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
+                            .unwrap();
+                        if !other.pinned.get() && entry_date > other_date {
+                            break;
+                        }
+
+                        self.collection_entries.guard().move_to(index, index + 1);
+                        index += 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            CollectionEntryOutput::FilterBy(text) => {
+                let sort_case_sensitive: bool = text != text.to_lowercase();
+
+                let text_lower = if sort_case_sensitive {
+                    "".to_string()
+                } else {
+                    text.to_lowercase()
+                };
+
+                let mut i = 0;
+                loop {
+                    if let Some(entry) = self.collection_entries.get(i) {
+                        let matches: bool = if sort_case_sensitive {
+                            entry.name.contains(&text) || entry.description.contains(&text)
+                        } else {
+                            entry.name.to_lowercase().contains(&text_lower)
+                                || entry
+                                    .description
+                                    .to_lowercase()
+                                    .contains(&text_lower)
+                        };
+
+                        self.collection_entries
+                            .send(i, CollectionEntryInput::SetVisible(matches));
+
+                        i += 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

@@ -82,6 +82,7 @@ pub enum CollectionEntryInput {
 pub enum CollectionEntryOutput {
     SortUp(DynamicIndex),
     SortDown(DynamicIndex),
+    FilterBy(String),
 }
 
 #[derive(Debug)]
@@ -91,6 +92,7 @@ pub struct CollectionEntry {
     pub description: String,
     pub last_modified: String,
     pub pinned: IsPinned,
+    index: DynamicIndex,
 }
 
 #[relm4::factory(pub)]
@@ -100,7 +102,7 @@ impl FactoryComponent for CollectionEntry {
     type Output = CollectionEntryOutput;
     type CommandOutput = ();
     type Widgets = CollectionEntryWidgets;
-    type ParentInput = ();
+    type ParentInput = CollectionEntryOutput;
     type ParentWidget = gtk::ListBox;
 
     view! {
@@ -133,29 +135,36 @@ impl FactoryComponent for CollectionEntry {
         }
     }
 
-    fn init_model(value: Self::Init, _index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
+    fn output_to_parent_input(output: Self::Output) -> Option<Self::Output> {
+        Some(output)
+    }
+
+    fn init_model(value: Self::Init, index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
         Self {
             file: value.file_name,
             name: value.meta_data.name,
             description: value.meta_data.description,
             last_modified: value.meta_data.last_changed,
             pinned: IsPinned::new(value.meta_data.pinned),
+            index: index.clone(),
         }
     }
 
     fn update_with_view(
         &mut self,
         widgets: &mut Self::Widgets,
-        msg: Self::Input,
-        _sender: FactorySender<Self>,
+        input: Self::Input,
+        sender: FactorySender<Self>,
     ) {
-        match msg {
+        match input {
             CollectionEntryInput::TogglePinned => match self.pinned.toggle() {
                 true => {
                     widgets.star_button.set_icon_name("starred-symbolic");
+                    sender.output(CollectionEntryOutput::SortUp(self.index.clone()));
                 }
                 false => {
                     widgets.star_button.set_icon_name("non-starred-symbolic");
+                    sender.output(CollectionEntryOutput::SortDown(self.index.clone()));
                 }
             },
             CollectionEntryInput::SetVisible(value) => (),
