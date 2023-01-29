@@ -65,6 +65,9 @@ impl SimpleComponent for CollectionPicker {
                     gtk::Box::new(Orientation::Horizontal, 6) {
                         gtk::SearchEntry {
                             set_hexpand: true,
+                            connect_search_changed[sender] => move |search_entry| {
+                                sender.input(CollectionEntryOutput::FilterBy(search_entry.text().to_string()));
+                            },
                         },
                         gtk::Button {
                             set_icon_name: "list-add",

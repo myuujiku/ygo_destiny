@@ -106,6 +106,7 @@ impl FactoryComponent for CollectionEntry {
     type ParentWidget = gtk::ListBox;
 
     view! {
+        #[name = "root"]
         #[root]
         adw::ActionRow {
             // set_activatable: true,
@@ -167,7 +168,7 @@ impl FactoryComponent for CollectionEntry {
                     sender.output(CollectionEntryOutput::SortDown(self.index.clone()));
                 }
             },
-            CollectionEntryInput::SetVisible(value) => (),
+            CollectionEntryInput::SetVisible(value) => widgets.root.set_visible(value),
             CollectionEntryInput::CursorEntered => {
                 if !self.pinned.get() {
                     widgets.star_button.set_icon_name("non-starred-symbolic");
