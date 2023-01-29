@@ -15,19 +15,30 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+mod collection_entry;
+
+use std::cmp::Ordering;
+use std::convert::identity;
+
 use adw::prelude::*;
+use chrono::prelude::*;
 use gtk::{Align, Orientation};
+use relm4::factory::FactoryVecDeque;
 use relm4::prelude::*;
+use ygod_core::user_data::{collection::LAST_CHANGED_FORMAT, Collection};
 
-use crate::components::ViewControllerEvent;
+use crate::components::ViewControllerInput;
+use collection_entry::{CollectionData, CollectionEntry};
 
-pub struct CollectionPicker;
+pub struct CollectionPicker {
+    collection_entries: FactoryVecDeque<CollectionEntry>,
+}
 
 #[relm4::component(pub)]
 impl SimpleComponent for CollectionPicker {
     type Init = ();
     type Input = ();
-    type Output = ViewControllerEvent;
+    type Output = ViewControllerInput;
     type Widgets = CollectionPickerWidgets;
 
     view! {
@@ -59,10 +70,9 @@ impl SimpleComponent for CollectionPicker {
                             add_css_class: "circular",
                         }
                     },
-                    adw::StatusPage {
-                        set_icon_name: Some("preferences-desktop-screensaver"),
-                        set_title: "No Collections Found",
-                        set_description: Some("Create a new collection using the plus button."),
+                    #[local_ref]
+                    collection_entry_box -> gtk::ListBox {
+                        add_css_class: "boxed-list",
                     }
                 }
             }
@@ -72,10 +82,46 @@ impl SimpleComponent for CollectionPicker {
     fn init(
         _params: Self::Init,
         root: &Self::Root,
-        _sender: ComponentSender<Self>,
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = Self;
+        let collection_names = Collection::get_names();
+        let mut collection_entries_components = Vec::new();
+        for collection_name in collection_names {
+            let meta_data = Collection::get_metadata_from(&collection_name);
+            collection_entries_components.push(CollectionData::new(collection_name, meta_data));
+        }
+        collection_entries_components
+            .sort_unstable_by(|first, second| {
+                let first_date = Utc
+                    .datetime_from_str(&first.meta_data.last_changed, LAST_CHANGED_FORMAT)
+                    .unwrap();
+                let second_date = Utc
+                    .datetime_from_str(&second.meta_data.last_changed, LAST_CHANGED_FORMAT)
+                    .unwrap();
+
+                if first.meta_data.pinned == second.meta_data.pinned {
+                    if first_date < second_date {
+                        Ordering::Greater
+                    } else if first_date != second_date {
+                        Ordering::Less
+                    } else {
+                        Ordering::Equal
+                    }
+                } else {
+                    match first.meta_data.pinned {
+                        true => Ordering::Less,
+                        false => Ordering::Greater,
+                    }
+                }
+            });
+
+        let mut collection_entries =
+            FactoryVecDeque::from_vec(collection_entries_components, gtk::ListBox::default(), sender.input_sender());
+
+        let model = Self { collection_entries };
+        let collection_entry_box = model.collection_entries.widget();
         let widgets = view_output!();
+
         ComponentParts { model, widgets }
     }
 }
