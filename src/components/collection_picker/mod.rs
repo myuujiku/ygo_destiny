@@ -48,6 +48,7 @@ impl SimpleComponent for CollectionPicker {
         gtk::ScrolledWindow {
             set_min_content_height: 200,
             set_hscrollbar_policy: gtk::PolicyType::Never,
+            connect_unrealize => CollectionEntryOutput::SaveChanges,
 
             adw::Clamp {
                 set_orientation: Orientation::Horizontal,
@@ -213,6 +214,15 @@ impl SimpleComponent for CollectionPicker {
                 sender.output(ViewControllerInput::AddPage(
                     gtk::Label::new(Some(&file_name)).upcast::<gtk::Widget>(),
                 )).unwrap();
+            }
+            CollectionEntryOutput::SaveChanges => {
+                for entry in self.collection_entries.iter() {
+                    if entry.pinned.has_changed() {
+                        let mut collection = Collection::from_name(&entry.file);
+                        collection.meta_data.pinned = entry.pinned.get();
+                        collection.save(&entry.file);
+                    }
+                }
             }
         }
     }

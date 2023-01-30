@@ -85,11 +85,12 @@ pub enum CollectionEntryOutput {
     SortDown(DynamicIndex),
     FilterBy(String),
     OpenCollection(String),
+    SaveChanges,
 }
 
 #[derive(Debug)]
 pub struct CollectionEntry {
-    file: String,
+    pub file: String,
     pub name: String,
     pub description: String,
     pub last_modified: String,
