@@ -10,7 +10,8 @@ version = "0.5.0-rc.1"
 features = ["libadwaita"]
 
 [dependencies.ygod_core]
-path = "ygod_core"
+git = "https://github.com/myuujiku/ygod_core"
+ref = "2aefad1a476ea6374c91617182148941cc4fb39c"
 
 [dependencies]
 chrono = "0.4"
