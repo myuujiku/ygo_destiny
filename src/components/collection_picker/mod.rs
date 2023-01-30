@@ -186,13 +186,8 @@ impl SimpleComponent for CollectionPicker {
                 }
             }
             CollectionEntryOutput::FilterBy(text) => {
-                let sort_case_sensitive: bool = text != text.to_lowercase();
-
-                let text_lower = if sort_case_sensitive {
-                    "".to_string()
-                } else {
-                    text.to_lowercase()
-                };
+                let text_lower = text.to_lowercase();
+                let sort_case_sensitive: bool = text != text_lower;
 
                 let mut i = 0;
                 loop {
