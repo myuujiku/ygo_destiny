@@ -219,9 +219,11 @@ impl SimpleComponent for CollectionPicker {
                 }
             }
             CollectionEntryOutput::OpenCollection(file_name) => {
-                sender.output(ViewControllerInput::AddPage(
-                    gtk::Label::new(Some(&file_name)).upcast::<gtk::Widget>(),
-                )).unwrap();
+                sender
+                    .output(ViewControllerInput::AddPage(
+                        gtk::Label::new(Some(&file_name)).upcast::<gtk::Widget>(),
+                    ))
+                    .unwrap();
             }
             CollectionEntryOutput::SaveChanges => {
                 for entry in self.collection_entries.iter() {

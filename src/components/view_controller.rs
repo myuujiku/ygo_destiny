@@ -62,20 +62,13 @@ impl Component for ViewController {
         ComponentParts { model, widgets }
     }
 
-    fn update(
-        &mut self,
-        input: Self::Input,
-        _sender: ComponentSender<Self>,
-        root: &Self::Root,
-    ) {
+    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>, root: &Self::Root) {
         match input {
             ViewControllerInput::AddPage(widget) => {
                 root.append(&widget);
                 root.navigate(adw::NavigationDirection::Forward);
             }
-            ViewControllerInput::ClosePage => {
-
-            }
+            ViewControllerInput::ClosePage => {}
         }
     }
 }
