@@ -32,15 +32,18 @@ pub struct ViewController {
 }
 
 #[relm4::component(pub)]
-impl SimpleComponent for ViewController {
+impl Component for ViewController {
     type Init = ();
     type Input = ViewControllerInput;
     type Output = AppInput;
+    type CommandOutput = ();
     type Widgets = ViewControllerWidgets;
 
     view! {
         #[root]
         adw::Leaflet {
+            set_can_unfold: false,
+            set_transition_type: adw::LeafletTransitionType::Slide,
             append: model.collection_picker.widget(),
         }
     }
@@ -57,5 +60,22 @@ impl SimpleComponent for ViewController {
         };
         let widgets = view_output!();
         ComponentParts { model, widgets }
+    }
+
+    fn update(
+        &mut self,
+        input: Self::Input,
+        _sender: ComponentSender<Self>,
+        root: &Self::Root,
+    ) {
+        match input {
+            ViewControllerInput::AddPage(widget) => {
+                root.append(&widget);
+                root.navigate(adw::NavigationDirection::Forward);
+            }
+            ViewControllerInput::ClosePage => {
+
+            }
+        }
     }
 }

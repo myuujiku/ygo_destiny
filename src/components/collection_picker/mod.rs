@@ -131,7 +131,7 @@ impl SimpleComponent for CollectionPicker {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>) {
+    fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>) {
         match input {
             CollectionEntryOutput::SortUp(dynamic_index) => {
                 let mut index = dynamic_index.current_index();
@@ -201,10 +201,7 @@ impl SimpleComponent for CollectionPicker {
                             entry.name.contains(&text) || entry.description.contains(&text)
                         } else {
                             entry.name.to_lowercase().contains(&text_lower)
-                                || entry
-                                    .description
-                                    .to_lowercase()
-                                    .contains(&text_lower)
+                                || entry.description.to_lowercase().contains(&text_lower)
                         };
 
                         self.collection_entries
@@ -217,7 +214,9 @@ impl SimpleComponent for CollectionPicker {
                 }
             }
             CollectionEntryOutput::OpenCollection(file_name) => {
-                println!("{}", file_name);
+                sender.output(ViewControllerInput::AddPage(
+                    gtk::Label::new(Some(&file_name)).upcast::<gtk::Widget>(),
+                )).unwrap();
             }
         }
     }
