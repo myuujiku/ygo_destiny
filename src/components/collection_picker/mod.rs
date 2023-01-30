@@ -25,7 +25,7 @@ use gtk::{Align, Orientation};
 use relm4::factory::FactoryVecDeque;
 use relm4::prelude::*;
 use rust_i18n::t;
-use ygod_core::user_data::{collection::LAST_CHANGED_FORMAT, Collection};
+use ygod_core::user_data::{Collection, LAST_CHANGED_FORMAT};
 
 use crate::components::ViewControllerInput;
 use collection_entry::{

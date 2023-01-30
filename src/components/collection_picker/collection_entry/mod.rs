@@ -18,8 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use adw::prelude::*;
 use gtk::glib;
 use relm4::prelude::*;
-// Path subject to change.
-use ygod_core::user_data::collection::MetaData;
+use ygod_core::user_data::MetaData;
 
 #[derive(Debug, PartialEq)]
 pub struct TrackedBool {
