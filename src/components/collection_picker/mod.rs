@@ -24,6 +24,7 @@ use chrono::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::factory::FactoryVecDeque;
 use relm4::prelude::*;
+use rust_i18n::t;
 use ygod_core::user_data::{collection::LAST_CHANGED_FORMAT, Collection};
 
 use crate::components::ViewControllerInput;
@@ -58,7 +59,7 @@ impl SimpleComponent for CollectionPicker {
                     set_valign: Align::Center,
                     set_margin_all: 6,
 
-                    gtk::Label::new(Some("Collection")) {
+                    gtk::Label::new(Some(&t!("collection_picker_heading"))) {
                         add_css_class: "heading",
                         set_halign: Align::Start,
                     },

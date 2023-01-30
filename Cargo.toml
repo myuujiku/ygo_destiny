@@ -24,7 +24,6 @@ tracker = "0.2"
 load-path = "locales"
 available-locales = [
     "en-GB",
-    "en-US",
     "de-DE",
     "jp",
 ]
