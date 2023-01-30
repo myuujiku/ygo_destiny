@@ -20,6 +20,13 @@ use ygod_core::APP_ID;
 
 use ygo_destiny::App;
 
+// Initialise i18n
+#[macro_use]
+extern crate rust_i18n;
+
+// Initialise translations in `locales` folder
+i18n!("locales");
+
 fn main() {
     let app = RelmApp::new(APP_ID);
     app.run::<App>(());
