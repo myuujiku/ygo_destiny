@@ -11,6 +11,7 @@ features = ["libadwaita"]
 
 [dependencies.ygod_core]
 git = "https://github.com/myuujiku/ygod_core"
+rev = "0ee3522fb80a330e92f73eb3d787e3d1c7657ddd"
 
 [dependencies]
 chrono = "0.4"
