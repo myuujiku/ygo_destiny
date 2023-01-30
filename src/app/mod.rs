@@ -47,10 +47,7 @@ impl SimpleComponent for App {
 
             #[template]
             ContentBox {
-                adw::HeaderBar {
-                    set_title_widget: Some(&adw::WindowTitle::new("YGO Destiny", "")),
-                    pack_start: &gtk::Button::builder().icon_name("open-menu-symbolic").build(),
-                },
+
                 model.view_controller.widget(),
             },
         }

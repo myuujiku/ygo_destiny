@@ -45,43 +45,51 @@ impl SimpleComponent for CollectionPicker {
 
     view! {
         #[root]
-        gtk::ScrolledWindow {
-            set_min_content_height: 200,
-            set_hscrollbar_policy: gtk::PolicyType::Never,
-            connect_unrealize => CollectionEntryOutput::SaveChanges,
+        gtk::Box {
+            set_orientation: Orientation::Vertical,
 
-            adw::Clamp {
-                set_orientation: Orientation::Horizontal,
-                set_maximum_size: 800,
+            adw::HeaderBar {
+                set_title_widget: Some(&adw::WindowTitle::new("YGO Destiny", "")),
+                pack_start: &gtk::Button::builder().icon_name("open-menu-symbolic").build(),
+            },
+            gtk::ScrolledWindow {
+                set_min_content_height: 200,
+                set_hscrollbar_policy: gtk::PolicyType::Never,
+                connect_unrealize => CollectionEntryOutput::SaveChanges,
 
-                gtk::Box::new(Orientation::Vertical, 6) {
-                    set_hexpand: true,
-                    set_vexpand: true,
-                    set_valign: Align::Center,
-                    set_margin_all: 6,
+                adw::Clamp {
+                    set_orientation: Orientation::Horizontal,
+                    set_maximum_size: 800,
 
-                    gtk::Label::new(Some(&t!("collection_picker_heading"))) {
-                        add_css_class: "heading",
-                        set_halign: Align::Start,
-                    },
-                    gtk::Box::new(Orientation::Horizontal, 6) {
-                        gtk::SearchEntry {
-                            set_hexpand: true,
-                            connect_search_changed[sender] => move |search_entry| {
-                                sender.input(CollectionEntryOutput::FilterBy(search_entry.text().to_string()));
-                            },
+                    gtk::Box::new(Orientation::Vertical, 6) {
+                        set_hexpand: true,
+                        set_vexpand: true,
+                        set_valign: Align::Center,
+                        set_margin_all: 6,
+
+                        gtk::Label::new(Some(&t!("collection_picker_heading"))) {
+                            add_css_class: "heading",
+                            set_halign: Align::Start,
                         },
-                        gtk::Button {
-                            set_icon_name: "list-add",
-                            add_css_class: "circular",
+                        gtk::Box::new(Orientation::Horizontal, 6) {
+                            gtk::SearchEntry {
+                                set_hexpand: true,
+                                connect_search_changed[sender] => move |search_entry| {
+                                    sender.input(CollectionEntryOutput::FilterBy(search_entry.text().to_string()));
+                                },
+                            },
+                            gtk::Button {
+                                set_icon_name: "list-add",
+                                add_css_class: "circular",
+                            }
+                        },
+                        #[local_ref]
+                        collection_entry_box -> gtk::ListBox {
+                            add_css_class: "boxed-list",
                         }
-                    },
-                    #[local_ref]
-                    collection_entry_box -> gtk::ListBox {
-                        add_css_class: "boxed-list",
                     }
                 }
-            }
+            },
         }
     }
 
