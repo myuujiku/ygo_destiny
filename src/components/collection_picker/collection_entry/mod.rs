@@ -22,12 +22,12 @@ use relm4::prelude::*;
 use ygod_core::user_data::collection::MetaData;
 
 #[derive(Debug, PartialEq)]
-pub struct IsPinned {
+pub struct TrackedBool {
     original_value: bool,
     current_value: bool,
 }
 
-impl IsPinned {
+impl TrackedBool {
     pub fn new(value: bool) -> Self {
         Self {
             original_value: value,
@@ -94,7 +94,7 @@ pub struct CollectionEntry {
     pub name: String,
     pub description: String,
     pub last_modified: String,
-    pub pinned: IsPinned,
+    pub pinned: TrackedBool,
     index: DynamicIndex,
 }
 
@@ -150,7 +150,7 @@ impl FactoryComponent for CollectionEntry {
             name: value.meta_data.name,
             description: value.meta_data.description,
             last_modified: value.meta_data.last_changed,
-            pinned: IsPinned::new(value.meta_data.pinned),
+            pinned: TrackedBool::new(value.meta_data.pinned),
             index: index.clone(),
         }
     }
