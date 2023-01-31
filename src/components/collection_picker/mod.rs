@@ -67,7 +67,7 @@ impl SimpleComponent for CollectionPicker {
                         set_valign: Align::Center,
                         set_margin_all: 6,
 
-                        gtk::Label::new(Some(&t!("collection_picker_heading"))) {
+                        gtk::Label::new(Some(&t!("collection_picker.heading"))) {
                             add_css_class: "heading",
                             set_halign: Align::Start,
                         },

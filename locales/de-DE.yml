@@ -1,3 +1,6 @@
 ---
-collection_picker_heading: Sammlungen
+collection_picker:
+  heading: Sammlungen
+collection_page:
+  title: Sammlung – %{name}
 

@@ -1,3 +1,6 @@
 ---
-collection_picker_heading: コレクション
+collection_picker:
+  heading: コレクション
+collection_page:
+  title: コレクション「%{name}」
 
