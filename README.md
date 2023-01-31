@@ -49,7 +49,7 @@ The resulting executable is located in `target/debug/ygo_destiny` or `target/rel
 Features with high priority are marked with a *.
 
 - [ ] Collections
-    - [ ] * Collection list
+    - [x] * Collection list
     - [ ] * Collection creation
     - [ ] * Choose between different draft types
         - [ ] * Choice Draft
