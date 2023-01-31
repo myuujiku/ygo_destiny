@@ -17,8 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod pages;
 
+use gtk::glib;
 use std::convert::identity;
+use std::time::Duration;
 
+use adw::NavigationDirection;
 use relm4::prelude::*;
 
 use crate::{components::CollectionPicker, AppInput};
@@ -81,9 +84,24 @@ impl Component for ViewController {
                 };
 
                 root.append(component.widget());
-                root.navigate(adw::NavigationDirection::Forward);
+                root.navigate(NavigationDirection::Forward);
             }
-            ViewControllerInput::ClosePage => {}
+            ViewControllerInput::ClosePage => {
+                let main_context = glib::MainContext::default();
+                main_context.spawn_local(glib::clone!(@strong root => async move {
+                    // Get current page
+                    let to_remove = root.visible_child().unwrap();
+                    // Initiate navigation to the previous page
+                    root.navigate(NavigationDirection::Back);
+
+                    // Wait for navigation animation to complete
+                    let duration = Duration::from_millis(root.mode_transition_duration() as u64);
+                    glib::timeout_future(duration).await;
+
+                    // Remove page
+                    root.remove(&to_remove);
+                }));
+            }
         }
     }
 }
