@@ -27,7 +27,7 @@ use relm4::prelude::*;
 use rust_i18n::t;
 use ygod_core::user_data::{Collection, LAST_CHANGED_FORMAT};
 
-use crate::components::ViewControllerInput;
+use crate::components::{ViewControllerInput, ViewControllerPage};
 use collection_entry::{
     CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput,
 };
@@ -221,7 +221,7 @@ impl SimpleComponent for CollectionPicker {
             CollectionEntryOutput::OpenCollection(file_name) => {
                 sender
                     .output(ViewControllerInput::AddPage(
-                        gtk::Label::new(Some(&file_name)).upcast::<gtk::Widget>(),
+                        ViewControllerPage::Collection(file_name)
                     ))
                     .unwrap();
             }

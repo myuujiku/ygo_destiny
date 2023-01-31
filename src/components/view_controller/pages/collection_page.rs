@@ -15,8 +15,34 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod collection_picker;
-mod view_controller;
+use relm4::prelude::*;
 
-pub use collection_picker::CollectionPicker;
-pub use view_controller::{ViewController, ViewControllerInput, ViewControllerPage};
+use crate::components::ViewControllerInput;
+
+pub struct CollectionPage {
+    pub file_name: String,
+}
+
+#[relm4::component(pub)]
+impl SimpleComponent for CollectionPage {
+    type Init = String;
+    type Input = ();
+    type Output = ViewControllerInput;
+    type Widgets = CollectionPageWidgets;
+
+    view! {
+        #[root]
+        gtk::Box {}
+    }
+
+    fn init(
+        params: Self::Init,
+        root: &Self::Root,
+        _sender: ComponentSender<Self>,
+    ) -> ComponentParts<Self> {
+        let model = Self { file_name: params };
+        let widgets = view_output!();
+
+        ComponentParts { model, widgets }
+    }
+}

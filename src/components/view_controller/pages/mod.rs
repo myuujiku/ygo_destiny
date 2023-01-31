@@ -15,8 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-mod collection_picker;
-mod view_controller;
+mod collection_page;
 
-pub use collection_picker::CollectionPicker;
-pub use view_controller::{ViewController, ViewControllerInput, ViewControllerPage};
+pub use collection_page::CollectionPage;

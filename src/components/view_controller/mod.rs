@@ -15,15 +15,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+mod pages;
+
 use std::convert::identity;
 
 use relm4::prelude::*;
 
 use crate::{components::CollectionPicker, AppInput};
+use pages::*;
+
+#[derive(Debug)]
+pub enum ViewControllerPage {
+    Collection(String),
+}
 
 #[derive(Debug)]
 pub enum ViewControllerInput {
-    AddPage(gtk::Widget),
+    AddPage(ViewControllerPage),
     ClosePage,
 }
 
@@ -59,13 +67,22 @@ impl Component for ViewController {
                 .forward(sender.input_sender(), identity),
         };
         let widgets = view_output!();
+
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>, root: &Self::Root) {
+    fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>, root: &Self::Root) {
         match input {
-            ViewControllerInput::AddPage(widget) => {
-                root.append(&widget);
+            ViewControllerInput::AddPage(page) => {
+                let component = match page {
+                    ViewControllerPage::Collection(file_name) => {
+                        CollectionPage::builder()
+                            .launch(file_name)
+                            .forward(sender.input_sender(), identity)
+                    }
+                };
+
+                root.append(component.widget());
                 root.navigate(adw::NavigationDirection::Forward);
             }
             ViewControllerInput::ClosePage => {}
