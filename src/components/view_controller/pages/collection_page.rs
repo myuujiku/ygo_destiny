@@ -53,7 +53,10 @@ impl SimpleComponent for CollectionPage {
         _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let collection = Collection::from_name(&file_name);
-        let model = Self { file_name, collection };
+        let model = Self {
+            file_name,
+            collection,
+        };
         let widgets = view_output!();
 
         ComponentParts { model, widgets }

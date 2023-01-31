@@ -75,11 +75,9 @@ impl Component for ViewController {
         match input {
             ViewControllerInput::AddPage(page) => {
                 let component = match page {
-                    ViewControllerPage::Collection(file_name) => {
-                        CollectionPage::builder()
-                            .launch(file_name)
-                            .forward(sender.input_sender(), identity)
-                    }
+                    ViewControllerPage::Collection(file_name) => CollectionPage::builder()
+                        .launch(file_name)
+                        .forward(sender.input_sender(), identity),
                 };
 
                 root.append(component.widget());

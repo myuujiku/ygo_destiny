@@ -221,7 +221,7 @@ impl SimpleComponent for CollectionPicker {
             CollectionEntryOutput::OpenCollection(file_name) => {
                 sender
                     .output(ViewControllerInput::AddPage(
-                        ViewControllerPage::Collection(file_name)
+                        ViewControllerPage::Collection(file_name),
                     ))
                     .unwrap();
             }
