@@ -15,12 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use adw::prelude::*;
+use gtk::Orientation;
 use relm4::prelude::*;
+use rust_i18n::t;
+use ygod_core::user_data::Collection;
 
 use crate::components::ViewControllerInput;
 
 pub struct CollectionPage {
     pub file_name: String,
+    pub collection: Collection,
 }
 
 #[relm4::component(pub)]
@@ -32,15 +37,23 @@ impl SimpleComponent for CollectionPage {
 
     view! {
         #[root]
-        gtk::Box {}
+        gtk::Box {
+            set_orientation: Orientation::Vertical,
+
+            adw::HeaderBar {
+                set_title_widget: Some(&adw::WindowTitle::new(&t!("collection_page.title", name = &model.collection.meta_data.name), "")),
+                pack_start: &gtk::Button::builder().icon_name("go-previous-symbolic").build(),
+            },
+        }
     }
 
     fn init(
-        params: Self::Init,
+        file_name: Self::Init,
         root: &Self::Root,
         _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let model = Self { file_name: params };
+        let collection = Collection::from_name(&file_name);
+        let model = Self { file_name, collection };
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
