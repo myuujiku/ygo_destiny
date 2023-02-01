@@ -36,6 +36,7 @@ pub enum ViewControllerPage {
 #[derive(Debug)]
 pub enum ViewControllerInput {
     AddPage(ViewControllerPage),
+    ReplacePage(ViewControllerPage),
     ClosePage,
 }
 
@@ -94,6 +95,23 @@ impl Component for ViewController {
                 };
 
                 root.navigate(NavigationDirection::Forward);
+            }
+            ViewControllerInput::ReplacePage(page) => {
+                let main_context = glib::MainContext::default();
+                main_context.spawn_local(glib::clone!(@strong root => async move {
+                    // Get current page
+                    let to_remove = root.visible_child().unwrap();
+
+                    // Add page
+                    sender.input(ViewControllerInput::AddPage(page));
+
+                    // Wait for navigation animation to complete
+                    let duration = Duration::from_millis(root.mode_transition_duration() as u64);
+                    glib::timeout_future(duration).await;
+
+                    // Remove page
+                    root.remove(&to_remove);
+                }));
             }
             ViewControllerInput::ClosePage => {
                 let main_context = glib::MainContext::default();
