@@ -15,12 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use relm4::RelmApp;
-use ygod_core::APP_ID;
+use adw::prelude::*;
+use relm4::prelude::*;
 
-use ygo_destiny::App;
-
-fn main() {
-    let app = RelmApp::new(APP_ID);
-    app.run::<App>(());
+#[relm4::widget_template(pub)]
+impl WidgetTemplate for ContentBox {
+    view! {
+        gtk::Box::new(gtk::Orientation::Vertical, 0) {
+            set_hexpand: true,
+            set_vexpand: true,
+        }
+    }
 }

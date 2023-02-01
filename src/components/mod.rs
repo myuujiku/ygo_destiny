@@ -15,12 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use relm4::RelmApp;
-use ygod_core::APP_ID;
+mod collection_picker;
+mod view_controller;
 
-use ygo_destiny::App;
-
-fn main() {
-    let app = RelmApp::new(APP_ID);
-    app.run::<App>(());
-}
+pub use collection_picker::CollectionPicker;
+pub use view_controller::{ViewController, ViewControllerInput, ViewControllerPage};

@@ -15,15 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use glib_build_tools::compile_resources;
+mod app;
 
-fn main() {
-    println!("cargo:rerun-if-changed=ygod_gtk/resources/meml");
-    meml::parse_manifest("ygod_gtk/resources/meml/meta.meml");
+pub use app::{App, AppInput};
 
-    compile_resources(
-        "ygod_gtk/resources",
-        "ygod_gtk/resources/gresources.xml",
-        "compiled.gresource",
-    );
-}
+pub mod components;
+pub mod templates;
+
+// Initialise i18n
+#[macro_use]
+extern crate rust_i18n;
+
+// Initialise translations in `locales` folder
+i18n!("locales");

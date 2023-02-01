@@ -1,0 +1,20 @@
+---
+collection_picker:
+    heading: "Collections"
+pages:
+    collection:
+        title: "Collection – %{name}"
+    create_collection:
+        title: "Nouvelle Collection"
+        create_button:
+            label: "Créer"
+        draft_settings:
+            label: "Paramètres du Draft"
+        name_entry:
+            title: "Nom"
+        desc_entry:
+            title: "Description"
+        starred_switch:
+            title: "Favoris"
+            description: "Les collections favorites sont affichées au-dessus des autres"
+

@@ -15,12 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use relm4::RelmApp;
-use ygod_core::APP_ID;
+mod collection_page;
+mod create_collection_page;
 
-use ygo_destiny::App;
-
-fn main() {
-    let app = RelmApp::new(APP_ID);
-    app.run::<App>(());
-}
+pub use collection_page::CollectionPage;
+pub use create_collection_page::CreateCollectionPage;
