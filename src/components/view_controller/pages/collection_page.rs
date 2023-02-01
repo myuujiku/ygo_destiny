@@ -43,7 +43,7 @@ impl SimpleComponent for CollectionPage {
 
             adw::HeaderBar {
                 set_title_widget: Some(&adw::WindowTitle::new(
-                    &t!("collection_page.title", name = &model.collection.meta_data.name),
+                    &t!("pages.collection.title", name = &model.collection.meta_data.name),
                     "",
                 )),
                 pack_start: &model.go_back_button,

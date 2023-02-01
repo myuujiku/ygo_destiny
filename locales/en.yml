@@ -1,6 +1,20 @@
 ---
 collection_picker:
-  heading: Collections
-collection_page:
-  title: Collection – %{name}
+    heading: "Collections"
+pages:
+    collection:
+        title: "Collection – %{name}"
+    create_collection:
+        title: "New Collection"
+        create_button:
+            label: "Create"
+        draft_settings:
+            label: "Draft Settings"
+        name_entry:
+            title: "Name"
+        desc_entry:
+            title: "Description"
+        starred_switch:
+            title: "Starred"
+            description: "Starred collections are listed above non-starred ones"
 

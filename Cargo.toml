@@ -4,6 +4,11 @@ version = "0.1.0"
 edition = "2021"
 license = "GPLv3 only"
 
+[dependencies.adw]
+package = "libadwaita"
+version = "0.2"
+features = ["v1_2"]
+
 [dependencies.relm4]
 package = "relm4"
 version = "0.5.0-rc.1"
@@ -24,7 +29,9 @@ tracker = "0.2"
 [package.metadata.i18n]
 load-path = "locales"
 available-locales = [
-    "en-GB",
     "de-DE",
-    "jp",
+    "en-GB",
+    "fr-FR",
+    "it-IT",
+    "pt-PT",
 ]

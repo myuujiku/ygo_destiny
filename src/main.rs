@@ -21,8 +21,6 @@ use ygod_core::APP_ID;
 use ygo_destiny::App;
 
 fn main() {
-    rust_i18n::set_locale("jp");
-
     let app = RelmApp::new(APP_ID);
     app.run::<App>(());
 }

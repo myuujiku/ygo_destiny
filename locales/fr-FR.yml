@@ -5,16 +5,16 @@ pages:
     collection:
         title: "Collection – %{name}"
     create_collection:
-        title: "New Collection"
+        title: "Nouvelle Collection"
         create_button:
-            label: "Create"
+            label: "Créer"
         draft_settings:
-            label: "Draft Settings"
+            label: "Paramètres du Draft"
         name_entry:
-            title: "Name"
+            title: "Nom"
         desc_entry:
             title: "Description"
         starred_switch:
-            title: "Starred"
-            description: "Starred collections are listed above non-starred ones"
+            title: "Favoris"
+            description: "Les collections favorites sont affichées au-dessus des autres"
 

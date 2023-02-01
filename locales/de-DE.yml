@@ -1,6 +1,20 @@
 ---
 collection_picker:
-  heading: Sammlungen
-collection_page:
-  title: Sammlung – %{name}
+    heading: "Sammlungen"
+pages:
+    collection:
+        title: "Sammlung – %{name}"
+    create_collection:
+        title: "Neue Sammlung"
+        create_button:
+            label: "Erstellen"
+        draft_settings:
+            label: "Draft-Einstellungen"
+        name_entry:
+            title: "Name"
+        desc_entry:
+            title: "Beschreibung"
+        starred_switch:
+            title: "Favorisiert"
+            description: "Favorisierte Sammlungen werden über anderen angezeigt"
 
