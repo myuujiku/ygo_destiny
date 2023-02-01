@@ -30,6 +30,7 @@ use pages::*;
 #[derive(Debug)]
 pub enum ViewControllerPage {
     Collection(String),
+    CreateCollection,
 }
 
 #[derive(Debug)]
@@ -77,13 +78,21 @@ impl Component for ViewController {
     fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>, root: &Self::Root) {
         match input {
             ViewControllerInput::AddPage(page) => {
-                let component = match page {
-                    ViewControllerPage::Collection(file_name) => CollectionPage::builder()
-                        .launch(file_name)
-                        .forward(sender.input_sender(), identity),
+                match page {
+                    ViewControllerPage::Collection(file_name) => {
+                        let controller = CollectionPage::builder()
+                            .launch(file_name)
+                            .forward(sender.input_sender(), identity);
+                        root.append(controller.widget());
+                    }
+                    ViewControllerPage::CreateCollection => {
+                        let controller = CreateCollectionPage::builder()
+                            .launch(())
+                            .forward(sender.input_sender(), identity);
+                        root.append(controller.widget());
+                    }
                 };
 
-                root.append(component.widget());
                 root.navigate(NavigationDirection::Forward);
             }
             ViewControllerInput::ClosePage => {

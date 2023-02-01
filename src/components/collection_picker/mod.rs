@@ -81,6 +81,9 @@ impl SimpleComponent for CollectionPicker {
                             gtk::Button {
                                 set_icon_name: "list-add",
                                 add_css_class: "circular",
+                                connect_clicked[sender] => move |_| {
+                                    sender.output(ViewControllerInput::AddPage(ViewControllerPage::CreateCollection)).unwrap();
+                                },
                             }
                         },
                         #[local_ref]
