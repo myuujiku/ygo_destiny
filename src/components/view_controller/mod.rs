@@ -81,15 +81,17 @@ impl Component for ViewController {
             ViewControllerInput::AddPage(page) => {
                 match page {
                     ViewControllerPage::Collection(file_name) => {
-                        let controller = CollectionPage::builder()
+                        let mut controller = CollectionPage::builder()
                             .launch(file_name)
                             .forward(sender.input_sender(), identity);
+                        controller.detach_runtime();
                         root.append(controller.widget());
                     }
                     ViewControllerPage::CreateCollection => {
-                        let controller = CreateCollectionPage::builder()
+                        let mut controller = CreateCollectionPage::builder()
                             .launch(())
                             .forward(sender.input_sender(), identity);
+                        controller.detach_runtime();
                         root.append(controller.widget());
                     }
                 };
@@ -109,7 +111,7 @@ impl Component for ViewController {
                     let duration = Duration::from_millis(root.mode_transition_duration() as u64);
                     glib::timeout_future(duration).await;
 
-                    // Remove page
+                    // Remove previously displayed page
                     root.remove(&to_remove);
                 }));
             }
@@ -125,7 +127,7 @@ impl Component for ViewController {
                     let duration = Duration::from_millis(root.mode_transition_duration() as u64);
                     glib::timeout_future(duration).await;
 
-                    // Remove page
+                    // Remove previously displayed page
                     root.remove(&to_remove);
                 }));
             }
