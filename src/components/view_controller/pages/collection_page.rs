@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use adw::prelude::*;
-use gtk::{glib, Orientation};
+use gtk::Orientation;
 use relm4::prelude::*;
 use rust_i18n::t;
 use ygod_core::user_data::Collection;
@@ -26,7 +26,6 @@ use crate::components::ViewControllerInput;
 pub struct CollectionPage {
     pub file_name: String,
     pub collection: Collection,
-    go_back_button: gtk::Button,
 }
 
 #[relm4::component(pub)]
@@ -46,7 +45,12 @@ impl SimpleComponent for CollectionPage {
                     &t!("pages.collection.title", name = &model.collection.meta_data.name),
                     "",
                 )),
-                pack_start: &model.go_back_button,
+                pack_start = &gtk::Button {
+                    set_icon_name: "go-previous-symbolic",
+                    connect_clicked[sender] => move |_| {
+                        sender.output(ViewControllerInput::ClosePage).unwrap();
+                    },
+                },
             },
         }
     }
@@ -58,17 +62,9 @@ impl SimpleComponent for CollectionPage {
     ) -> ComponentParts<Self> {
         let collection = Collection::from_name(&file_name);
 
-        let go_back_button = gtk::Button::builder()
-            .icon_name("go-previous-symbolic")
-            .build();
-        go_back_button.connect_clicked(glib::clone!(@strong sender => move |_| {
-            sender.output(ViewControllerInput::ClosePage).unwrap();
-        }));
-
         let model = Self {
             file_name,
             collection,
-            go_back_button,
         };
         let widgets = view_output!();
 
