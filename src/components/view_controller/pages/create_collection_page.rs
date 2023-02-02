@@ -16,23 +16,26 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use adw::prelude::*;
-use gtk::{Align, glib, Orientation};
+use gtk::{Align, Orientation};
 use relm4::prelude::*;
 use rust_i18n::t;
 use ygod_core::user_data::Collection;
 
 use crate::components::ViewControllerInput;
 
+#[derive(Debug)]
+pub enum CreateCollectionPageInput {
+    Save,
+}
+
 pub struct CreateCollectionPage {
     pub collection: Collection,
-    go_back_button: gtk::Button,
-    create_button: gtk::Button,
 }
 
 #[relm4::component(pub)]
 impl SimpleComponent for CreateCollectionPage {
     type Init = ();
-    type Input = ();
+    type Input = CreateCollectionPageInput;
     type Output = ViewControllerInput;
     type Widgets = CreateCollectionPageWidgets;
 
@@ -46,8 +49,17 @@ impl SimpleComponent for CreateCollectionPage {
                     &t!("pages.create_collection.title"),
                     "",
                 )),
-                pack_start: &model.go_back_button,
-                pack_end: &model.create_button,
+                pack_start = &gtk::Button {
+                    set_icon_name: "go-previous-symbolic",
+                    connect_clicked[sender] => move |_| {
+                        sender.output(ViewControllerInput::ClosePage).unwrap();
+                    },
+                },
+                pack_end = &gtk::Button {
+                    set_label: &t!("pages.create_collection.create_button.label"),
+                    add_css_class: "suggested-action",
+                    connect_clicked => CreateCollectionPageInput::Save,
+                },
             },
             adw::Clamp {
                 set_orientation: Orientation::Horizontal,
@@ -80,7 +92,9 @@ impl SimpleComponent for CreateCollectionPage {
                             set_title: &t!("pages.create_collection.starred_switch.title"),
                             set_subtitle: &t!("pages.create_collection.starred_switch.description"),
 
-                            add_suffix: starred_switch = &gtk::Switch::builder().valign(Align::Center).build(),
+                            add_suffix = starred_switch = &gtk::Switch {
+                                set_valign: Align::Center,
+                            },
                         },
                     },
                 },
@@ -95,25 +109,15 @@ impl SimpleComponent for CreateCollectionPage {
     ) -> ComponentParts<Self> {
         let collection = Collection::default();
 
-        let go_back_button = gtk::Button::builder()
-            .icon_name("go-previous-symbolic")
-            .build();
-        go_back_button.connect_clicked(glib::clone!(@strong sender => move |_| {
-            sender.output(ViewControllerInput::ClosePage).unwrap();
-        }));
-
-        let create_button = gtk::Button::builder()
-            .label(&t!("pages.create_collection.create_button.label"))
-            .css_classes(vec!["suggested-action".to_string()])
-            .build();
-
-        let model = Self {
-            collection,
-            go_back_button,
-            create_button,
-        };
+        let model = Self { collection };
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
+    }
+
+    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>) {
+        match input {
+            CreateCollectionPageInput::Save => {}
+        }
     }
 }
