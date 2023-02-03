@@ -17,11 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod pages;
 
-use gtk::glib;
 use std::convert::identity;
 use std::time::Duration;
 
-use adw::NavigationDirection;
+use adw::{prelude::*, NavigationDirection};
+use gtk::glib;
 use relm4::prelude::*;
 
 use crate::{components::CollectionPicker, AppInput};
@@ -57,7 +57,8 @@ impl Component for ViewController {
         adw::Leaflet {
             set_can_unfold: false,
             set_transition_type: adw::LeafletTransitionType::Slide,
-            append: model.collection_picker.widget(),
+
+            append = model.collection_picker.widget(),
         }
     }
 
@@ -116,6 +117,16 @@ impl Component for ViewController {
                 }));
             }
             ViewControllerInput::ClosePage => {
+                // Check if the page that will be displayed next is the root page
+                if root.pages().n_items() == 2 {
+                    // Re-initialise the collection picker to reflect changes and newly added collections
+                    self.collection_picker = CollectionPicker::builder()
+                        .launch(())
+                        .forward(sender.input_sender(), identity);
+                    root.remove(&root.adjacent_child(NavigationDirection::Back).unwrap());
+                    root.prepend(self.collection_picker.widget());
+                }
+
                 let main_context = glib::MainContext::default();
                 main_context.spawn_local(glib::clone!(@strong root => async move {
                     // Get current page
