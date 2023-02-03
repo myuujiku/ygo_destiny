@@ -16,27 +16,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use adw::prelude::*;
+use chrono::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
 use rust_i18n::t;
-use ygod_core::user_data::Collection;
+use ygod_core::user_data::{Collection, LAST_CHANGED_FORMAT};
 
-use crate::components::ViewControllerInput;
+use crate::components::{ViewControllerInput, ViewControllerPage};
 
 #[derive(Debug)]
 pub enum CreateCollectionPageInput {
     Save,
 }
 
-pub struct CreateCollectionPage {
-    pub collection: Collection,
-}
+pub struct CreateCollectionPage;
 
 #[relm4::component(pub)]
-impl SimpleComponent for CreateCollectionPage {
+impl Component for CreateCollectionPage {
     type Init = ();
     type Input = CreateCollectionPageInput;
     type Output = ViewControllerInput;
+    type CommandOutput = ();
     type Widgets = CreateCollectionPageWidgets;
 
     view! {
@@ -80,9 +80,11 @@ impl SimpleComponent for CreateCollectionPage {
                         },
                     },
                     adw::PreferencesGroup {
+                        #[name = "name_entry"]
                         adw::EntryRow {
                             set_title: &t!("pages.create_collection.name_entry.title"),
                         },
+                        #[name = "desc_entry"]
                         adw::EntryRow {
                             set_title: &t!("pages.create_collection.desc_entry.title"),
                         },
@@ -107,17 +109,44 @@ impl SimpleComponent for CreateCollectionPage {
         root: &Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
-        let collection = Collection::default();
-
-        let model = Self { collection };
+        let model = Self;
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, input: Self::Input, _sender: ComponentSender<Self>) {
+    fn update_with_view(
+        &mut self,
+        widgets: &mut CreateCollectionPageWidgets,
+        input: Self::Input,
+        sender: ComponentSender<Self>,
+        _root: &Self::Root,
+    ) {
         match input {
-            CreateCollectionPageInput::Save => {}
+            CreateCollectionPageInput::Save => {
+                let mut collection = Collection::default();
+
+                // Set collection name
+                collection.meta_data.name = widgets.name_entry.text().to_string();
+
+                // Set collection description
+                collection.meta_data.description = widgets.desc_entry.text().to_string();
+
+                // Set collection pinned
+                collection.meta_data.pinned = widgets.starred_switch.state();
+
+                // Set date
+                let date = Utc::now().format(LAST_CHANGED_FORMAT).to_string();
+                collection.meta_data.last_changed = date.clone();
+
+                collection.save(&date);
+
+                sender
+                    .output(ViewControllerInput::ReplacePage(
+                        ViewControllerPage::Collection(date),
+                    ))
+                    .unwrap();
+            }
         }
     }
 }
