@@ -44,6 +44,7 @@ impl SimpleComponent for App {
         adw::Window {
             set_width_request: 640,
             set_height_request: 480,
+            add_css_class: "devel",
 
             #[template]
             ContentBox {
