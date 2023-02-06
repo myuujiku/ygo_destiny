@@ -7,7 +7,7 @@ pages:
     create_collection:
         title: "Nouvelle Collection"
         create_button:
-            label: "Créer"
+            label: "Créer Collection"
         draft_settings:
             label: "Paramètres du Draft"
         name_entry:
