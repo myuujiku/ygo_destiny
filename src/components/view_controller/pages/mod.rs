@@ -17,6 +17,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 mod collection_page;
 mod create_collection_page;
+mod draft_settings_page;
 
 pub use collection_page::CollectionPage;
 pub use create_collection_page::CreateCollectionPage;
+pub use draft_settings_page::DraftSettingsPage;

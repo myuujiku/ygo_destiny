@@ -31,6 +31,7 @@ use pages::*;
 pub enum ViewControllerPage {
     Collection(String),
     CreateCollection,
+    DraftSettings/* (draft_settings) */,
 }
 
 #[derive(Debug)]
@@ -90,6 +91,13 @@ impl Component for ViewController {
                     }
                     ViewControllerPage::CreateCollection => {
                         let mut controller = CreateCollectionPage::builder()
+                            .launch(())
+                            .forward(sender.input_sender(), identity);
+                        controller.detach_runtime();
+                        root.append(controller.widget());
+                    }
+                    ViewControllerPage::DraftSettings => {
+                        let mut controller = DraftSettingsPage::builder()
                             .launch(())
                             .forward(sender.input_sender(), identity);
                         controller.detach_runtime();

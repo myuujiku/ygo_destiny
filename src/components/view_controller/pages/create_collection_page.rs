@@ -55,11 +55,6 @@ impl Component for CreateCollectionPage {
                         sender.output(ViewControllerInput::ClosePage).unwrap();
                     },
                 },
-                pack_end = &gtk::Button {
-                    set_label: &t!("pages.create_collection.create_button.label"),
-                    add_css_class: "suggested-action",
-                    connect_clicked => CreateCollectionPageInput::Save,
-                },
             },
             adw::Clamp {
                 set_orientation: Orientation::Horizontal,
@@ -77,6 +72,9 @@ impl Component for CreateCollectionPage {
                             set_activatable_widget: Some(&gtk::Label::new(None)),
 
                             add_suffix: &gtk::Image::builder().icon_name("go-next-symbolic").build(),
+                            connect_activated[sender] => move |_| {
+                                sender.output(ViewControllerInput::AddPage(ViewControllerPage::DraftSettings)).unwrap();
+                            },
                         },
                     },
                     adw::PreferencesGroup {
@@ -98,6 +96,16 @@ impl Component for CreateCollectionPage {
                                 set_valign: Align::Center,
                             },
                         },
+                    },
+                    gtk::Separator {
+                        add_css_class: "spacer",
+                    },
+                    gtk::Button {
+                        add_css_class: "suggested-action",
+                        set_hexpand: false,
+                        set_halign: Align::End,
+                        set_label: &t!("pages.create_collection.create_button.label"),
+                        connect_clicked => CreateCollectionPageInput::Save,
                     },
                 },
             },
