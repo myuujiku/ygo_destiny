@@ -50,7 +50,7 @@ Features with high priority are marked with a *.
 
 - [ ] Collections
     - [x] * Collection list
-    - [ ] * Collection creation
+    - [x] * Collection creation
     - [ ] * Choose between different draft types
         - [ ] * Choice Draft
         - [ ] Standard Draft (with rarities)
