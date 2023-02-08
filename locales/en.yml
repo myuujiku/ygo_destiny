@@ -1,6 +1,8 @@
 ---
 collection_picker:
     heading: "Collections"
+    no_collection_found: "No Collection found..."
+    create_collection_button: "Create a new Collection!"
 pages:
     collection:
         title: "Collection – %{name}"
@@ -16,5 +18,5 @@ pages:
             title: "Description"
         starred_switch:
             title: "Starred"
-            description: "Starred collections are listed above non-starred ones"
+            description: "Starred Collections are listed above non-starred ones"
 
