@@ -52,7 +52,27 @@ impl SimpleComponent for CollectionPicker {
                 set_title_widget: Some(&adw::WindowTitle::new("YGO Destiny", "")),
                 pack_start: &gtk::Button::builder().icon_name("open-menu-symbolic").build(),
             },
+            adw::Clamp {
+                set_visible: model.collection_entries.is_empty(),
+                set_orientation: Orientation::Horizontal,
+                set_maximum_size: 800,
+
+                adw::StatusPage {
+                    set_title: &t!("collection_picker.no_collection_found"),
+                    set_vexpand: true,
+                    #[wrap(Some)]
+                    set_child = &gtk::Button {
+                        add_css_class: "suggested-action",
+                        add_css_class: "pill",
+                        set_label: &t!("collection_picker.create_collection_button"),
+                        connect_clicked[sender] => move |_| {
+                            sender.output(ViewControllerInput::AddPage(ViewControllerPage::CreateCollection)).unwrap();
+                        },
+                    },
+                },
+            },
             gtk::ScrolledWindow {
+                set_visible: !model.collection_entries.is_empty(),
                 set_min_content_height: 200,
                 set_hscrollbar_policy: gtk::PolicyType::Never,
                 connect_unrealize => CollectionEntryOutput::SaveChanges,
