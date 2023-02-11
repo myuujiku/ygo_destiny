@@ -15,8 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+mod back_button;
 mod content_box;
 mod status_page;
 
+pub use back_button::BackButton;
 pub use content_box::ContentBox;
 pub use status_page::StatusPage;

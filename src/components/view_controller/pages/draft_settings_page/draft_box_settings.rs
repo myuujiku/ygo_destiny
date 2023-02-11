@@ -19,7 +19,7 @@ use adw::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
 
-use crate::templates::StatusPage;
+use crate::templates::{BackButton, StatusPage};
 use super::DraftSettingsPageInput;
 use super::DraftBox;
 
@@ -44,11 +44,9 @@ impl SimpleComponent for DraftBoxSettings {
                     "Draft Type",
                     "",
                 )),
-                pack_start = &gtk::Button {
-                    set_icon_name: "go-previous-symbolic",
-                    connect_clicked[sender] => move |_| {
-                        sender.output(DraftSettingsPageInput::CloseDraftBox).unwrap();
-                    },
+                #[template]
+                pack_start = &BackButton {
+                    set_exit_message: (sender.output_sender(), DraftSettingsPageInput::CloseDraftBox),
                 },
             },
             #[name = "leaflet"]

@@ -22,6 +22,7 @@ use rust_i18n::t;
 use ygod_core::user_data::Collection;
 
 use crate::components::ViewControllerInput;
+use crate::templates::BackButton;
 
 pub struct CollectionPage {
     pub file_name: String,
@@ -45,11 +46,9 @@ impl SimpleComponent for CollectionPage {
                     &t!("pages.collection.title", name = &model.collection.meta_data.name),
                     "",
                 )),
-                pack_start = &gtk::Button {
-                    set_icon_name: "go-previous-symbolic",
-                    connect_clicked[sender] => move |_| {
-                        sender.output(ViewControllerInput::ClosePage).unwrap();
-                    },
+                #[template]
+                pack_start = &BackButton {
+                    set_exit_message: (sender.output_sender(), ViewControllerInput::ClosePage),
                 },
             },
         }

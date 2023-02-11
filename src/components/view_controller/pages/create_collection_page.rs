@@ -23,6 +23,7 @@ use rust_i18n::t;
 use ygod_core::user_data::{Collection, LAST_CHANGED_FORMAT};
 
 use crate::components::{ViewControllerInput, ViewControllerPage};
+use crate::templates::BackButton;
 
 #[derive(Debug)]
 pub enum CreateCollectionPageInput {
@@ -49,11 +50,9 @@ impl Component for CreateCollectionPage {
                     &t!("pages.create_collection.title"),
                     "",
                 )),
-                pack_start = &gtk::Button {
-                    set_icon_name: "go-previous-symbolic",
-                    connect_clicked[sender] => move |_| {
-                        sender.output(ViewControllerInput::ClosePage).unwrap();
-                    },
+                #[template]
+                pack_start = &BackButton {
+                    set_exit_message: (sender.output_sender(), ViewControllerInput::ClosePage),
                 },
             },
             adw::Clamp {

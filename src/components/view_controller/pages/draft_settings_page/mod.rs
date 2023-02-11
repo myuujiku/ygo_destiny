@@ -27,6 +27,7 @@ use rust_i18n::t;
 // use ygod_core::user_data::DraftSettings;
 
 use crate::components::ViewControllerInput;
+use crate::templates::BackButton;
 use draft_box_settings::DraftBoxSettings;
 
 // Dummy
@@ -63,11 +64,9 @@ impl Component for DraftSettingsPage {
 
                 adw::HeaderBar {
                     set_title_widget: Some(&adw::WindowTitle::new("Draft Settings", "")),
-                    pack_start = &gtk::Button {
-                        set_icon_name: "go-previous-symbolic",
-                        connect_clicked[sender] => move |_| {
-                            sender.output(ViewControllerInput::ClosePage).unwrap();
-                        },
+                    #[template]
+                    pack_start = &BackButton {
+                        set_exit_message: (sender.output_sender(), ViewControllerInput::ClosePage),
                     },
                 },
                 gtk::ScrolledWindow {
