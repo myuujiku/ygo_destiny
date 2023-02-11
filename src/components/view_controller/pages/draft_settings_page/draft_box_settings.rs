@@ -19,6 +19,7 @@ use adw::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
 
+use crate::templates::StatusPage;
 use super::DraftSettingsPageInput;
 use super::DraftBox;
 
@@ -67,28 +68,25 @@ impl SimpleComponent for DraftBoxSettings {
                             set_hexpand: true,
                             set_vexpand: true,
 
-                            // Mouse wheel doesn't work on `ScrolledWindow`s until gtk4.10
-                            adw::Clamp {
-                                set_orientation: Orientation::Horizontal,
-                                set_maximum_size: 800,
-                                set_vexpand: true,
+                            #[template]
+                            StatusPage {
+                                set_title: "Choice Draft",
+                                set_description: "You have no choice (currently).",
 
-                                adw::StatusPage {
-                                    set_title: "Choice Draft",
-                                    set_description: Some("You have no choice (currently)."),
-                                    #[wrap(Some)]
-                                    set_child = &gtk::Button {
-                                        add_css_class: "suggested-action",
-                                        add_css_class: "pill",
-                                        set_label: "Configure",
-                                        set_halign: Align::Center,
-                                    },
+                                #[wrap(Some)]
+                                set_child = &gtk::Button {
+                                    add_css_class: "suggested-action",
+                                    add_css_class: "pill",
+                                    set_label: "Configure",
+                                    set_halign: Align::Center,
                                 },
                             },
-                            adw::StatusPage {
+                            #[template]
+                            StatusPage {
                                 set_title: "Standard Draft",
                             },
-                            adw::StatusPage {
+                            #[template]
+                            StatusPage {
                                 set_title: "Battle Pack Draft",
                             },
                         },

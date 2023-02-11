@@ -16,5 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 mod content_box;
+mod status_page;
 
 pub use content_box::ContentBox;
+pub use status_page::StatusPage;
