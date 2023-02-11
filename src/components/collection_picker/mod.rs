@@ -65,6 +65,7 @@ impl SimpleComponent for CollectionPicker {
                         add_css_class: "suggested-action",
                         add_css_class: "pill",
                         set_label: &t!("collection_picker.create_collection_button"),
+                        set_halign: Align::Center,
                         connect_clicked[sender] => move |_| {
                             sender.output(ViewControllerInput::AddPage(ViewControllerPage::CreateCollection)).unwrap();
                         },
