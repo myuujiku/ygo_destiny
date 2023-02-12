@@ -51,6 +51,38 @@ impl SimpleComponent for CollectionPage {
                     set_exit_message: (sender.output_sender(), ViewControllerInput::ClosePage),
                 },
             },
+            #[name = "stack"]
+            adw::ViewStack {
+                add = &gtk::Label {
+                    set_vexpand: true,
+                    set_label: "Draft",
+                } -> {
+                    set_title: Some("Draft"),
+                    set_icon_name: Some("draft-symbolic"),
+                },
+                add = &gtk::Label {
+                    set_label: "Decks",
+                } -> {
+                    set_title: Some("Decks"),
+                    set_icon_name: Some("deck-edit-symbolic"),
+                },
+                add = &gtk::Label {
+                    set_label: "Banlist",
+                } -> {
+                    set_title: Some("Banlist"),
+                    set_icon_name: Some("banlist-symbolic"),
+                },
+                add = &gtk::Label {
+                    set_label: "Settings",
+                } -> {
+                    set_title: Some("Settings"),
+                    set_icon_name: Some("settings-symbolic"),
+                },
+            },
+            adw::ViewSwitcherBar {
+                set_stack: Some(&stack),
+                set_reveal: true,
+            },
         }
     }
 

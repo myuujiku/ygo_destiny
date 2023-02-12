@@ -15,19 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use gtk::{gio, prelude::*};
-use relm4::prelude::*;
-use ygod_core::APP_ID;
-
-use ygo_destiny::App;
+use glib_build_tools::compile_resources;
 
 fn main() {
-    gio::resources_register_include!("compiled.gresource").expect("Failed to register resources.");
-
-    let main_app = relm4::main_application();
-    main_app.set_application_id(Some(APP_ID));
-    main_app.set_resource_base_path(Some("/com/myujiku/ygo_destiny/"));
-
-    let app = RelmApp::with_app(main_app);
-    app.run::<App>(());
+    compile_resources(
+        "resources",
+        "resources/gresources.xml",
+        "compiled.gresource",
+    );
 }
