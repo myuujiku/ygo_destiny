@@ -18,10 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use adw::prelude::*;
 use gtk::{Align, Orientation};
 use relm4::prelude::*;
+use ygod_core::user_data::DraftBox;
 
 use crate::templates::{BackButton, StatusPage};
 use super::DraftSettingsPageInput;
-use super::DraftBox;
 
 pub struct DraftBoxSettings {
     draft_box: Option<DraftBox>,

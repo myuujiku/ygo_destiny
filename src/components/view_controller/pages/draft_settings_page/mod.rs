@@ -24,15 +24,11 @@ use adw::{prelude::*, NavigationDirection};
 use gtk::{glib, Align, Orientation, PolicyType};
 use relm4::prelude::*;
 use rust_i18n::t;
-// use ygod_core::user_data::DraftSettings;
+use ygod_core::user_data::DraftBox;
 
 use crate::components::ViewControllerInput;
 use crate::templates::BackButton;
 use draft_box_settings::DraftBoxSettings;
-
-// Dummy
-#[derive(Debug)]
-pub struct DraftBox;
 
 #[derive(Debug)]
 pub enum DraftSettingsPageInput {
