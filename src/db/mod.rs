@@ -1,6 +1,3 @@
-mod api_data;
-pub use api_data::*;
-
 use std::error;
 
 mod urls {
