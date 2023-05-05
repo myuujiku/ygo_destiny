@@ -14,6 +14,3 @@ pub static DATA_DIR: once_cell::sync::Lazy<std::path::PathBuf> = once_cell::sync
 pub static DB_PATH: once_cell::sync::Lazy<std::path::PathBuf> = once_cell::sync::Lazy::new(|| {
     DATA_DIR.join("data.db")
 });
-pub static CARDINFO_JSON: once_cell::sync::Lazy<std::path::PathBuf> = once_cell::sync::Lazy::new(|| {
-    DATA_DIR.join("cardinfo.json")
-});

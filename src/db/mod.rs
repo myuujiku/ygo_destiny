@@ -1,9 +1,7 @@
 mod api_data;
 pub use api_data::*;
 
-use std::{error, fs};
-
-use crate::CARDINFO_JSON;
+use std::error;
 
 mod urls {
     pub const API: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
