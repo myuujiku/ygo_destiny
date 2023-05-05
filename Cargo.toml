@@ -1,0 +1,27 @@
+[package]
+name = "ygo_destiny"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.adw]
+package = "libadwaita"
+version = "0.3"
+features = ["v1_3"]
+
+[dependencies.relm4]
+package = "relm4"
+version = "0.6.0-beta.1"
+features = ["libadwaita"]
+
+[dependencies]
+directories = "5.0"
+env_logger = { version = "0.10", features = ["color"] }
+log = "0.4"
+once_cell = "1.17"
+relm4-icons = { version = "0.6.0-beta.6", features = [] }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+rusqlite = { version = "0.29", features = ["bundled"] }
+serde = { version = "1.0", features = ["derive"] }
+
+[build-dependencies]
+glib-build-tools = "0.17"
