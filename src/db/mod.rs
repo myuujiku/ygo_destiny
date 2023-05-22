@@ -1,6 +1,9 @@
-use std::{collections::HashMap, error};
+use std::{collections::HashMap, error, fs};
 
+use bincode::serde::{decode_from_slice, encode_to_vec};
 use serde::{Deserialize, Serialize};
+
+use crate::{BINCODE_CONFIG, SETS_PATH};
 
 mod urls {
     pub const API_CARDINFO: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
@@ -93,7 +96,7 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn error::Error>> {
         &format!(
             "INSERT INTO cards SELECT {} FROM json_each('{}', '$.data')",
             sql_columns,
-            json_string.replace("'", "''"),
+            json_string.replace('\'', "''"),
         ),
         (),
     )?;
@@ -114,14 +117,13 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn error::Error>> {
 
         for set in sets {
             if let Some(cardset) = cardsets.get_mut(&set.set_name) {
-                let cards = cardset
-                    .cards
-                    .get_or_insert(vec![]);
+                let cards = cardset.cards.get_or_insert(vec![]);
                 cards.push((card.id, set.set_rarity));
             }
         }
     }
-    println!("{:#?}", cardsets);
+
+    fs::write(&*SETS_PATH, encode_to_vec(&cardsets, BINCODE_CONFIG)?)?;
 
     Ok(())
 }
