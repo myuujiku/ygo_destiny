@@ -1,10 +1,14 @@
 pub mod db;
+pub mod ui;
 pub mod types;
 
 pub const APP_ID_PARTS: (&str, &str, &str) = ("com", "myujiku", "ygo_destiny");
 
 pub static APP_ID: types::Lazy<String> =
     types::Lazy::new(|| format!("{}.{}.{}", APP_ID_PARTS.0, APP_ID_PARTS.1, APP_ID_PARTS.2));
+
+pub static APP_BASE_PATH: types::Lazy<String> =
+    types::Lazy::new(|| format!("/{}/{}/{}/", APP_ID_PARTS.0, APP_ID_PARTS.1, APP_ID_PARTS.2));
 
 pub static DATA_DIR: types::Lazy<std::path::PathBuf> = types::Lazy::new(|| {
     directories::ProjectDirs::from(APP_ID_PARTS.0, APP_ID_PARTS.1, APP_ID_PARTS.2)
