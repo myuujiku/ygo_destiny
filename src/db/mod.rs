@@ -108,7 +108,6 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn error::Error>> {
             .into_iter()
             .map(|x| (x.set_name, x.info))
             .collect();
-    println!("{:#?}", cardsets);
 
     for card in serde_json::from_str::<CardinfoRoot>(&json_string)?.data {
         let Some(sets) = card.card_sets else {
