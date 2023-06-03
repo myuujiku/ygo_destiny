@@ -15,6 +15,7 @@ features = ["libadwaita"]
 
 [dependencies]
 bincode = { version = "2.0.0-rc.3", features = ["serde"] }
+chrono = "0.4"
 directories = "5.0"
 env_logger = { version = "0.10", features = ["color"] }
 log = "0.4"
