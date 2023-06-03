@@ -1,5 +1,6 @@
 pub mod db;
 pub mod ui;
+pub mod user_data;
 pub mod types;
 
 pub const APP_ID_PARTS: (&str, &str, &str) = ("com", "myujiku", "ygo_destiny");
@@ -16,6 +17,10 @@ pub static DATA_DIR: types::Lazy<std::path::PathBuf> = types::Lazy::new(|| {
         .data_dir()
         .to_path_buf()
 });
+
+pub static USERDATA_DIR: types::Lazy<std::path::PathBuf> = types::Lazy::new(|| DATA_DIR.join("user"));
+
+pub static COLLECTIONS_DIR: types::Lazy<std::path::PathBuf> = types::Lazy::new(|| USERDATA_DIR.join("collections"));
 
 pub static DB_PATH: types::Lazy<std::path::PathBuf> = types::Lazy::new(|| DATA_DIR.join("data.db"));
 
