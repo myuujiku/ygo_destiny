@@ -13,7 +13,7 @@ use crate::user_data::collection::{Collection, LAST_CHANGED_FORMAT};
 
 #[derive(Debug)]
 pub enum AppInput {
-    CollectionEntryOutput(CollectionEntryOutput),
+    CollectionEvent(CollectionEntryOutput),
 }
 
 pub struct App {
@@ -32,50 +32,81 @@ impl SimpleComponent for App {
             set_height_request: 480,
             add_css_class: "devel",
 
+            #[name = "main_leaflet"]
             adw::Leaflet {
                 set_can_unfold: false,
                 set_transition_type: adw::LeafletTransitionType::Slide,
 
-                #[template]
-                templates::Page {
-                    #[template_child]
-                    back_button {
-                        set_visible: false,
-                    },
+                #[name = "collection_picker_leaflet"]
+                adw::Leaflet {
+                    set_can_unfold: false,
+                    set_transition_type: adw::LeafletTransitionType::Slide,
 
-                    adw::Clamp {
-                        set_visible: model.collection_entries.is_empty(),
-                        set_orientation: Orientation::Horizontal,
-                        set_maximum_size: 800,
-
-                        adw::StatusPage {
-                            set_title: "no_collection_found",
-                            set_vexpand: true,
-                            #[wrap(Some)]
-                            set_child = &gtk::Button {
-                                add_css_class: "suggested-action",
-                                add_css_class: "pill",
-                                set_label: "create_collection",
-                                set_halign: Align::Center,
-                                connect_clicked[sender] => move |_| {}
-                            }
-                        }
-                    },
-                    gtk::ScrolledWindow {
-                        set_visible: !model.collection_entries.is_empty(),
-                        set_min_content_height: 200,
-                        set_hscrollbar_policy: gtk::PolicyType::Never,
-                        //connect_unrealize => Output::SaveCollections,
+                    #[template]
+                    templates::Page {
+                        #[template_child]
+                        back_button {
+                            set_visible: false,
+                        },
 
                         adw::Clamp {
+                            set_visible: model.collection_entries.is_empty(),
                             set_orientation: Orientation::Horizontal,
                             set_maximum_size: 800,
 
-                            gtk::Box::new(Orientation::Vertical, 6) {
-                               set_hexpand: true,
-                               set_vexpand: true,
-                               set_valign: Align::Center,
-                               set_margin_all: 6,
+                            adw::StatusPage {
+                                set_title: "no_collection_found",
+                                set_vexpand: true,
+                                #[wrap(Some)]
+                                set_child = &gtk::Button {
+                                    add_css_class: "suggested-action",
+                                    add_css_class: "pill",
+                                    set_label: "create_collection",
+                                    set_halign: Align::Center,
+                                    connect_clicked[sender] => move |_| {}
+                                }
+                            }
+                        },
+                        gtk::ScrolledWindow {
+                            set_visible: !model.collection_entries.is_empty(),
+                            set_min_content_height: 200,
+                            set_hscrollbar_policy: gtk::PolicyType::Never,
+                            connect_unrealize => AppInput::CollectionEvent(
+                                CollectionEntryOutput::SaveChanges
+                            ),
+
+                            adw::Clamp {
+                                set_orientation: Orientation::Horizontal,
+                                set_maximum_size: 800,
+
+                                gtk::Box::new(Orientation::Vertical, 6) {
+                                   set_hexpand: true,
+                                   set_vexpand: true,
+                                   set_valign: Align::Center,
+                                   set_margin_all: 6,
+
+                                    gtk::Label::new(Some("collections")) {
+                                        add_css_class: "heading",
+                                        set_halign: Align::Start,
+                                    },
+                                    gtk::Box::new(Orientation::Horizontal, 6) {
+                                        gtk::SearchEntry {
+                                            set_hexpand: true,
+                                            connect_search_changed[sender] => move |search_entry| {
+                                                sender.input(AppInput::CollectionEvent(CollectionEntryOutput::FilterBy(search_entry.text().to_string())));
+                                            },
+                                        },
+                                        gtk::Button {
+                                            set_icon_name: "list-add",
+                                            add_css_class: "circular",
+                                            connect_clicked[sender] => move |_| {},
+                                        },
+                                    },
+                                   #[local_ref]
+                                   collection_entry_box -> gtk::ListBox {
+                                        add_css_class: "boxed-list",
+                                   }
+                                }
                             }
                         }
                     }
@@ -126,7 +157,7 @@ impl SimpleComponent for App {
         );
 
         let model = Self { collection_entries };
-
+        let collection_entry_box = model.collection_entries.widget();
         let widgets = view_output!();
 
         ComponentParts { model, widgets }
@@ -134,7 +165,7 @@ impl SimpleComponent for App {
 
     fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>) {
         match input {
-            AppInput::CollectionEntryOutput(input) => match input {
+            AppInput::CollectionEvent(input) => match input {
                 CollectionEntryOutput::SortUp(dynamic_index) => {
                     let mut index = dynamic_index.current_index();
                     let entry = self.collection_entries.get(index).unwrap();

@@ -125,7 +125,7 @@ impl FactoryComponent for CollectionEntry {
     }
 
     fn forward_to_parent(output: Self::Output) -> Option<Self::ParentInput> {
-        Some(AppInput::CollectionEntryOutput(output))
+        Some(AppInput::CollectionEvent(output))
     }
 
     fn init_model(value: Self::Init, index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {
