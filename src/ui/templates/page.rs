@@ -1,11 +1,8 @@
-use std::{
-    cell::Cell,
-    fmt::Debug,
-};
+use std::{cell::Cell, fmt::Debug};
 
 use adw::prelude::*;
-use relm4::Sender;
 use relm4::prelude::*;
+use relm4::Sender;
 
 #[relm4::widget_template(pub)]
 impl WidgetTemplate for Page {

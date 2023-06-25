@@ -1,9 +1,9 @@
 use std::cmp::Ordering;
 
-use adw::{prelude::*, gtk::Align};
+use adw::{gtk::Align, prelude::*};
 use chrono::prelude::*;
 use gtk::Orientation;
-use relm4::{prelude::*, factory::FactoryVecDeque};
+use relm4::{factory::FactoryVecDeque, prelude::*};
 
 use crate::ui::{
     components::{CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput},
@@ -260,7 +260,7 @@ impl SimpleComponent for App {
                         }
                     }
                 }
-            }
+            },
         }
     }
 }

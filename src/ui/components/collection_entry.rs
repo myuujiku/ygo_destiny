@@ -155,7 +155,7 @@ impl FactoryComponent for CollectionEntry {
                     widgets.star_button.set_icon_name("non-starred-symbolic");
                     sender.output(CollectionEntryOutput::SortDown(self.index.clone()));
                 }
-            }
+            },
             CollectionEntryInput::SetVisible(value) => widgets.root.set_visible(value),
             CollectionEntryInput::CursorEntered => {
                 if !self.pinned.get() {
