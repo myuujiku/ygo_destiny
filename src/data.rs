@@ -34,6 +34,7 @@ pub mod dirs {
 
     pub static USER: Lazy<PathBuf> = Lazy::new(|| ROOT.join("user"));
     pub static COLLECTIONS: Lazy<PathBuf> = Lazy::new(|| ROOT.join("collections"));
+    pub static IMAGES: Lazy<PathBuf> = Lazy::new(|| ROOT.join("images"));
 
     macro_rules! create_lazy_dirs {
         ( $( $i:ident ),* ) => {
@@ -44,7 +45,7 @@ pub mod dirs {
     }
 
     pub fn init() -> Result<(), Box<dyn std::error::Error>> {
-        create_lazy_dirs!(ROOT, USER, COLLECTIONS);
+        create_lazy_dirs!(ROOT, USER, COLLECTIONS, IMAGES);
 
         Ok(())
     }
@@ -56,4 +57,17 @@ pub mod files {
     use super::{dirs, Lazy};
 
     pub static DB: Lazy<PathBuf> = Lazy::new(|| dirs::ROOT.join("data.db"));
+}
+
+pub mod images {
+    use gtk::Image;
+    use relm4::gtk;
+
+    use super::dirs;
+
+    pub fn load_card(id: u32) -> Image {
+        let filename = dirs::IMAGES.join(format!("{}.jpg", id));
+
+        Image::from_file(filename)
+    }
 }
