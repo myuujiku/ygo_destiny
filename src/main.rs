@@ -2,13 +2,14 @@ use adw::prelude::ApplicationExt;
 use relm4::prelude::*;
 
 use ygo_destiny::{
-    data::{app_id, files},
+    data::{app_id, dirs, files},
     ui,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
+    dirs::init()?;
     let db = rusqlite::Connection::open(files::DB.as_path()).unwrap();
 
     let main_app = relm4::main_application();
