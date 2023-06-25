@@ -58,7 +58,7 @@ impl Component for DraftBox {
     fn init(
         params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self {
             cards: params.cards,
@@ -78,7 +78,7 @@ impl Component for DraftBox {
         match input {
             DraftBoxInput::NotifyClicked => {
                 sender.output(DraftBoxOutput::Clicked(self.id)).unwrap();
-            },
+            }
         }
     }
 }

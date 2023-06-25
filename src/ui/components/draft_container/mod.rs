@@ -27,7 +27,10 @@ pub struct DraftContainerParams {
 
 impl DraftContainerParams {
     pub fn new(number_of_boxes: usize, max_selected: usize) -> Self {
-        Self { number_of_boxes, max_selected }
+        Self {
+            number_of_boxes,
+            max_selected,
+        }
     }
 }
 
@@ -57,7 +60,7 @@ impl Component for DraftContainer {
     fn init(
         params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>
+        sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self {
             selected_boxes: VecDeque::new(),
@@ -79,12 +82,19 @@ impl Component for DraftContainer {
                 }
 
                 if cards.len() != self.number_of_boxes {
-                    panic!("Trying to assign {} boxes to a DraftContainer that holds {} boxes.", cards.len(), self.number_of_boxes);
+                    panic!(
+                        "Trying to assign {} boxes to a DraftContainer that holds {} boxes.",
+                        cards.len(),
+                        self.number_of_boxes
+                    );
                 }
 
                 for i in 0..self.number_of_boxes {
                     let draft_box = DraftBox::builder()
-                        .launch(DraftBoxParams::new(cards.pop().expect("Size already checked."), i))
+                        .launch(DraftBoxParams::new(
+                            cards.pop().expect("Size already checked."),
+                            i,
+                        ))
                         .forward(sender.input_sender(), |msg| match msg {
                             DraftBoxOutput::Clicked(id) => DraftContainerInput::BoxClicked(id),
                         });
@@ -102,8 +112,13 @@ impl Component for DraftContainer {
                     self.selected_boxes.push_back(id);
 
                     if self.selected_boxes.len() > self.max_selected {
-                        let to_deselect = self.selected_boxes.pop_front().expect("`selected_boxes` should contain an item.");
-                        self.boxes[to_deselect].widget().remove_css_class("suggested-action");
+                        let to_deselect = self
+                            .selected_boxes
+                            .pop_front()
+                            .expect("`selected_boxes` should contain an item.");
+                        self.boxes[to_deselect]
+                            .widget()
+                            .remove_css_class("suggested-action");
                     }
                 }
             }
