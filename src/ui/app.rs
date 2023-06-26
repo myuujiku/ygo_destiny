@@ -4,6 +4,7 @@ use adw::{gtk::Align, prelude::*};
 use chrono::prelude::*;
 use gtk::Orientation;
 use relm4::{factory::FactoryVecDeque, prelude::*};
+use relm4_icons::{icon_name, initialize_icons};
 
 use crate::ui::{
     components::{CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput},
@@ -49,19 +50,37 @@ impl SimpleComponent for App {
                             set_visible: false,
                         },
 
+                        #[template_child]
+                        header {
+                            pack_start = &gtk::Button {
+                                set_icon_name: icon_name::SETTINGS,
+                                add_css_class: "circular",
+                            },
+                        },
+
+                        #[template_child]
+                        window_title {
+                            set_title: "YGO Destiny",
+                        },
+
+                        adw::Banner {
+                            set_title: "Database update available",
+                            set_button_label: Some("Update"),
+                            set_revealed: true,
+                        },
                         adw::Clamp {
                             set_visible: model.collection_entries.is_empty(),
                             set_orientation: Orientation::Horizontal,
                             set_maximum_size: 800,
 
                             adw::StatusPage {
-                                set_title: "no_collection_found",
+                                set_title: "No collections found",
                                 set_vexpand: true,
                                 #[wrap(Some)]
                                 set_child = &gtk::Button {
                                     add_css_class: "suggested-action",
                                     add_css_class: "pill",
-                                    set_label: "create_collection",
+                                    set_label: "Create collection",
                                     set_halign: Align::Center,
                                     connect_clicked[sender] => move |_| {}
                                 }
@@ -108,7 +127,14 @@ impl SimpleComponent for App {
                                    }
                                 }
                             }
-                        }
+                        },
+                        gtk::Label {
+                            set_label: "database version: 71.3",
+                            set_halign: Align::End,
+                            set_margin_end: 4,
+                            add_css_class: "dim-label",
+                            add_css_class: "caption",
+                        },
                     }
                 }
             }
@@ -120,6 +146,8 @@ impl SimpleComponent for App {
         root: &Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
+        initialize_icons();
+
         let collection_names = Collection::get_names();
         let mut collection_entries_components = Vec::new();
         for collection_name in collection_names {
