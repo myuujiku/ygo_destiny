@@ -1,8 +1,0 @@
-<gresources>
-  <gresource prefix="/com/myujiku/ygo_destiny/icons/scalable/actions/">
-    <file alias="draft-symbolic.svg" preprocess="xml-stripblanks">icons/symbolic/dice3-symbolic.svg</file>
-    <file alias="deck-edit-symbolic.svg" preprocess="xml-stripblanks">icons/symbolic/build-configure-symbolic.svg</file>
-    <file alias="banlist-symbolic.svg" preprocess="xml-stripblanks">icons/symbolic/action-unavailable-symbolic.svg</file>
-    <file alias="settings-symbolic.svg" preprocess="xml-stripblanks">icons/symbolic/settings-symbolic.svg</file>
-  </gresource>
-</gresources>
