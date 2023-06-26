@@ -16,7 +16,11 @@ impl WidgetTemplate for Page {
                 #[name = "back_button"]
                 pack_start = &gtk::Button {
                     set_icon_name: "go-previous-symbolic",
-                }
+                },
+
+                #[wrap(Some)]
+                #[name = "window_title"]
+                set_title_widget = &adw::WindowTitle {},
             }
         }
     }
