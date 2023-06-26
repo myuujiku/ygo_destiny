@@ -5,12 +5,12 @@ edition = "2021"
 
 [dependencies.adw]
 package = "libadwaita"
-version = "0.3"
+version = "0.4"
 features = ["v1_3"]
 
 [dependencies.relm4]
 package = "relm4"
-version = "0.6.0-beta.1"
+version = "0.6"
 features = ["libadwaita"]
 
 [dependencies]
@@ -20,7 +20,7 @@ directories = "5.0"
 env_logger = { version = "0.10", features = ["color"] }
 log = "0.4"
 once_cell = "1.17"
-relm4-icons = { version = "0.6.0-beta.6", features = [] }
+relm4-icons = { version = "0.6", features = [] }
 reqwest = { version = "0.11", features = ["blocking"] }
 rusqlite = { version = "0.29", features = ["bundled"] }
 serde = { version = "1.0", features = ["derive"] }
