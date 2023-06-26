@@ -1,8 +1,42 @@
-use std::error::Error;
+use std::{error::Error, fs};
+
+use serde::Deserialize;
+
+use crate::data::files;
 
 mod urls {
     pub const API_CARDINFO: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
     pub const API_CARDSETS: &str = "https://db.ygoprodeck.com/api/v7/cardsets.php";
+    pub const API_VERSION: &str = "https://db.ygoprodeck.com/api/v7/checkDBVer.php";
+}
+
+#[derive(Deserialize)]
+struct DBVersion {
+    database_version: String,
+}
+
+impl DBVersion {
+    fn get_version(self) -> String {
+        self.database_version
+    }
+}
+
+pub fn new_version_available() -> Result<bool, Box<dyn Error>> {
+    if files::DB_VERSION.is_file() {
+        let local_version = fs::read_to_string(files::DB_VERSION.as_path())?;
+
+        Ok(local_version != get_upstream_version()?)
+    } else {
+        Ok(true)
+    }
+}
+
+pub fn get_upstream_version() -> Result<String, Box<dyn Error>> {
+    Ok(reqwest::blocking::get(urls::API_VERSION)?
+        .json::<Vec<DBVersion>>()?
+        .pop()
+        .expect("Vec<DBVersion> should contain exactly one element")
+        .get_version())
 }
 
 pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
