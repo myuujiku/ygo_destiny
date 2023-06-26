@@ -18,6 +18,7 @@ pub enum DraftContainerInput {
 #[derive(Debug)]
 pub enum DraftContainerOutput {
     SelectionComplete(Vec<u32>),
+    SelectionValid(bool),
 }
 
 #[derive(Debug)]
@@ -41,6 +42,7 @@ pub struct DraftContainer {
     boxes: Vec<Controller<DraftBox>>,
     max_selected: usize,
     selected_boxes: VecDeque<usize>,
+    selection_valid: bool,
 }
 
 #[relm4::component(pub)]
@@ -68,6 +70,7 @@ impl Component for DraftContainer {
             boxes: Vec::new(),
             max_selected: params.max_selected,
             number_of_boxes: params.number_of_boxes,
+            selection_valid: false,
         };
 
         let widgets = view_output!();
@@ -121,6 +124,13 @@ impl Component for DraftContainer {
                             .widget()
                             .remove_css_class("suggested-action");
                     }
+                }
+
+                let new_selection_valid = self.selected_boxes.len() == self.max_selected;
+
+                if self.selection_valid != new_selection_valid {
+                    self.selection_valid = new_selection_valid;
+                    sender.output(DraftContainerOutput::SelectionValid(self.selection_valid));
                 }
             }
             DraftContainerInput::RequestSelected => {
