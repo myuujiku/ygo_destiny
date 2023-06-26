@@ -130,7 +130,9 @@ impl Component for DraftContainer {
 
                 if self.selection_valid != new_selection_valid {
                     self.selection_valid = new_selection_valid;
-                    sender.output(DraftContainerOutput::SelectionValid(self.selection_valid));
+                    sender
+                        .output(DraftContainerOutput::SelectionValid(self.selection_valid))
+                        .expect("Failed to send message `DraftContainerOutput::SelectionValid`.");
                 }
             }
             DraftContainerInput::RequestSelected => {
