@@ -12,11 +12,12 @@ use draft_box::*;
 pub enum DraftContainerInput {
     Populate(Vec<Vec<u32>>),
     BoxClicked(usize),
+    RequestSelected,
 }
 
 #[derive(Debug)]
 pub enum DraftContainerOutput {
-    //SelectionComplete(Vec<u32>),
+    SelectionComplete(Vec<u32>),
 }
 
 #[derive(Debug)]
@@ -60,7 +61,7 @@ impl Component for DraftContainer {
     fn init(
         params: Self::Init,
         root: &Self::Root,
-        sender: ComponentSender<Self>,
+        _sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = Self {
             selected_boxes: VecDeque::new(),
@@ -121,6 +122,17 @@ impl Component for DraftContainer {
                             .remove_css_class("suggested-action");
                     }
                 }
+            }
+            DraftContainerInput::RequestSelected => {
+                sender
+                    .output(DraftContainerOutput::SelectionComplete(
+                        self.selected_boxes
+                            .iter()
+                            .map(|x| self.boxes[*x].model().cards.clone())
+                            .flatten()
+                            .collect(),
+                    ))
+                    .expect("Failed to send message `DraftContainerInput::RequestSelected`");
             }
         }
     }

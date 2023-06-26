@@ -28,7 +28,7 @@ impl DraftBoxParams {
 
 #[derive(Debug)]
 pub struct DraftBox {
-    cards: Vec<u32>,
+    pub cards: Vec<u32>,
     id: usize,
 }
 
