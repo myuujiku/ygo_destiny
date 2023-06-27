@@ -22,9 +22,7 @@ impl DBVersion {
 }
 
 pub fn new_version_available() -> Result<bool, Box<dyn Error>> {
-    if files::DB_VERSION.is_file() {
-        let local_version = fs::read_to_string(files::DB_VERSION.as_path())?;
-
+    if let Some(local_version) = get_local_version()? {
         Ok(local_version != get_upstream_version()?)
     } else {
         Ok(true)
@@ -37,6 +35,14 @@ pub fn get_upstream_version() -> Result<String, Box<dyn Error>> {
         .pop()
         .expect("Vec<DBVersion> should contain exactly one element")
         .get_version())
+}
+
+pub fn get_local_version() -> Result<Option<String>, Box<dyn Error>> {
+    if files::DB_VERSION.is_file() {
+        Ok(Some(fs::read_to_string(files::DB_VERSION.as_path())?))
+    } else {
+        Ok(None)
+    }
 }
 
 pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
