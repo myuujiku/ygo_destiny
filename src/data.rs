@@ -59,6 +59,7 @@ pub mod files {
     use super::{dirs, Lazy};
 
     pub static DB: Lazy<PathBuf> = Lazy::new(|| dirs::ROOT.join("data.db"));
+    pub static DB_BACKUP: Lazy<PathBuf> = Lazy::new(|| dirs::ROOT.join("data_bak.db"));
     pub static DB_VERSION: Lazy<PathBuf> = Lazy::new(|| dirs::ROOT.join("version.txt"));
 }
 

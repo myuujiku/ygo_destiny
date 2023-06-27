@@ -2,7 +2,7 @@ use std::{error::Error, fs};
 
 use serde::Deserialize;
 
-use crate::data::files;
+use crate::data::{files, get_or_log};
 
 mod urls {
     pub const API_CARDINFO: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
@@ -49,6 +49,30 @@ pub fn get_local_version() -> Result<Option<String>, Box<dyn Error>> {
     } else {
         Ok(None)
     }
+}
+
+pub fn update_or_restore(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
+    create_backup()?;
+    let res = update(&db);
+
+    if res.is_err() {
+        get_or_log(res, ());
+        restore_backup()?;
+    }
+
+    Ok(())
+}
+
+pub fn create_backup() -> Result<(), Box<dyn Error>> {
+    fs::copy(files::DB.as_path(), files::DB_BACKUP.as_path())?;
+
+    Ok(())
+}
+
+pub fn restore_backup() -> Result<(), Box<dyn Error>> {
+    fs::rename(files::DB_BACKUP.as_path(), files::DB.as_path())?;
+
+    Ok(())
 }
 
 pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
