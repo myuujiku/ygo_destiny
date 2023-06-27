@@ -170,5 +170,7 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         (),
     )?;
 
+    update_local_version()?;
+
     Ok(())
 }
