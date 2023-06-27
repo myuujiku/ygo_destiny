@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 
+use once_cell::sync::OnceCell;
 use rusqlite::Connection;
 use serde::Deserialize;
 
@@ -53,16 +54,20 @@ pub fn get_local_version() -> Result<Option<String>, Box<dyn Error>> {
     }
 }
 
-pub fn update_or_restore(connection: &Connection) -> Result<(), Box<dyn Error>> {
+pub fn update_or_restore(connection: &mut OnceCell<Connection>) -> Result<bool, Box<dyn Error>> {
     create_backup()?;
-    let res = update(&connection);
+    let res = update(connection.get().unwrap());
 
     if res.is_err() {
         get_or_log(res, ());
+        connection.take();
         restore_backup()?;
+        connection
+            .set(Connection::open(files::DB.as_path())?)
+            .expect("OnceCell should be empty");
     }
 
-    Ok(())
+    Ok(true)
 }
 
 pub fn create_backup() -> Result<(), Box<dyn Error>> {
