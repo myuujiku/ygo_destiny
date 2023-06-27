@@ -6,6 +6,8 @@ use gtk::Orientation;
 use relm4::{factory::FactoryVecDeque, prelude::*};
 use relm4_icons::{icon_name, initialize_icons};
 
+use crate::data::get_or_log;
+use crate::db;
 use crate::ui::{
     components::{CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput},
     templates,
@@ -66,7 +68,7 @@ impl SimpleComponent for App {
                         adw::Banner {
                             set_title: "Database update available",
                             set_button_label: Some("Update"),
-                            set_revealed: true,
+                            set_revealed: get_or_log(db::new_version_available(), false),
                         },
                         adw::Clamp {
                             set_visible: model.collection_entries.is_empty(),
@@ -129,7 +131,10 @@ impl SimpleComponent for App {
                             }
                         },
                         gtk::Label {
-                            set_label: "database version: 71.3",
+                            set_label: &match get_or_log(db::get_local_version(), None) {
+                                Some(version) => format!("database version: {}", version),
+                                None => String::new(),
+                            },
                             set_halign: Align::End,
                             set_margin_end: 4,
                             add_css_class: "dim-label",
