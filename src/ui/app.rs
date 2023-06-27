@@ -313,7 +313,10 @@ impl Component for App {
                 }
             },
             AppInput::UpdateButtonClicked => {
-                widgets.update_banner.hide();
+                let successful = get_or_log(db::update_or_restore(&mut self.connection), false);
+                if successful {
+                    widgets.update_banner.hide();
+                }
             }
         }
     }
