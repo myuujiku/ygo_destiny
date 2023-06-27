@@ -1,5 +1,7 @@
-use std::{error::Error, fs};
+use std::error::Error;
+use std::fs;
 
+use rusqlite::Connection;
 use serde::Deserialize;
 
 use crate::data::{files, get_or_log};
@@ -51,9 +53,9 @@ pub fn get_local_version() -> Result<Option<String>, Box<dyn Error>> {
     }
 }
 
-pub fn update_or_restore(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
+pub fn update_or_restore(connection: &Connection) -> Result<(), Box<dyn Error>> {
     create_backup()?;
-    let res = update(&db);
+    let res = update(&connection);
 
     if res.is_err() {
         get_or_log(res, ());
@@ -75,13 +77,13 @@ pub fn restore_backup() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
+pub fn update(connection: &Connection) -> Result<(), Box<dyn Error>> {
     let json_string = reqwest::blocking::get(urls::API_CARDSETS)?
         .text()?
         .replace('\'', "''");
 
-    db.execute("DROP TABLE IF EXISTS sets", ())?;
-    db.execute(
+    connection.execute("DROP TABLE IF EXISTS sets", ())?;
+    connection.execute(
         "CREATE TABLE sets (
             name    TEXT PRIMARY KEY,
             date    TEXT,
@@ -107,7 +109,7 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         prev
     });
 
-    db.execute(
+    connection.execute(
         &format!(
             "INSERT INTO sets SELECT {} FROM json_each('{}')",
             sql_columns, json_string,
@@ -119,8 +121,8 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         .text()?
         .replace('\'', "''");
 
-    db.execute("DROP TABLE IF EXISTS cards", ())?;
-    db.execute(
+    connection.execute("DROP TABLE IF EXISTS cards", ())?;
+    connection.execute(
         "CREATE TABLE cards (
             id          INTEGER PRIMARY KEY,
             name        TEXT,
@@ -162,7 +164,7 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         prev
     });
 
-    db.execute(
+    connection.execute(
         &format!(
             "INSERT INTO cards SELECT {} FROM json_each('{}', '$.data')",
             sql_columns, json_string,
@@ -170,8 +172,8 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         (),
     )?;
 
-    db.execute("DROP TABLE IF EXISTS set_contents", ())?;
-    db.execute(
+    connection.execute("DROP TABLE IF EXISTS set_contents", ())?;
+    connection.execute(
         "CREATE TABLE set_contents (
             card_id     INTEGER REFERENCES cards(id),
             set_name    TEXT,
@@ -179,7 +181,7 @@ pub fn update(db: &rusqlite::Connection) -> Result<(), Box<dyn Error>> {
         )",
         (),
     )?;
-    db.execute(
+    connection.execute(
         &format!(
             "INSERT INTO set_contents SELECT card_id,
                     json_extract(value, '$.set_name') as set_name,
