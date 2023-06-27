@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use bincode::config::{BigEndian, Configuration, Fixint};
 use once_cell::sync::Lazy;
 
@@ -70,5 +72,15 @@ pub mod images {
         let filename = dirs::IMAGES.join(format!("{}.jpg", id));
 
         Image::from_file(filename)
+    }
+}
+
+pub fn get_or_log<T, E: Debug>(value: Result<T, E>, fallback: T) -> T {
+    match value {
+        Ok(res) => res,
+        Err(error) => {
+            log::error!("{:?}", error);
+            fallback
+        }
     }
 }
