@@ -58,16 +58,19 @@ pub fn update_or_restore(connection: &mut OnceCell<Connection>) -> Result<bool, 
     create_backup()?;
     let res = update(connection.get().unwrap());
 
-    if res.is_err() {
+    if res.is_ok() {
+        Ok(true)
+    } else {
         get_or_log(res, ());
         connection.take();
         restore_backup()?;
+
         connection
             .set(Connection::open(files::DB.as_path())?)
             .expect("OnceCell should be empty");
-    }
 
-    Ok(true)
+        Ok(false)
+    }
 }
 
 pub fn create_backup() -> Result<(), Box<dyn Error>> {
@@ -83,11 +86,14 @@ pub fn restore_backup() -> Result<(), Box<dyn Error>> {
 }
 
 pub fn update(connection: &Connection) -> Result<(), Box<dyn Error>> {
+    connection.execute("DROP TABLE IF EXISTS set_contents", ())?;
+    connection.execute("DROP TABLE IF EXISTS sets", ())?;
+    connection.execute("DROP TABLE IF EXISTS cards", ())?;
+
     let json_string = reqwest::blocking::get(urls::API_CARDSETS)?
         .text()?
         .replace('\'', "''");
 
-    connection.execute("DROP TABLE IF EXISTS sets", ())?;
     connection.execute(
         "CREATE TABLE sets (
             name    TEXT PRIMARY KEY,
@@ -126,7 +132,6 @@ pub fn update(connection: &Connection) -> Result<(), Box<dyn Error>> {
         .text()?
         .replace('\'', "''");
 
-    connection.execute("DROP TABLE IF EXISTS cards", ())?;
     connection.execute(
         "CREATE TABLE cards (
             id          INTEGER PRIMARY KEY,
@@ -177,7 +182,6 @@ pub fn update(connection: &Connection) -> Result<(), Box<dyn Error>> {
         (),
     )?;
 
-    connection.execute("DROP TABLE IF EXISTS set_contents", ())?;
     connection.execute(
         "CREATE TABLE set_contents (
             card_id     INTEGER REFERENCES cards(id),
