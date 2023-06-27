@@ -27,7 +27,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     main_app.set_resource_base_path(Some(app_id::SLASH_SEPARATED.as_str()));
 
     let relm_app = RelmApp::from_app(main_app);
-    relm_app.run::<ui::App>(());
+    relm_app.run::<ui::App>(
+        match Lazy::into_value(conn) {
+            Ok(val) => val,
+            Err(func) => func(),
+        }
+    );
 
     Ok(())
 }

@@ -3,6 +3,7 @@ use std::cmp::Ordering;
 use adw::{gtk::Align, prelude::*};
 use chrono::prelude::*;
 use gtk::Orientation;
+use once_cell::sync::OnceCell;
 use relm4::{factory::FactoryVecDeque, prelude::*};
 use relm4_icons::{icon_name, initialize_icons};
 
@@ -22,11 +23,12 @@ pub enum AppInput {
 
 pub struct App {
     collection_entries: FactoryVecDeque<CollectionEntry>,
+    connection: OnceCell<rusqlite::Connection>,
 }
 
 #[relm4::component(pub)]
 impl Component for App {
-    type Init = ();
+    type Init = rusqlite::Connection;
     type Input = AppInput;
     type Output = ();
     type Widgets = AppWidgets;
@@ -152,7 +154,7 @@ impl Component for App {
     }
 
     fn init(
-        _params: Self::Init,
+        conn: Self::Init,
         root: &Self::Root,
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
@@ -194,7 +196,12 @@ impl Component for App {
             sender.input_sender(),
         );
 
-        let model = Self { collection_entries };
+        let connection = OnceCell::new();
+        connection
+            .set(conn)
+            .expect("OnceCell was just initialised");
+
+        let model = Self { collection_entries, connection };
         let collection_entry_box = model.collection_entries.widget();
         let widgets = view_output!();
 
