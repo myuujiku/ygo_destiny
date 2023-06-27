@@ -17,6 +17,7 @@ use crate::user_data::collection::{Collection, LAST_CHANGED_FORMAT};
 #[derive(Debug)]
 pub enum AppInput {
     CollectionEvent(CollectionEntryOutput),
+    UpdateButtonClicked,
 }
 
 pub struct App {
@@ -24,10 +25,12 @@ pub struct App {
 }
 
 #[relm4::component(pub)]
-impl SimpleComponent for App {
+impl Component for App {
     type Init = ();
     type Input = AppInput;
     type Output = ();
+    type Widgets = AppWidgets;
+    type CommandOutput = ();
 
     view! {
         adw::Window {
@@ -65,10 +68,12 @@ impl SimpleComponent for App {
                             set_title: "YGO Destiny",
                         },
 
+                        #[name = "update_banner"]
                         adw::Banner {
                             set_title: "Database update available",
                             set_button_label: Some("Update"),
                             set_revealed: get_or_log(db::new_version_available(), false),
+                            connect_button_clicked => AppInput::UpdateButtonClicked,
                         },
                         adw::Clamp {
                             set_visible: model.collection_entries.is_empty(),
@@ -196,7 +201,13 @@ impl SimpleComponent for App {
         ComponentParts { model, widgets }
     }
 
-    fn update(&mut self, input: Self::Input, sender: ComponentSender<Self>) {
+    fn update_with_view(
+        &mut self,
+        widgets: &mut Self::Widgets,
+        input: Self::Input,
+        _sender: ComponentSender<Self>,
+        _root: &Self::Root,
+    ) {
         match input {
             AppInput::CollectionEvent(input) => match input {
                 CollectionEntryOutput::SortUp(dynamic_index) => {
@@ -294,6 +305,9 @@ impl SimpleComponent for App {
                     }
                 }
             },
+            AppInput::UpdateButtonClicked => {
+                widgets.update_banner.hide();
+            }
         }
     }
 }
