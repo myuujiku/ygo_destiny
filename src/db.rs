@@ -29,6 +29,12 @@ pub fn new_version_available() -> Result<bool, Box<dyn Error>> {
     }
 }
 
+pub fn update_local_version() -> Result<(), Box<dyn Error>> {
+    fs::write(files::DB_VERSION.as_path(), get_upstream_version()?)?;
+
+    Ok(())
+}
+
 pub fn get_upstream_version() -> Result<String, Box<dyn Error>> {
     Ok(reqwest::blocking::get(urls::API_VERSION)?
         .json::<Vec<DBVersion>>()?
