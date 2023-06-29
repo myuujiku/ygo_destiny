@@ -125,7 +125,13 @@ impl FactoryComponent for CollectionEntry {
     }
 
     fn forward_to_parent(output: Self::Output) -> Option<Self::ParentInput> {
-        Some(AppInput::CollectionEvent(output))
+        Some(match output {
+            CollectionEntryOutput::SortUp(index) => AppInput::CollectionSortUp(index),
+            CollectionEntryOutput::SortDown(index) => AppInput::CollectionSortDown(index),
+            CollectionEntryOutput::FilterBy(text) => AppInput::CollectionFilterBy(text),
+            CollectionEntryOutput::OpenCollection(name) => AppInput::OpenCollection(name),
+            CollectionEntryOutput::SaveChanges => AppInput::CollectionSaveChanges,
+        })
     }
 
     fn init_model(value: Self::Init, index: &DynamicIndex, _sender: FactorySender<Self>) -> Self {

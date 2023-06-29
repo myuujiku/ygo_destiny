@@ -17,7 +17,11 @@ use crate::user_data::collection::{Collection, LAST_CHANGED_FORMAT};
 
 #[derive(Debug)]
 pub enum AppInput {
-    CollectionEvent(CollectionEntryOutput),
+    CollectionSortUp(DynamicIndex),
+    CollectionSortDown(DynamicIndex),
+    CollectionFilterBy(String),
+    OpenCollection(String),
+    CollectionSaveChanges,
     UpdateButtonClicked,
 }
 
@@ -99,9 +103,7 @@ impl Component for App {
                             set_visible: !model.collection_entries.is_empty(),
                             set_min_content_height: 200,
                             set_hscrollbar_policy: gtk::PolicyType::Never,
-                            connect_unrealize => AppInput::CollectionEvent(
-                                CollectionEntryOutput::SaveChanges
-                            ),
+                            connect_unrealize => AppInput::CollectionSaveChanges,
 
                             adw::Clamp {
                                 set_orientation: Orientation::Horizontal,
@@ -121,7 +123,7 @@ impl Component for App {
                                         gtk::SearchEntry {
                                             set_hexpand: true,
                                             connect_search_changed[sender] => move |search_entry| {
-                                                sender.input(AppInput::CollectionEvent(CollectionEntryOutput::FilterBy(search_entry.text().to_string())));
+                                                sender.input(AppInput::CollectionFilterBy(search_entry.text().to_string()));
                                             },
                                         },
                                         gtk::Button {
@@ -197,11 +199,12 @@ impl Component for App {
         );
 
         let connection = OnceCell::new();
-        connection
-            .set(conn)
-            .expect("OnceCell was just initialised");
+        connection.set(conn).expect("OnceCell was just initialised");
 
-        let model = Self { collection_entries, connection };
+        let model = Self {
+            collection_entries,
+            connection,
+        };
         let collection_entry_box = model.collection_entries.widget();
         let widgets = view_output!();
 
@@ -216,102 +219,100 @@ impl Component for App {
         _root: &Self::Root,
     ) {
         match input {
-            AppInput::CollectionEvent(input) => match input {
-                CollectionEntryOutput::SortUp(dynamic_index) => {
-                    let mut index = dynamic_index.current_index();
-                    let entry = self.collection_entries.get(index).unwrap();
-                    let entry_date = Utc
-                        .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
-                        .unwrap();
-                    loop {
-                        if index == 0 {
+            AppInput::CollectionSortUp(dynamic_index) => {
+                let mut index = dynamic_index.current_index();
+                let entry = self.collection_entries.get(index).unwrap();
+                let entry_date = Utc
+                    .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
+                    .unwrap();
+                loop {
+                    if index == 0 {
+                        break;
+                    }
+
+                    if let Some(other) = self.collection_entries.get(index - 1) {
+                        let other_date = Utc
+                            .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
+                            .unwrap();
+                        if other.pinned.get() && entry_date < other_date {
                             break;
                         }
 
-                        if let Some(other) = self.collection_entries.get(index - 1) {
-                            let other_date = Utc
-                                .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
-                                .unwrap();
-                            if other.pinned.get() && entry_date < other_date {
-                                break;
-                            }
+                        self.collection_entries.guard().move_to(index, index - 1);
+                        index -= 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            AppInput::CollectionSortDown(dynamic_index) => {
+                let mut index = dynamic_index.current_index();
+                let entry = self.collection_entries.get(index).unwrap();
+                let entry_date = Utc
+                    .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
+                    .unwrap();
+                loop {
+                    if index == usize::MAX {
+                        break;
+                    }
 
-                            self.collection_entries.guard().move_to(index, index - 1);
-                            index -= 1;
+                    if let Some(other) = self.collection_entries.get(index + 1) {
+                        let other_date = Utc
+                            .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
+                            .unwrap();
+                        if !other.pinned.get() && entry_date > other_date {
+                            break;
+                        }
+
+                        self.collection_entries.guard().move_to(index, index + 1);
+                        index += 1;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            AppInput::CollectionFilterBy(text) => {
+                let text_lower = text.to_lowercase();
+                let sort_case_sensitive: bool = text != text_lower;
+                let mut matched: bool = false;
+
+                let mut i = 0;
+                loop {
+                    if let Some(entry) = self.collection_entries.get(i) {
+                        let matches: bool = if sort_case_sensitive {
+                            entry.name.contains(&text) || entry.description.contains(&text)
                         } else {
-                            break;
+                            entry.name.to_lowercase().contains(&text_lower)
+                                || entry.description.to_lowercase().contains(&text_lower)
+                        };
+
+                        self.collection_entries
+                            .send(i, CollectionEntryInput::SetVisible(matches));
+
+                        if matches {
+                            matched = true;
                         }
+
+                        i += 1;
+                    } else {
+                        break;
                     }
                 }
-                CollectionEntryOutput::SortDown(dynamic_index) => {
-                    let mut index = dynamic_index.current_index();
-                    let entry = self.collection_entries.get(index).unwrap();
-                    let entry_date = Utc
-                        .datetime_from_str(&entry.last_modified, LAST_CHANGED_FORMAT)
-                        .unwrap();
-                    loop {
-                        if index == usize::MAX {
-                            break;
-                        }
 
-                        if let Some(other) = self.collection_entries.get(index + 1) {
-                            let other_date = Utc
-                                .datetime_from_str(&other.last_modified, LAST_CHANGED_FORMAT)
-                                .unwrap();
-                            if !other.pinned.get() && entry_date > other_date {
-                                break;
-                            }
-
-                            self.collection_entries.guard().move_to(index, index + 1);
-                            index += 1;
-                        } else {
-                            break;
-                        }
+                self.collection_entries.widget().set_visible(matched);
+            }
+            AppInput::OpenCollection(file_name) => {
+                todo!();
+            }
+            AppInput::CollectionSaveChanges => {
+                for entry in self.collection_entries.iter() {
+                    if entry.pinned.has_changed() {
+                        let mut collection = Collection::from_name(&entry.file);
+                        collection.meta_data.pinned = entry.pinned.get();
+                        collection.save(&entry.file);
                     }
                 }
-                CollectionEntryOutput::FilterBy(text) => {
-                    let text_lower = text.to_lowercase();
-                    let sort_case_sensitive: bool = text != text_lower;
-                    let mut matched: bool = false;
-
-                    let mut i = 0;
-                    loop {
-                        if let Some(entry) = self.collection_entries.get(i) {
-                            let matches: bool = if sort_case_sensitive {
-                                entry.name.contains(&text) || entry.description.contains(&text)
-                            } else {
-                                entry.name.to_lowercase().contains(&text_lower)
-                                    || entry.description.to_lowercase().contains(&text_lower)
-                            };
-
-                            self.collection_entries
-                                .send(i, CollectionEntryInput::SetVisible(matches));
-
-                            if matches {
-                                matched = true;
-                            }
-
-                            i += 1;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    self.collection_entries.widget().set_visible(matched);
-                }
-                CollectionEntryOutput::OpenCollection(file_name) => {
-                    todo!();
-                }
-                CollectionEntryOutput::SaveChanges => {
-                    for entry in self.collection_entries.iter() {
-                        if entry.pinned.has_changed() {
-                            let mut collection = Collection::from_name(&entry.file);
-                            collection.meta_data.pinned = entry.pinned.get();
-                            collection.save(&entry.file);
-                        }
-                    }
-                }
-            },
+            }
             AppInput::UpdateButtonClicked => {
                 let successful = get_or_log(db::update_or_restore(&mut self.connection), false);
                 if successful {
