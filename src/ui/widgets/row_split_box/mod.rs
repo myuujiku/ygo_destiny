@@ -23,7 +23,7 @@ impl RowSplitBox {
         object
     }
 
-    pub fn insert(&self, widget: gtk::Image) {
+    pub fn insert(&self, widget: gtk::Widget) {
         widget.set_parent(self);
         self.imp().children.borrow_mut().push(widget);
     }

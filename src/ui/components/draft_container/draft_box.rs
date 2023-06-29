@@ -68,7 +68,7 @@ impl Component for DraftBox {
         let widgets = view_output!();
 
         for id in &model.cards {
-            widgets.row_split_box.insert(load_card(*id));
+            widgets.row_split_box.insert(load_card(*id).into());
         }
 
         ComponentParts { model, widgets }

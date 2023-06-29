@@ -8,7 +8,7 @@ use relm4::gtk;
 
 #[derive(Default)]
 pub struct RowSplitBox {
-    pub children: RefCell<Vec<gtk::Image>>,
+    pub children: RefCell<Vec<gtk::Widget>>,
     pub cell_width: OnceCell<i32>,
     pub cell_height: OnceCell<i32>,
     pub h_spacing: OnceCell<i32>,
