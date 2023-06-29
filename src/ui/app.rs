@@ -10,7 +10,7 @@ use relm4_icons::{icon_name, initialize_icons};
 use crate::data::get_or_log;
 use crate::db;
 use crate::ui::{
-    components::{CollectionData, CollectionEntry, CollectionEntryInput, CollectionEntryOutput},
+    components::{CollectionData, CollectionEntry, CollectionEntryInput},
     templates,
 };
 use crate::user_data::collection::{Collection, LAST_CHANGED_FORMAT};

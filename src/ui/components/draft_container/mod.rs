@@ -3,7 +3,7 @@ mod draft_box;
 use std::collections::VecDeque;
 
 use adw::prelude::*;
-use gtk::{glib, Orientation};
+use gtk::Orientation;
 use relm4::prelude::*;
 
 use draft_box::*;
